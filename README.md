@@ -34,6 +34,12 @@ Built with Java (Swing), Maven, and MySQL.
 6. **Test the connection.** Run `btd.util.DbCheck` from the project root. It should print `Sam (highest score: 14)` for "Sam" and "sam", and "not found" for the third name. If it fails with "Access denied", the user or password in `db_config.properties` is wrong. If it fails with "No suitable driver", reload the Maven project so the MySQL driver downloads.
 7. **Run** `btd.Main`.
 
+### Running in VS Code
+
+Open the folder containing `pom.xml` with the Extension Pack for Java installed, then let the Java project finish loading. Open `DbCheck.java` and click **Run** above `main`, or right-click in the editor and select **Run Java**. Use the same steps for `Main.java`.
+
+Code Runner's **Run Code** command compiles only the current file. That causes `package btd.dao does not exist` when running `DbCheck.java`, because it leaves out the project source path and Maven dependencies. Use the Java extension's runner for this project.
+
 ## Project structure
 
 ```
