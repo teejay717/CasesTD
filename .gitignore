@@ -17,3 +17,6 @@ nbactions.xml
 # OS files
 .DS_Store
 Thumbs.db
+
+*.class
+tempCodeRunnerFile.java
