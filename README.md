@@ -12,11 +12,27 @@ Built with Java (Swing), Maven, and MySQL.
 
 ## Setup
 
-1. **Clone the repo** and open it as a Maven project in your IDE.
-2. **Create your local config.** Copy `data/db_config.example.properties` to `data/db_config.properties` and enter your own MySQL URL, user, and password. This file is git-ignored, so never commit it.
-3. **Create the database.** Run `database/schema.sql` in MySQL Workbench (or phpMyAdmin), then run `database/seed_data.sql`. The schema creates `btd_case_db` with 4 tables: `towers`, `cases`, `case_towers`, `players`.
-4. **Check the data.** `SELECT * FROM towers;` should return 10 rows, `cases` 3 rows, and `case_towers` 21 rows (10 Standard + 7 Premium + 4 Legendary).
-5. **Run** `btd.Main`.
+1. **Clone the repo** and open it as a Maven project in your IDE. Open the folder that contains `pom.xml`, because the app reads `data/db_config.properties` from the project root.
+2. **Create the database.** Run `database/schema.sql` in MySQL Workbench (or phpMyAdmin), then run `database/seed_data.sql`. The schema creates `btd_case_db` with 4 tables: `towers`, `cases`, `case_towers`, `players`.
+3. **Create a MySQL login for the project (optional).** You can use your own root login instead. To create a separate one that can only use this database, run this in MySQL Workbench:
+
+   ```sql
+   CREATE USER 'casestd'@'localhost' IDENTIFIED BY 'casestd';
+   GRANT ALL PRIVILEGES ON btd_case_db.* TO 'casestd'@'localhost';
+   ```
+
+4. **Create your local config.** Copy `data/db_config.example.properties` to `data/db_config.properties` and fill it in. If you made the login above, it looks like this:
+
+   ```
+   db.url=jdbc:mysql://localhost:3306/btd_case_db
+   db.user=casestd
+   db.password=casestd
+   ```
+
+   This file is git-ignored, so never commit it. Use your own port in `db.url` if your MySQL is not on 3306 (run `SELECT @@port;` in Workbench to check).
+5. **Check the data.** `SELECT * FROM towers;` should return 10 rows, `cases` 3 rows, and `case_towers` 21 rows (10 Standard + 7 Premium + 4 Legendary).
+6. **Test the connection.** Run `btd.util.DbCheck` from the project root. It should print `Sam (highest score: 14)` for "Sam" and "sam", and "not found" for the third name. If it fails with "Access denied", the user or password in `db_config.properties` is wrong. If it fails with "No suitable driver", reload the Maven project so the MySQL driver downloads.
+7. **Run** `btd.Main`.
 
 ## Project structure
 
