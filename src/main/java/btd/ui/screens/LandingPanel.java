@@ -22,6 +22,7 @@ public class LandingPanel extends JPanel {
     private final Rectangle play = new Rectangle(560, 170, 160, 160);
     private final JTextField nameField = new JTextField();
     private final Rectangle help = new Rectangle(830, 275, 100, 100);
+    private final Rectangle quit = new Rectangle(1170, 20, 90, 90);
     private final HelpPanel helpPanel = new HelpPanel();
     private final PlayerDAO playerDao = new PlayerDAO();
     private Player player;
@@ -45,7 +46,9 @@ public class LandingPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (!opened && crate.contains(e.getPoint()) && !getPlayerName().isEmpty()) {
+                if (quit.contains(e.getPoint())) {
+                    System.exit(0);
+                } else if (!opened && crate.contains(e.getPoint()) && !getPlayerName().isEmpty()) {
                     openCrate();
                 } else if (opened && play.contains(e.getPoint())) {
                     onPlay.run();
@@ -107,6 +110,12 @@ public class LandingPanel extends JPanel {
             g.drawString("Player: " + player.getPlayerName(), 330, 400);
             g.drawString("Highest score: " + player.getHighestScore(), 540, 50);
         }
+
+        // Quit placeholder, always visible
+        g.setColor(Color.RED);
+        g.fillOval(quit.x, quit.y, quit.width, quit.height);
+        g.setColor(Color.WHITE);
+        g.drawString("X", quit.x + 42, quit.y + 50);
 
         // Text so we can tell which state we are in
         g.setColor(Color.BLACK);
