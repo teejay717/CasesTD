@@ -21,6 +21,8 @@ public class LandingPanel extends JPanel {
     private final Rectangle crate = new Rectangle(352, 340, 575, 250);
     private final Rectangle play = new Rectangle(560, 170, 160, 160);
     private final JTextField nameField = new JTextField();
+    private final Rectangle help = new Rectangle(830, 275, 100, 100);
+    private final HelpPanel helpPanel = new HelpPanel();
     private final PlayerDAO playerDao = new PlayerDAO();
     private Player player;
     private final Runnable onPlay; 
@@ -37,6 +39,9 @@ public class LandingPanel extends JPanel {
         nameField.setFont(Theme.BUTTON_FONT);
         add(nameField);
 
+        helpPanel.setBounds(240, 110, 800, 500);
+        add(helpPanel);
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -44,6 +49,8 @@ public class LandingPanel extends JPanel {
                     openCrate();
                 } else if (opened && play.contains(e.getPoint())) {
                     onPlay.run();
+                } else if (opened && help.contains(e.getPoint())) {
+                    helpPanel.setVisible(!helpPanel.isVisible());
                 }
             }
         });
@@ -86,6 +93,13 @@ public class LandingPanel extends JPanel {
             g.setColor(Theme.YELLOW_COLOR);
             g.fillRect(play.x, play.y, play.width, play.height);
         }
+
+        if (opened) {
+        g.setColor(Color.CYAN);
+        g.fillOval(help.x, help.y, help.width, help.height);
+        g.setColor(Color.BLACK);
+        g.drawString("?", help.x + 48, help.y + 55);
+}
 
         // player info from db
         if (opened) {
