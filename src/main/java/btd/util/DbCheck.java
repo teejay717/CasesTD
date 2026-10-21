@@ -4,6 +4,7 @@ import btd.dao.PlayerDAO;
 
 import java.sql.SQLException;
 
+/** Read-only check that the database connection and PlayerDAO work. Writes nothing. */
 public class DbCheck {
 
     public static void main(String[] args) {

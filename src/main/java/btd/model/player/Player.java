@@ -1,6 +1,6 @@
 package btd.model.player;
 
-/** A saved player profile: a unique name and the most waves they have cleared. */
+/** A saved player: a unique name and the most waves they have cleared in one run. */
 public class Player {
 
     private final int playerId;
