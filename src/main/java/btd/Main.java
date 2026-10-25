@@ -1,19 +1,16 @@
 package btd;
 
+import btd.ui.AppController;
 import btd.ui.MainFrame;
-import btd.ui.screens.LandingPanel;
-import btd.ui.screens.PlaceholderPanel;
 
 import javax.swing.SwingUtilities;
 
-/** Application entry point. */
+/** Application entry point. Run from the project root so the assets/ and data/ folders are found. */
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             MainFrame frame = new MainFrame();
-            frame.addScreen("landing", new LandingPanel(() -> frame.showScreen("placeholder")));
-            frame.addScreen("placeholder", new PlaceholderPanel());
-            frame.showScreen("landing");
+            new AppController(frame);
             frame.setVisible(true);
         });
     }
