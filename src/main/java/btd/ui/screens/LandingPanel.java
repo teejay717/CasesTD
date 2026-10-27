@@ -115,6 +115,11 @@ public class LandingPanel extends JPanel {
         repaint();
     }
 
+    /** The loaded profile, or null before the crate has been opened. */
+    public Player getPlayer() {
+        return player;
+    }
+
     /** The name the player typed, without extra spaces. */
     public String getPlayerName() {
         return nameField.getText().trim();
