@@ -50,6 +50,3 @@ INSERT IGNORE INTO players (player_name, highest_score) VALUES
 ('Alex', 9);
 
 
-UPDATE players
-SET player_name = "Shrod"
-WHERE player_name = "Shros";
