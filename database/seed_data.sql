@@ -48,3 +48,8 @@ WHERE c.case_name = 'Legendary Case' AND t.rarity IN ('EPIC', 'LEGENDARY');
 INSERT IGNORE INTO players (player_name, highest_score) VALUES
 ('Sam', 14),
 ('Alex', 9);
+
+
+UPDATE players
+SET player_name = "Shrod"
+WHERE player_name = "Shros";
