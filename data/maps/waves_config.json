@@ -9,7 +9,7 @@
     "coinsPerEnemy": {
       "BasicEnemy": 10,
       "FastEnemy": 7,
-      "ArmoredEnemy": 28,
+      "ArmoredEnemy": 20,
       "BossEnemy": 500
     },
     "sellRefund": {
@@ -27,7 +27,10 @@
   },
   "levelBonusPercent": 10,
   "scaling": {
-    "healthPerWavePercent": 50,
+    "healthStartPercent": 80,
+    "healthPerWavePercent": 30,
+    "healthJumpEveryNWaves": 10,
+    "healthJumpPercent": 45,
     "speedPerWavePercent": 2,
     "speedCapPercent": 50,
     "bossEveryNthWave": 10

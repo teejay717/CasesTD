@@ -14,7 +14,11 @@ public abstract class Tower implements Upgradable {
     public static final int MAX_NORMAL_LEVEL = 4;
     public static final int MAX_LEVEL = 5;
 
-    private static final double LEVEL_BONUS = 0.10; // +10% damage and fire rate per level
+    /**
+     * Damage and fire rate multiplier at each level (index 0 = Lv 1). Each level is worth a bit
+     * more than placing the copies it costs, so upgrading is never worse than placing duplicates.
+     */
+    private static final double[] LEVEL_MULTIPLIERS = {1.00, 1.45, 1.80, 2.03, 2.30};
 
     private final TowerType type;
     private final double x;
@@ -78,7 +82,7 @@ public abstract class Tower implements Upgradable {
     // ---- stats ----
 
     protected double levelMultiplier() {
-        return 1.0 + LEVEL_BONUS * (level - 1);
+        return LEVEL_MULTIPLIERS[level - 1];
     }
 
     public double getDamage() {
@@ -91,6 +95,11 @@ public abstract class Tower implements Upgradable {
 
     public double getRange() {
         return type.range();
+    }
+
+    /** The fire rate boost from a nearby Radio Tower (1.0 = none). */
+    protected double getFireRateBuff() {
+        return fireRateBuff;
     }
 
     public void resetBuff() {

@@ -10,6 +10,9 @@ public abstract class Enemy implements Damageable {
 
     private static final int MAX_BURN_STACKS = 5;
 
+    /** After a stun wears off, the enemy can't be stunned again for this long, so stuns can never chain forever. */
+    public static final double STUN_IMMUNITY_SECONDS = 1.5;
+
     private final double maxHealth;
     private final double speed;
     private final int reward;
@@ -21,6 +24,7 @@ public abstract class Enemy implements Damageable {
     private double y;
 
     private double stunLeft;
+    private double stunImmuneLeft;
     private double poisonDps;
     private double poisonLeft;
     private int burnStacks;
@@ -59,7 +63,13 @@ public abstract class Enemy implements Damageable {
         // movement
         if (stunLeft > 0) {
             stunLeft -= dt;
+            if (stunLeft <= 0) {
+                stunImmuneLeft = STUN_IMMUNITY_SECONDS;
+            }
         } else {
+            if (stunImmuneLeft > 0) {
+                stunImmuneLeft -= dt;
+            }
             distance += speed * dt;
         }
         double[] p = map.pointAt(distance);
@@ -82,8 +92,18 @@ public abstract class Enemy implements Damageable {
         return health <= 0;
     }
 
-    public void stun(double seconds) {
-        stunLeft = Math.max(stunLeft, seconds);
+    /** True if a stun would land now: not already stunned and not in the immunity window after one. */
+    public boolean canBeStunned() {
+        return !isDead() && stunLeft <= 0 && stunImmuneLeft <= 0;
+    }
+
+    /** Stuns the enemy unless it is already stunned or still immune. Returns true if the stun landed. */
+    public boolean stun(double seconds) {
+        if (!canBeStunned()) {
+            return false;
+        }
+        stunLeft = seconds;
+        return true;
     }
 
     public void poison(double dps, double seconds) {

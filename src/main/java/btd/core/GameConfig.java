@@ -25,7 +25,13 @@ public class GameConfig {
     }
 
     public static class Scaling {
+        /** Enemy health on wave 1, as a % of the base stats (80 = start 20% weaker). */
+        public int healthStartPercent;
         public int healthPerWavePercent;
+        /** Every this many waves, enemy health gets an extra jump (0 = no jumps). */
+        public int healthJumpEveryNWaves;
+        /** Size of each jump, as a % multiplier on top of the per-wave growth. */
+        public int healthJumpPercent;
         public int speedPerWavePercent;
         public int speedCapPercent;
         public int bossEveryNthWave;
@@ -74,9 +80,21 @@ public class GameConfig {
         return economy.waveClearBaseReward + economy.waveClearRewardPerWave * wave;
     }
 
-    /** Enemy health multiplier for a wave: +50% of the base health per wave after the first. */
+    /**
+     * Enemy health multiplier for a wave. Health grows a little every wave (healthPerWavePercent
+     * of the base), and each time a new block of waves starts (wave 11, 21, 31...) it is multiplied
+     * again by healthJumpPercent, so 10 to 11 is a much bigger step than 11 to 12.
+     * Everything is scaled by healthStartPercent (80 = wave 1 enemies have 80% of base health).
+     * With 80%, 30% and 45%: wave 10 = 2.96x, wave 11 = 4.64x, wave 31 = 24.4x, wave 41 = 46x.
+     */
     public double healthScale(int wave) {
-        return 1.0 + scaling.healthPerWavePercent / 100.0 * (wave - 1);
+        double start = scaling.healthStartPercent > 0 ? scaling.healthStartPercent / 100.0 : 1.0;
+        double perWave = start * (1.0 + scaling.healthPerWavePercent / 100.0 * (wave - 1));
+        if (scaling.healthJumpEveryNWaves <= 0) {
+            return perWave;
+        }
+        int jumps = (wave - 1) / scaling.healthJumpEveryNWaves;
+        return perWave * Math.pow(1.0 + scaling.healthJumpPercent / 100.0, jumps);
     }
 
     /** Enemy speed multiplier for a wave: +2% per wave, capped at +50%. */
