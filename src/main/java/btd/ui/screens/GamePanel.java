@@ -1,7 +1,35 @@
 package btd.ui.screens;
 
-import btd.core.Catalog;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.function.Consumer;
+
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
+
 import btd.core.CaseRNGManager;
+import btd.core.Catalog;
 import btd.core.GameConfig;
 import btd.core.GameEngine;
 import btd.core.GameMap;
@@ -20,30 +48,6 @@ import btd.ui.components.TowerArt;
 import btd.ui.theme.Palette;
 import btd.ui.theme.Theme;
 
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
-import javax.swing.Timer;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.function.Consumer;
-
 /**
  * The gameplay screen: the map on the left, the side panel on the right, and the shop on top.
  * A Swing Timer calls tick() about 60 times a second. tick() runs the GameEngine and repaints.
@@ -61,6 +65,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     private final SidePanel side = new SidePanel(this);
     private final TextButton quitButton = new TextButton("QUIT", 876, 8, 76, 36, Palette.BAD, 18f);
     private final Timer timer = new Timer(16, e -> tick());
+    private BufferedImage background;
 
     private Player player;
     private Catalog catalog;
@@ -145,6 +150,12 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         lastNanos = System.nanoTime();
         timer.start();
         showToast("Open the SHOP and use your free case!", 5);
+
+        try {
+            background = ImageIO.read(new File("assets/map/map.png"));
+        } catch (IOException ex) {
+            background = null; // falls back to the code-drawn map
+}
     }
 
     // ---- game loop ----
@@ -420,27 +431,45 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     }
 
     private void paintGround(Graphics2D g) {
+        if (background != null) {
+            g.drawImage(background, 0, 0, GameMap.WIDTH, GameMap.HEIGHT, null);
+            return;
+        }
+        Color tileA = new Color(0x8E8E8E);
+        Color tileB = new Color(0x838383);
         for (int cx = 0; cx < GameMap.WIDTH / GameMap.CELL; cx++) {
             for (int cy = 0; cy < GameMap.HEIGHT / GameMap.CELL; cy++) {
-                g.setColor((cx + cy) % 2 == 0 ? Palette.GRASS_A : Palette.GRASS_B);
+                g.setColor((cx + cy) % 2 == 0 ? tileA : tileB);
                 g.fillRect(cx * GameMap.CELL, cy * GameMap.CELL, GameMap.CELL, GameMap.CELL);
             }
         }
     }
 
     private void paintPath(Graphics2D g) {
-        Path2D.Double path = new Path2D.Double();
         List<double[]> points = map.getPoints();
-        path.moveTo(points.get(0)[0], points.get(0)[1]);
-        for (int i = 1; i < points.size(); i++) {
-            path.lineTo(points.get(i)[0], points.get(i)[1]);
+
+        if (background == null) {
+            Path2D.Double road = new Path2D.Double();
+            road.moveTo(points.get(0)[0], points.get(0)[1]);
+            for (int i = 1; i < points.size(); i++) {
+                road.lineTo(points.get(i)[0], points.get(i)[1]);
+            }
+            for (double[] s : map.getExtraRoads()) {
+                road.moveTo(s[0], s[1]);
+                road.lineTo(s[2], s[3]);
         }
+
         g.setStroke(new BasicStroke(66f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-        g.setColor(Palette.PATH_EDGE);
-        g.draw(path);
-        g.setStroke(new BasicStroke(54f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-        g.setColor(Palette.PATH_FILL);
-        g.draw(path);
+        g.setColor(new Color(0x1B1B1B));
+        g.draw(road);
+        g.setStroke(new BasicStroke(56f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+        g.setColor(new Color(0x2F2F2F));
+        g.draw(road);
+        g.setStroke(new BasicStroke(2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1f,
+                new float[]{12f, 10f}, 0f));
+        g.setColor(new Color(0xB8B8B8));
+        g.draw(road);
+    }
 
         double[] start = points.get(0);
         double[] end = points.get(points.size() - 1);
