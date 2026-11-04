@@ -13,12 +13,24 @@ import java.util.List;
  */
 public class GameMap {
 
-    public static final int WIDTH = 960;   // map area; the side panel takes the rest of the 1280 window
+    public static final int WIDTH = 960;
     public static final int HEIGHT = 720;
-    public static final int CELL = 40;     // tower placement grid
+    public static final int CELL = 40;
 
     private static final double FILE_WIDTH = 1280.0;
-    private static final double PATH_CLEARANCE = 38; // towers must be at least this far from the track center
+    private static final double PATH_CLEARANCE = 38;
+
+    // Decorative roads that enemies do not walk: x1, y1, x2, y2 on the 1280x720 file canvas
+    private static final double[][] EXTRA_ROADS = {
+            {314, 0, 314, 720},      // left vertical road, full height
+            {1068, 0, 1068, 720},    // right vertical road, full height
+            {686, 0, 686, 119},      // top stub
+            {686, 597, 686, 720},    // bottom stub
+            {1068, 119, 1280, 119},  // top road, right of the turn
+            {0, 358, 314, 358},      // middle road, left end
+            {1068, 358, 1280, 358},  // middle road, right end
+            {0, 597, 314, 597}       // bottom road, left end
+    };
 
     private final List<double[]> points = new ArrayList<>();
     private final List<Double> cumulative = new ArrayList<>();
@@ -65,6 +77,14 @@ public class GameMap {
         return points;
     }
 
+     public List<double[]> getExtraRoads() {
+        List<double[]> result = new ArrayList<>();
+        for (double[] r : EXTRA_ROADS) {
+            result.add(new double[]{r[0] * WIDTH / FILE_WIDTH, r[1], r[2] * WIDTH / FILE_WIDTH, r[3]});
+        }
+        return result;
+    }
+
     /** The {x, y} position after walking this far along the track. */
     public double[] pointAt(double distance) {
         if (distance <= 0) {
@@ -97,9 +117,17 @@ public class GameMap {
 
     /** True if a tower may be built here: inside the map, below the top bar, and off the track. */
     public boolean canBuildAt(double x, double y) {
-        return x >= 20 && x <= WIDTH - 20 && y >= 60 && y <= HEIGHT - 20
-                && distanceToPath(x, y) >= PATH_CLEARANCE;
-    }
+        if (!(x >= 20 && x <= WIDTH - 20 && y >= 60 && y <= HEIGHT - 20)
+                || distanceToPath(x, y) < PATH_CLEARANCE) {
+            return false;
+        }
+        for (double[] r : getExtraRoads()) {
+            if (distanceToSegment(x, y, r[0], r[1], r[2], r[3]) < PATH_CLEARANCE) {
+                return false;
+            }
+        }
+        return true;
+}
 
     private static double distanceToSegment(double px, double py, double ax, double ay, double bx, double by) {
         double dx = bx - ax;
