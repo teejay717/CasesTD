@@ -26,11 +26,25 @@ public class GameMap {
             {1068, 0, 1068, 720},    // right vertical road, full height
             {686, 0, 686, 119},      // top stub
             {686, 597, 686, 720},    // bottom stub
-            {1068, 119, 1280, 119},  // top road, right of the turn
-            {0, 358, 314, 358},      // middle road, left end
-            {1068, 358, 1280, 358},  // middle road, right end
-            {0, 597, 314, 597}       // bottom road, left end
+            {1068, 358, 1280, 358}   // middle road, right end
     };
+
+    // Dead-end roads closed off by an obstacle. Drawn like the other roads, but towers may be
+    // built on them (except on the obstacle itself, see OBSTACLES). Same 1280x720 file canvas.
+    private static final double[][] DEAD_END_ROADS = {
+            {1068, 119, 1280, 119},  // top road, right of the turn (chevron barricades)
+            {0, 358, 314, 358},      // middle road, left end (crates)
+            {0, 597, 314, 597}       // bottom road, left end (broken car)
+    };
+
+    // Things drawn on the map that towers can't sit on: left, top, right, bottom in map
+    // pixels (960x720, already squeezed, unlike the road lists above)
+    private static final double[][] OBSTACLES = {
+            {865, 78, 900, 158},     // chevron barricades, top right
+            {118, 313, 205, 400},    // crates, middle left
+            {63, 560, 186, 636}      // broken car, bottom left
+    };
+    private static final double OBSTACLE_MARGIN = 10;
 
     private final List<double[]> points = new ArrayList<>();
     private final List<Double> cumulative = new ArrayList<>();
@@ -80,9 +94,16 @@ public class GameMap {
      public List<double[]> getExtraRoads() {
         List<double[]> result = new ArrayList<>();
         for (double[] r : EXTRA_ROADS) {
-            result.add(new double[]{r[0] * WIDTH / FILE_WIDTH, r[1], r[2] * WIDTH / FILE_WIDTH, r[3]});
+            result.add(scaleRoad(r));
+        }
+        for (double[] r : DEAD_END_ROADS) {
+            result.add(scaleRoad(r));
         }
         return result;
+    }
+
+    private static double[] scaleRoad(double[] r) {
+        return new double[]{r[0] * WIDTH / FILE_WIDTH, r[1], r[2] * WIDTH / FILE_WIDTH, r[3]};
     }
 
     /** The {x, y} position after walking this far along the track. */
@@ -121,8 +142,15 @@ public class GameMap {
                 || distanceToPath(x, y) < PATH_CLEARANCE) {
             return false;
         }
-        for (double[] r : getExtraRoads()) {
+        for (double[] road : EXTRA_ROADS) {
+            double[] r = scaleRoad(road);
             if (distanceToSegment(x, y, r[0], r[1], r[2], r[3]) < PATH_CLEARANCE) {
+                return false;
+            }
+        }
+        for (double[] o : OBSTACLES) {
+            if (x >= o[0] - OBSTACLE_MARGIN && x <= o[2] + OBSTACLE_MARGIN
+                    && y >= o[1] - OBSTACLE_MARGIN && y <= o[3] + OBSTACLE_MARGIN) {
                 return false;
             }
         }
