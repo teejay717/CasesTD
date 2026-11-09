@@ -22,6 +22,7 @@ public abstract class Enemy implements Damageable {
     private double distance;      // how far along the track, in pixels
     private double x;
     private double y;
+    private double angle;         // walking direction in radians
 
     private double stunLeft;
     private double stunImmuneLeft;
@@ -73,6 +74,9 @@ public abstract class Enemy implements Damageable {
             distance += speed * dt;
         }
         double[] p = map.pointAt(distance);
+        // face along the track by looking 1 pixel ahead (0 = right, PI/2 = down)
+        double[] ahead = map.pointAt(distance + 1);
+        angle = Math.atan2(ahead[1] - p[1], ahead[0] - p[0]);
         x = p[0];
         y = p[1];
     }
@@ -127,6 +131,7 @@ public abstract class Enemy implements Damageable {
     public double getDistance() { return distance; }
     public double getX() { return x; }
     public double getY() { return y; }
+    public double getAngle() { return angle; }
     public int getReward() { return reward; }
     public int getLeakDamage() { return leakDamage; }
     public boolean isStunned() { return stunLeft > 0; }
