@@ -10,6 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
@@ -549,12 +550,17 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         double r = e.getRadius();
         double x = e.getX();
         double y = e.getY();
-        // e.g. assets/sprites/enemies/BasicEnemy_right.png; null if that file doesn't exist yet
-        Image sprite = SpriteLoader.get("assets/sprites/enemies/" + e.getTypeName()
-                + (e.isFacingRight() ? "_right" : "_left") + ".png");
+        // swap feet every 12 pixels walked, e.g. assets/sprites/enemies/BasicEnemy_leftfoot.png
+        String foot = (int) (e.getDistance() / 12) % 2 == 0 ? "_leftfoot" : "_rightfoot";
+        Image sprite = SpriteLoader.get("assets/sprites/enemies/" + e.getTypeName() + foot + ".png");
         if (sprite != null) {
-            double size = r * 4;
+            // the sprite faces right, so turn it to the walking direction
+            // the boss art fills more of its image, so it needs a smaller multiplier to fit the road
+            double size = r * (e.getTypeName().equals("BossEnemy") ? 4 : 6);
+            AffineTransform old = g.getTransform();
+            g.rotate(e.getAngle(), x, y);
             g.drawImage(sprite, (int) (x - size / 2), (int) (y - size / 2), (int) size, (int) size, null);
+            g.setTransform(old);
         } else {
             paintEnemyCircle(g, e, r, x, y);
         }
