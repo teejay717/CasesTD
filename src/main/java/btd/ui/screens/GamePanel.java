@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -47,6 +48,7 @@ import btd.ui.components.TextButton;
 import btd.ui.components.TowerArt;
 import btd.ui.theme.Palette;
 import btd.ui.theme.Theme;
+import btd.util.SpriteLoader;
 
 /**
  * The gameplay screen: the map on the left, the side panel on the right, and the shop on top.
@@ -547,6 +549,44 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         double r = e.getRadius();
         double x = e.getX();
         double y = e.getY();
+        // e.g. assets/sprites/enemies/BasicEnemy_right.png; null if that file doesn't exist yet
+        Image sprite = SpriteLoader.get("assets/sprites/enemies/" + e.getTypeName()
+                + (e.isFacingRight() ? "_right" : "_left") + ".png");
+        if (sprite != null) {
+            double size = r * 4;
+            g.drawImage(sprite, (int) (x - size / 2), (int) (y - size / 2), (int) size, (int) size, null);
+        } else {
+            paintEnemyCircle(g, e, r, x, y);
+        }
+
+        // status rings
+        g.setStroke(new BasicStroke(2.5f));
+        if (e.isStunned()) {
+            g.setColor(new Color(90, 160, 255));
+            g.draw(new Ellipse2D.Double(x - r - 3, y - r - 3, r * 2 + 6, r * 2 + 6));
+        }
+        if (e.isPoisoned()) {
+            g.setColor(new Color(170, 80, 230));
+            g.draw(new Ellipse2D.Double(x - r - 5, y - r - 5, r * 2 + 10, r * 2 + 10));
+        }
+        if (e.isBurning()) {
+            g.setColor(new Color(255, 120, 30));
+            g.draw(new Ellipse2D.Double(x - r - 7, y - r - 7, r * 2 + 14, r * 2 + 14));
+        }
+
+        // health bar
+        if (e.getHealth() < e.getMaxHealth()) {
+            double w = r * 2 + 6;
+            double frac = Math.max(0, e.getHealth() / e.getMaxHealth());
+            g.setColor(Palette.PANEL_DARK);
+            g.fillRect((int) (x - w / 2) - 1, (int) (y - r - 12), (int) w + 2, 6);
+            g.setColor(frac > 0.5 ? Palette.GOOD : frac > 0.25 ? Palette.GOLD : Palette.BAD);
+            g.fillRect((int) (x - w / 2), (int) (y - r - 11), (int) (w * frac), 4);
+        }
+    }
+
+    /** The old placeholder look, used for zombie types that don't have a sprite yet. */
+    private void paintEnemyCircle(Graphics2D g, Enemy e, double r, double x, double y) {
         Color body = switch (e.getTypeName()) {
             case "FastEnemy" -> new Color(0xB5D64B);
             case "ArmoredEnemy" -> new Color(0x6E8C7A);
@@ -579,31 +619,6 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
             g.setColor(Palette.GOLD);
             g.fillPolygon(new int[]{(int) (x - r * 0.7), (int) (x - r * 0.4), (int) x, (int) (x + r * 0.4), (int) (x + r * 0.7)},
                     new int[]{(int) (y - r * 0.8), (int) (y - r * 1.3), (int) (y - r * 0.85), (int) (y - r * 1.3), (int) (y - r * 0.8)}, 5);
-        }
-
-        // status rings
-        g.setStroke(new BasicStroke(2.5f));
-        if (e.isStunned()) {
-            g.setColor(new Color(90, 160, 255));
-            g.draw(new Ellipse2D.Double(x - r - 3, y - r - 3, r * 2 + 6, r * 2 + 6));
-        }
-        if (e.isPoisoned()) {
-            g.setColor(new Color(170, 80, 230));
-            g.draw(new Ellipse2D.Double(x - r - 5, y - r - 5, r * 2 + 10, r * 2 + 10));
-        }
-        if (e.isBurning()) {
-            g.setColor(new Color(255, 120, 30));
-            g.draw(new Ellipse2D.Double(x - r - 7, y - r - 7, r * 2 + 14, r * 2 + 14));
-        }
-
-        // health bar
-        if (e.getHealth() < e.getMaxHealth()) {
-            double w = r * 2 + 6;
-            double frac = Math.max(0, e.getHealth() / e.getMaxHealth());
-            g.setColor(Palette.PANEL_DARK);
-            g.fillRect((int) (x - w / 2) - 1, (int) (y - r - 12), (int) w + 2, 6);
-            g.setColor(frac > 0.5 ? Palette.GOOD : frac > 0.25 ? Palette.GOLD : Palette.BAD);
-            g.fillRect((int) (x - w / 2), (int) (y - r - 11), (int) (w * frac), 4);
         }
     }
 
