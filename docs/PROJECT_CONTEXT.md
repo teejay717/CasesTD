@@ -43,14 +43,14 @@ Last updated: Sun Oct 25, 2026.
 ## 4. Game rules (from the submitted report; all numbers are placeholders)
 
 - Currency: Coins only. Start: 75 Coins, 1 free Standard Case, 20 lives.
-- Cases: Standard 100 coins (Common 65 / Rare 25 / Epic 8 / Legendary 2, all 10 towers). Premium 250 (0/60/32/8, the 7 non-common towers). Legendary 500 (0/0/70/30, the 4 epic and legendary towers; odds and price are placeholders, the report did not define them).
+- Cases: Standard 100 coins (Common 65 / Rare 25 / Epic 8 / Legendary 2, all 10 towers). Premium 250 (0/60/32/8, the 7 non-common towers). Legendary 500 (0/0/80/20, the 4 epic and legendary towers; odds and price are placeholders, the report did not define them).
 - Rolling a case: pick a rarity by weight (rarities with no tower in the pool are skipped), then a random tower of that rarity. The result is decided when you pay; the spinner only reveals it.
 - Inventory copies can be: placed for free at Level 1, used as upgrade copies, or sold.
 - Upgrade cost in spare copies, by rarity (to Lv2 / Lv3 / Lv4 / Lv5): Common 1/1/2/3, Rare 1/1/1/2, Epic 1/1/1/1, Legendary 1/1/1/1.
 - +10% damage and fire rate per level. Only one tower per type may reach Level 5 (others cap at Lv4). Level 5 unlocks a passive.
 - Sell refund (placed tower or inventory copy): Common 30, Rare 50, Epic 75, Legendary 150.
 - Wave clear reward: 100 + 10 x wave. Kill coins: Basic 10, Fast 7, Armored 28, Boss 500.
-- Enemy scaling: health +50% of base per wave; speed +2% per wave, capped at +50%. Boss every 10th wave.
+- Enemy scaling: health +35% of base per wave, times 1.25 again at the start of every 10-wave block (wave 11, 21, 31...); speed +2% per wave, capped at +50%. Boss every 10th wave. Endless (no last wave).
 - Lives reach 0: run ends. **Highest score = waves cleared**, saved only if it beats the record.
 - Opening cases mid-wave is allowed; the current build **pauses the game while the shop is open**.
 
@@ -60,7 +60,7 @@ Last updated: Sun Oct 25, 2026.
 |---|---|---|---|---|---|---|
 | Soldier | SingleTargetTower | Common | 10 | 130 | 1.5 | none |
 | Grenadier | SplashTower | Common | 9 | 115 | 0.8 | splash 45 |
-| Policeman | SupportTower | Common | 2 | 115 | 0.4 | STUN 900 ms, all enemies in range |
+| Policeman | SupportTower | Common | 2 | 90 | 0.4 | STUN 1500 ms (2250 ms at Lv5), all enemies in range; enemies are stun-immune for 1.5 s after a stun |
 | Scientist | SplashTower | Rare | 5 | 135 | 0.8 | splash 60, POISON 7 dps for 3 s |
 | Sniper | SniperTower | Rare | 55 | 380 | 0.5 | targets highest-health enemy |
 | Radio Tower | SupportTower | Rare | 0 | 150 | 1.0 | BUFF: +30% fire rate to nearby towers |
@@ -92,7 +92,7 @@ Layers: `ui` (draws, forwards clicks, no rules) → `core` (rules) → `model` (
 - `gacha/Rarity` (enum with display name, color, gem count), `gacha/CaseDef` (record: id, name, cost, 4 weights, pool), `player/Player`.
 - `tower/TowerType` (record = one towers row, the blueprint), `tower/Special` (enum), `tower/Upgradable` (interface: getLevel, applyLevel).
 - `tower/Tower` (abstract, implements Upgradable): final `update(dt, enemies, effects)` runs the cooldown and calls abstract `attack()`; abstract `applyMaxPassive()` and `getPassiveDescription()`; `applyAura()` hook; stats = base x (1 + 0.1 x (level - 1)) x passive x buff.
-- Subclasses: `SingleTargetTower` (furthest enemy), `SplashTower` (area, plus poison/burn), `SniperTower` (highest health; PIERCE beam), `SupportTower` (STUN all in range, TURRETS multi-target, BUFF via applyAura).
+- Subclasses: `SingleTargetTower` (furthest enemy), `SplashTower` (area, plus poison/burn), `SniperTower` (highest health; PIERCE beam), `SupportTower` (STUN all stunnable enemies in range, TURRETS multi-target, BUFF via applyAura).
 - `enemy/Damageable` (interface), `enemy/Enemy` (abstract: health, speed, distance along path, poison/burn/stun, `takeDamage` calls overridable `reduceDamage`), subclasses `BasicEnemy`, `FastEnemy`, `ArmoredEnemy` (overrides reduceDamage), `BossEnemy` (overrides stun).
 
 **factory**: `TowerFactory` (tower_class text → subclass), `EnemyFactory` (type name → subclass).

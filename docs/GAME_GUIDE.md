@@ -32,7 +32,7 @@ Why this matters: the UI team can replace every screen and the game rules will n
 |---|---|
 | Abstraction | `Tower` and `Enemy` are abstract. You never create a plain Tower. |
 | Inheritance | `SingleTargetTower`, `SplashTower`, `SniperTower`, `SupportTower` extend `Tower`. `BasicEnemy`, `FastEnemy`, `ArmoredEnemy`, `BossEnemy` extend `Enemy`. |
-| Polymorphism | The engine calls `tower.update()`. The abstract `attack()` runs different code per subclass. `ArmoredEnemy` overrides `reduceDamage` (takes 30% less). `BossEnemy` overrides `stun` (half duration). `SupportTower` overrides `applyAura`. |
+| Polymorphism | The engine calls `tower.update()`. The abstract `attack()` runs different code per subclass. `ArmoredEnemy` overrides `reduceDamage` (takes 30% less). `BossEnemy` overrides `stun` (half duration). After any stun ends, an enemy is immune to stuns for 1.5 s. `SupportTower` overrides `applyAura`. |
 | Interfaces | `Upgradable` (implemented by `Tower`), `Damageable` (implemented by `Enemy`). |
 | Encapsulation | Fields are private. `GameSession` is the only way to change coins, inventory and towers. |
 | Composition | `GameEngine` has a `GameSession`, a `GameMap` and a `WaveSpawner`. |
@@ -60,7 +60,7 @@ Why this matters: the UI team can replace every screen and the game rules will n
 - **Level bonus** (`Tower.levelMultiplier`): +10% damage and fire rate per level.
 - **Level 5 passive** (`applyMaxPassive`, different in each subclass).
 - **Selling**: refund depends on rarity (Common 30, Rare 50, Epic 75, Legendary 150).
-- **Enemy scaling** (`GameConfig`): +50% of base health per wave, +2% speed per wave (capped at +50%). Every 10th wave adds a boss.
+- **Enemy scaling** (`GameConfig`): +35% of base health per wave, and an extra x1.25 each time a new block of 10 waves starts (wave 11, 21, 31...), so 10 to 11 is a much bigger step than 11 to 12. +2% speed per wave (capped at +50%). Every 10th wave adds a boss. The game is endless.
 - **Case rolls**: the result is rolled the moment you pay. The spinner animation only reveals it.
 - **Score**: when the run ends, waves cleared is saved with `PlayerDAO.updateHighestScore`, only if it beats the old record.
 

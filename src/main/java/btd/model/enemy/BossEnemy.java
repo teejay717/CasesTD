@@ -8,8 +8,8 @@ public class BossEnemy extends Enemy {
     }
 
     @Override
-    public void stun(double seconds) {
-        super.stun(seconds / 2);
+    public boolean stun(double seconds) {
+        return super.stun(seconds / 2);
     }
 
     @Override
