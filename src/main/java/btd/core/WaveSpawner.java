@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Turns a wave number into a timed list of enemies. Waves 1 to 3 come from the JSON file;
- * later waves are generated so the game can keep going. Every 10th wave adds a boss.
+ * [PURPOSE]       Manages enemy spawn queue for each wave, converting wave numbers into timed spawn events.
+ * [OOP / PATTERN] Spawner Pattern / Queue Scheduling / Factory Orchestration.
+ * [CALLED BY]     btd/core/GameEngine.java (startNextWave(), update()).
+ * [CONNECTS TO]   btd/core/GameConfig.java, btd/factory/EnemyFactory.java, btd/model/enemy/Enemy.java.
+ * [DEFENSE NOTE]  Waves 1-3 use handcrafted JSON definitions; wave 4+ are procedurally generated with boss every 10th wave.
  */
 public class WaveSpawner {
 
+    /** [PURPOSE] Immutable record defining scheduled spawn timestamp and enemy archetype string. */
     private record Spawn(double time, String type) {
     }
 
@@ -21,10 +25,22 @@ public class WaveSpawner {
     private int next;
     private int wave;
 
+    /**
+     * [PURPOSE]       Constructs WaveSpawner tied to game configuration.
+     * [OOP / PATTERN] Constructor / Dependency Injection.
+     * [CALLED BY]     btd/core/GameEngine.java constructor.
+     */
     public WaveSpawner(GameConfig config) {
         this.config = config;
     }
 
+    /**
+     * [PURPOSE]       Builds timed spawn queue for requested wave number, appending boss on every 10th wave.
+     * [OOP / PATTERN] Queue Initialization / Procedural Generation Dispatch.
+     * [CALLED BY]     btd/core/GameEngine.java (startNextWave()).
+     * [CONNECTS TO]   config.explicitWave(), generate().
+     * [DEFENSE NOTE]  Resets elapsed time and queue index to zero for clean wave execution.
+     */
     public void begin(int waveNumber) {
         wave = waveNumber;
         queue.clear();
@@ -47,7 +63,12 @@ public class WaveSpawner {
         }
     }
 
-    /** Waves after the hand-written ones: more of everything, with Fast and Armored zombies mixed in. */
+    /**
+     * [PURPOSE]       Procedural generator for infinite waves beyond wave 3, increasing counts and adding enemy variants.
+     * [OOP / PATTERN] Procedural Content Generation (PCG).
+     * [CALLED BY]     btd/core/WaveSpawner.java (begin()).
+     * [DEFENSE NOTE]  BasicEnemies scale linearly; FastEnemies unlock at wave 3; ArmoredEnemies unlock at wave 5.
+     */
     private List<GameConfig.SpawnDef> generate(int n) {
         List<GameConfig.SpawnDef> groups = new ArrayList<>();
         groups.add(group("BasicEnemy", 6 + 2 * n, Math.max(350, 800 - 10 * n)));
@@ -60,6 +81,7 @@ public class WaveSpawner {
         return groups;
     }
 
+    /** [PURPOSE] Helper factory instantiating a SpawnDef configuration object. */
     private GameConfig.SpawnDef group(String type, int count, int intervalMs) {
         GameConfig.SpawnDef g = new GameConfig.SpawnDef();
         g.type = type;
@@ -68,7 +90,13 @@ public class WaveSpawner {
         return g;
     }
 
-    /** Advances the clock and returns the enemies that appear this frame. */
+    /**
+     * [PURPOSE]       Advances wave clock, instantiating and releasing all enemies whose scheduled spawn times have elapsed.
+     * [OOP / PATTERN] Queue Polling / Factory Method Invocation.
+     * [CALLED BY]     btd/core/GameEngine.java (update()).
+     * [CONNECTS TO]   btd/factory/EnemyFactory.java (create()).
+     * [DEFENSE NOTE]  Scales enemy HP and speed via config formulas matching active wave number.
+     */
     public List<Enemy> update(double dt) {
         elapsed += dt;
         List<Enemy> spawned = new ArrayList<>();
@@ -82,10 +110,12 @@ public class WaveSpawner {
         return spawned;
     }
 
+    /** [PURPOSE] Returns true when all scheduled enemies in queue have emerged onto map. */
     public boolean isFinished() {
         return next >= queue.size();
     }
 
+    /** [PURPOSE] Number of unspawned enemies remaining in current wave queue. */
     public int remaining() {
         return queue.size() - next;
     }

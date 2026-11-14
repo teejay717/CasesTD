@@ -10,17 +10,22 @@ import java.awt.Image;
 import java.awt.geom.Ellipse2D;
 
 /**
- * Draws a tower icon. If the sprite file from the database exists it is used, otherwise a
- * simple shape is drawn so the game works before the art is ready.
- *
- * PLACEHOLDER VISUALS: the UI/UX team is still designing the real look, so this screen uses simple
- * shapes and colors. The game rules live in btd.core and do not depend on how things are drawn.
+ * [PURPOSE]       Draws tower avatar visuals: loads PNG sprite from database path or renders geometric placeholder shapes.
+ * [OOP / PATTERN] Factory / Strategy / Fallback Renderer Pattern.
+ * [CALLED BY]     btd/ui/screens/GamePanel.java (paintTower()), btd/ui/screens/SidePanel.java (paintInventoryCard()).
+ * [CONNECTS TO]   btd/model/tower/TowerType.java, btd/util/SpriteLoader.java.
+ * [DEFENSE NOTE]  Guarantees game is 100% playable with procedural vector art even if sprite assets are missing.
  */
 public final class TowerArt {
 
     private TowerArt() {
     }
 
+    /**
+     * [PURPOSE]       Resolves base background color associated with tower archetype class name.
+     * [OOP / PATTERN] Pattern Matching Switch.
+     * [CALLED BY]     TowerArt.draw().
+     */
     public static Color classColor(TowerType t) {
         return switch (t.towerClass()) {
             case "SingleTargetTower" -> new Color(0xC9A66B);
@@ -30,7 +35,13 @@ public final class TowerArt {
         };
     }
 
-    /** Draws the icon centered on (cx, cy) inside a square of the given size. */
+    /**
+     * [PURPOSE]       Renders tower graphic centered on (cx, cy): draws cached sprite, or circular procedural vector glyph.
+     * [OOP / PATTERN] Rendering Pipeline / Fallback Strategy Pattern.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java, btd/ui/screens/SidePanel.java.
+     * [CONNECTS TO]   btd/util/SpriteLoader.java (get()).
+     * [DEFENSE NOTE]  Outlines shape with rarity color (Common, Rare, Epic, Legendary) to communicate drop quality at a glance.
+     */
     public static void draw(Graphics2D g, TowerType t, double cx, double cy, double size) {
         Image sprite = SpriteLoader.get(t.spritePath());
         if (sprite != null) {

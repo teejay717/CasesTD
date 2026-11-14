@@ -1,10 +1,29 @@
 package btd.model.tower;
 
-/** Something that has levels, like a tower. */
+/**
+ * [PURPOSE]       Defines upgrade contract for any tower or entity that gains levels and stat bonuses.
+ * [OOP / PATTERN] Interface Abstraction / Open-Closed Principle.
+ * [CALLED BY]     btd/core/GameSession.java (upgradeTower()).
+ * [CONNECTS TO]   btd/model/tower/Tower.java (implements this contract).
+ * [DEFENSE NOTE]  Standardizes how upgrade levels are applied across all tower archetypes uniformly.
+ */
 public interface Upgradable {
 
+    /**
+     * [PURPOSE]       Retrieves current upgrade tier level (1 to 5).
+     * [OOP / PATTERN] State Query / Getter Abstraction.
+     * [CALLED BY]     btd/core/UpgradeCostTable.java, btd/ui/screens/SidePanel.java.
+     * [CONNECTS TO]   Tower internal state.
+     * [DEFENSE NOTE]  Level 5 represents the maximum tier where the unique passive unlocks.
+     */
     int getLevel();
 
-    /** Sets the level and applies its stat bonus. */
+    /**
+     * [PURPOSE]       Applies new upgrade tier and updates associated scaling multipliers.
+     * [OOP / PATTERN] State Mutation / Lifecycle Hook.
+     * [CALLED BY]     btd/core/GameSession.java (upgradeTower()).
+     * [CONNECTS TO]   btd/model/tower/Tower.java (applyLevel()).
+     * [DEFENSE NOTE]  Triggers applyMaxPassive() when reaching Level 5.
+     */
     void applyLevel(int newLevel);
 }

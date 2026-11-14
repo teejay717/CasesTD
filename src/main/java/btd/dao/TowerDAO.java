@@ -12,9 +12,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Reads the towers table. The catalog is read-only, so there is no insert or update here. */
+/**
+ * [PURPOSE]       Reads all 10 tower definitions from the MySQL 'towers' table.
+ * [OOP / PATTERN] Data Access Object (DAO) Pattern / Object-Relational Mapping (ORM).
+ * [CALLED BY]     btd/core/Catalog.java (load() at startup).
+ * [CONNECTS TO]   btd/config/DatabaseConnection.java, btd/model/tower/TowerType.java (immutable record).
+ * [DEFENSE NOTE]  Tower catalog is read-only at runtime; maps relational columns directly to immutable records.
+ */
 public class TowerDAO {
 
+    /**
+     * [PURPOSE]       Queries all tower rows ordered by tower_id and constructs TowerType records.
+     * [OOP / PATTERN] ResultSet Mapping / Record Instantiation.
+     * [CALLED BY]     btd/core/Catalog.java (load()).
+     * [CONNECTS TO]   btd/model/tower/TowerType.java, btd/model/gacha/Rarity.java, btd/model/tower/Special.java.
+     * [DEFENSE NOTE]  Loads once at application start to avoid repeated SQL queries during the 60 FPS loop.
+     */
     public List<TowerType> findAll() throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         String sql = "SELECT tower_id, tower_name, tower_class, rarity, base_damage, attack_range, fire_rate, "

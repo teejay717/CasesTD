@@ -5,7 +5,14 @@ import btd.util.FontLoader;
 import java.awt.Color;
 import java.awt.Font;
 
-/** Colors and fonts used by the in-game screens (map, side panel, shop). */
+/**
+ * [PURPOSE]       Color palette and typography definitions for the in-game HUD, side panels, and shop overlays.
+ * [OOP / PATTERN] Constant Interface / Design Tokens / Aesthetic Encapsulation.
+ * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/GamePanel.java,
+ *                 btd/ui/screens/ShopOverlay.java, btd/ui/components/TextButton.java.
+ * [CONNECTS TO]   btd/util/FontLoader.java.
+ * [DEFENSE NOTE]  Centralizes warm cartoon wood/cream palette to preserve visual consistency across all UI components.
+ */
 public final class Palette {
 
     public static final Color GRASS_A = new Color(0x8ED081);
@@ -25,12 +32,21 @@ public final class Palette {
     private Palette() {
     }
 
-    /** The Luckiest Guy display font, for titles and buttons. */
+    /**
+     * [PURPOSE]       Derives the Luckiest Guy display font at requested point size for titles and buttons.
+     * [OOP / PATTERN] Static Factory / Delegation.
+     * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/components/TextButton.java.
+     * [CONNECTS TO]   btd/util/FontLoader.java.
+     */
     public static Font heading(float size) {
         return FontLoader.getFont(size);
     }
 
-    /** A plain bold font that stays readable at small sizes. */
+    /**
+     * [PURPOSE]       Returns a clean bold system sans-serif font for small stat and tooltip descriptions.
+     * [OOP / PATTERN] Static Factory / Fallback Typography.
+     * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/ShopOverlay.java.
+     */
     public static Font body(float size) {
         return new Font(Font.SANS_SERIF, Font.BOLD, 1).deriveFont(size);
     }

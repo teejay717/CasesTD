@@ -19,10 +19,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Shown when a run ends: waves cleared, kills, and buttons to play again or go back to the menu.
- *
- * PLACEHOLDER VISUALS: the UI/UX team is still designing the real look, so this screen uses simple
- * shapes and colors. The game rules live in btd.core and do not depend on how things are drawn.
+ * [PURPOSE]       Post-game summary panel displaying waves cleared, kill count, gacha stats, and high-score records.
+ * [OOP / PATTERN] View Component / Presenter Pattern / Observer Event Handling.
+ * [CALLED BY]     btd/ui/AppController.java (showResults()).
+ * [CONNECTS TO]   btd/core/RunResult.java, btd/ui/components/TextButton.java,
+ *                 btd/ui/components/Gfx.java, btd/ui/theme/Palette.java.
+ * [DEFENSE NOTE]  Celebrates new record achievements with prominent gold badges and handles play-again/menu navigation.
  */
 public class ResultsPanel extends JPanel {
 
@@ -33,6 +35,11 @@ public class ResultsPanel extends JPanel {
     private RunResult result;
     private String playerName = "";
 
+    /**
+     * [PURPOSE]       Constructs ResultsPanel and binds mouse click/hover listeners to navigation buttons.
+     * [OOP / PATTERN] Constructor / Event Binding.
+     * [CALLED BY]     btd/ui/AppController.java constructor.
+     */
     public ResultsPanel(Runnable onPlayAgain, Runnable onMenu) {
         setPreferredSize(new Dimension(Theme.CONTENT_WIDTH, Theme.CONTENT_HEIGHT));
         addMouseListener(new MouseAdapter() {
@@ -55,12 +62,24 @@ public class ResultsPanel extends JPanel {
         });
     }
 
+    /**
+     * [PURPOSE]       Binds run outcome data and triggers panel redraw.
+     * [OOP / PATTERN] View Data Hydration.
+     * [CALLED BY]     btd/ui/AppController.java (showResults()).
+     * [CONNECTS TO]   btd/core/RunResult.java.
+     */
     public void show(RunResult result, String playerName) {
         this.result = result;
         this.playerName = playerName;
         repaint();
     }
 
+    /**
+     * [PURPOSE]       Renders results card modal: draws parchment frame, stat metrics, high score indicator, and buttons.
+     * [OOP / PATTERN] Custom Rendering Pipeline.
+     * [CALLED BY]     Swing paintComponent().
+     * [CONNECTS TO]   btd/ui/components/Gfx.java (outlinedCentered()).
+     */
     @Override
     protected void paintComponent(Graphics g0) {
         super.paintComponent(g0);

@@ -8,7 +8,13 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-/** A simple rounded button with a text label, used on the game screens. */
+/**
+ * [PURPOSE]       Custom vector-rendered rounded button with drop shadow, dynamic font scaling, and hover highlights.
+ * [OOP / PATTERN] Custom UI Component / Encapsulation.
+ * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/ShopOverlay.java, btd/ui/screens/GamePanel.java.
+ * [CONNECTS TO]   btd/ui/theme/Palette.java, btd/ui/components/Gfx.java.
+ * [DEFENSE NOTE]  Automatically shrinks font point size in a while-loop if button label exceeds boundary width.
+ */
 public class TextButton {
 
     private final Rectangle bounds;
@@ -18,6 +24,11 @@ public class TextButton {
     private boolean enabled = true;
     private boolean hover;
 
+    /**
+     * [PURPOSE]       Constructs rounded vector button with geometry, base color, and initial font size.
+     * [OOP / PATTERN] Constructor / State Initialization.
+     * [CALLED BY]     UI screens.
+     */
     public TextButton(String text, int x, int y, int width, int height, Color color, float fontSize) {
         this.text = text;
         this.bounds = new Rectangle(x, y, width, height);
@@ -25,23 +36,36 @@ public class TextButton {
         this.fontSize = fontSize;
     }
 
+    /** [PURPOSE] Updates label text string. */
     public void setText(String text) { this.text = text; }
+    /** [PURPOSE] Sets interactive enabled state (greys out button when disabled). */
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    /** [PURPOSE] Queries interactive enabled state. */
     public boolean isEnabled() { return enabled; }
+    /** [PURPOSE] Accessor for button bounding rectangle. */
     public Rectangle getBounds() { return bounds; }
 
+    /** [PURPOSE] Repositions button location on canvas. */
     public void setLocation(int x, int y) {
         bounds.setLocation(x, y);
     }
 
+    /** [PURPOSE] Hit-test checking if cursor coordinate (x, y) falls inside button bounds. */
     public boolean contains(int x, int y) {
         return bounds.contains(x, y);
     }
 
+    /** [PURPOSE] Updates hover status (only active if enabled is true). */
     public void updateHover(int x, int y) {
         hover = enabled && bounds.contains(x, y);
     }
 
+    /**
+     * [PURPOSE]       Renders vector rounded rectangle with drop shadow, border stroke, and centered outlined text.
+     * [OOP / PATTERN] Custom Component Rendering Pipeline.
+     * [CALLED BY]     Panel paintComponent() methods.
+     * [CONNECTS TO]   btd/ui/components/Gfx.java (outlinedCentered()).
+     */
     public void draw(Graphics2D g) {
         Color fill = enabled ? color : new Color(0x9A9A9A);
         if (hover) {

@@ -10,9 +10,16 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-/** Game numbers loaded from data/maps/waves_config.json, so they can be tuned without recompiling. */
+/**
+ * [PURPOSE]       Parses and holds game balance numbers from 'data/maps/waves_config.json' (economy, scaling, waves).
+ * [OOP / PATTERN] Configuration Object Pattern / JSON Deserialization (Gson) / Data Binding.
+ * [CALLED BY]     btd/Main.java (main()), btd/core/GameSession.java, btd/core/GameEngine.java, btd/core/WaveSpawner.java.
+ * [CONNECTS TO]   data/maps/waves_config.json.
+ * [DEFENSE NOTE]  Decouples balancing formulas and spawn curves from Java code, allowing live tuning without recompiling.
+ */
 public class GameConfig {
 
+    /** [PURPOSE] Nested POJO binding economy configurations (starting gold, lives, kill rewards, sell refunds). */
     public static class Economy {
         public int startingCoins;
         public int freeStarterCases;
@@ -24,6 +31,7 @@ public class GameConfig {
         public Map<String, int[]> upgradeCopyCosts;
     }
 
+    /** [PURPOSE] Nested POJO binding wave difficulty scaling parameters (health growth, speed caps, boss intervals). */
     public static class Scaling {
         /** Enemy health on wave 1, as a % of the base stats (80 = start 20% weaker). */
         public int healthStartPercent;
@@ -37,12 +45,14 @@ public class GameConfig {
         public int bossEveryNthWave;
     }
 
+    /** [PURPOSE] Specification of enemy grouping within a scripted wave (type, count, spawn cadence). */
     public static class SpawnDef {
         public String type;
         public int count;
         public int intervalMs;
     }
 
+    /** [PURPOSE] Specification of an explicit hand-crafted wave. */
     public static class WaveDef {
         public int wave;
         public List<SpawnDef> spawns;
@@ -52,6 +62,13 @@ public class GameConfig {
     public Scaling scaling;
     public List<WaveDef> waves;
 
+    /**
+     * [PURPOSE]       Reads JSON file from disk and parses it into strongly-typed GameConfig instance via Google Gson.
+     * [OOP / PATTERN] Static Factory Method / Serialization Pattern.
+     * [CALLED BY]     btd/Main.java (main()).
+     * [CONNECTS TO]   com.google.gson.Gson.
+     * [DEFENSE NOTE]  Throws IllegalStateException with helpful path instruction if file cannot be found.
+     */
     public static GameConfig load(String jsonFile) {
         Path file = Paths.get(jsonFile);
         try (Reader reader = Files.newBufferedReader(file)) {
@@ -62,6 +79,11 @@ public class GameConfig {
         }
     }
 
+    /**
+     * [PURPOSE]       Finds scripted wave definition matching wave number, or returns null if wave must be procedurally generated.
+     * [OOP / PATTERN] Query Method / Optional Return Pattern.
+     * [CALLED BY]     btd/core/WaveSpawner.java (begin()).
+     */
     public WaveDef explicitWave(int wave) {
         for (WaveDef w : waves) {
             if (w.wave == wave) {
@@ -71,20 +93,22 @@ public class GameConfig {
         return null;
     }
 
+    /** [PURPOSE] Looks up gold bounty awarded when defeating given enemy archetype. */
     public int killReward(String enemyType) {
         return economy.coinsPerEnemy.getOrDefault(enemyType, 5);
     }
 
+    /** [PURPOSE] Calculates gold reward distributed upon completing wave number (base + per-wave bonus). */
     public int waveClearReward(int wave) {
         return economy.waveClearBaseReward + economy.waveClearRewardPerWave * wave;
     }
 
     /**
-     * Enemy health multiplier for a wave. Health grows a little every wave (healthPerWavePercent
-     * of the base), and each time a new block of waves starts (wave 11, 21, 31...) it is multiplied
-     * again by healthJumpPercent, so 10 to 11 is a much bigger step than 11 to 12.
-     * Everything is scaled by healthStartPercent (80 = wave 1 enemies have 80% of base health).
-     * With 80%, 30% and 45%: wave 10 = 2.96x, wave 11 = 4.64x, wave 31 = 24.4x, wave 41 = 46x.
+     * [PURPOSE]       Calculates exponential enemy health scale multiplier for wave number.
+     * [OOP / PATTERN] Mathematical Progression Formula / Compound Difficulty Scaling.
+     * [CALLED BY]     btd/core/WaveSpawner.java (update()).
+     * [CONNECTS TO]   btd/factory/EnemyFactory.java.
+     * [DEFENSE NOTE]  Combines linear per-wave growth with compound jump multipliers every N waves (waves 11, 21, 31...).
      */
     public double healthScale(int wave) {
         double start = scaling.healthStartPercent > 0 ? scaling.healthStartPercent / 100.0 : 1.0;
@@ -96,7 +120,11 @@ public class GameConfig {
         return perWave * Math.pow(1.0 + scaling.healthJumpPercent / 100.0, jumps);
     }
 
-    /** Enemy speed multiplier for a wave: +2% per wave, capped at +50%. */
+    /**
+     * [PURPOSE]       Calculates enemy speed multiplier for wave number (+2% per wave, capped at +50%).
+     * [OOP / PATTERN] Linear Clamped Formula.
+     * [CALLED BY]     btd/core/WaveSpawner.java (update()).
+     */
     public double speedScale(int wave) {
         double bonus = Math.min(scaling.speedCapPercent, scaling.speedPerWavePercent * (wave - 1));
         return 1.0 + bonus / 100.0;

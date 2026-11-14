@@ -5,7 +5,14 @@ import btd.util.FontLoader;
 import java.awt.Color;
 import java.awt.Font;
 
-/** Shared content size, colors, and fonts for the game UI. */
+/**
+ * [PURPOSE]       Shared layout constants, canvas dimensions (1280x720), and colors for primary application screens.
+ * [OOP / PATTERN] Design Tokens / Global Configuration.
+ * [CALLED BY]     btd/ui/MainFrame.java, btd/ui/screens/LandingPanel.java,
+ *                 btd/ui/screens/ResultsPanel.java, btd/ui/screens/HelpPanel.java.
+ * [CONNECTS TO]   btd/util/FontLoader.java.
+ * [DEFENSE NOTE]  Enforces strict 1280x720 internal rendering bounds matching standard 16:9 widescreen layout.
+ */
 public final class Theme {
 
     public static final int CONTENT_WIDTH = 1280;

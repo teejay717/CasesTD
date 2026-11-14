@@ -8,19 +8,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/** Rolls a case: first picks a rarity using the case weights, then a random tower of that rarity. */
+/**
+ * [PURPOSE]       Manages two-phase gacha RNG rolling: determines rarity tier via weighted distribution,
+ *                 then selects uniformly among towers belonging to that tier in the case pool.
+ * [OOP / PATTERN] Strategy Pattern / Cumulative Distribution Function (CDF) Sampling / Inversion of Control.
+ * [CALLED BY]     btd/core/GameSession.java (buyCase(), openFreeCase()).
+ * [CONNECTS TO]   btd/model/gacha/CaseDef.java, btd/model/tower/TowerType.java.
+ * [DEFENSE NOTE]  Prevents dead drops: dynamically filters out rarities that have zero towers in the case pool.
+ */
 public class CaseRNGManager {
 
     private final Random random;
 
+    /**
+     * [PURPOSE]       Default constructor initializing internal standard pseudo-random number generator.
+     * [OOP / PATTERN] Constructor Overloading.
+     * [CALLED BY]     btd/ui/AppController.java.
+     */
     public CaseRNGManager() {
         this(new Random());
     }
 
+    /**
+     * [PURPOSE]       Parameterized constructor allowing seeded Random injection for unit testing.
+     * [OOP / PATTERN] Dependency Injection.
+     * [CALLED BY]     Test harnesses.
+     */
     public CaseRNGManager(Random random) {
         this.random = random;
     }
 
+    /**
+     * [PURPOSE]       Executes two-phase roll: first picks rarity tier, then picks random tower from pool within that tier.
+     * [OOP / PATTERN] Two-Phase Discrete Sampling Algorithm.
+     * [CALLED BY]     btd/core/GameSession.java (open()).
+     * [CONNECTS TO]   rollRarity(), btd/model/gacha/CaseDef.java (pool()).
+     * [DEFENSE NOTE]  Guarantees selected tower strictly belongs to chosen rarity and is present in case pool.
+     */
     public TowerType roll(CaseDef def) {
         Rarity rarity = rollRarity(def);
         List<TowerType> sameRarity = new ArrayList<>();
@@ -32,7 +56,13 @@ public class CaseRNGManager {
         return sameRarity.get(random.nextInt(sameRarity.size()));
     }
 
-    /** Only rarities that actually have a tower in the pool can be rolled; the others are skipped. */
+    /**
+     * [PURPOSE]       Picks rarity tier using cumulative weight distribution, skipping rarities absent from pool.
+     * [OOP / PATTERN] Cumulative Distribution Function (CDF) Roulette Wheel Selection.
+     * [CALLED BY]     btd/core/CaseRNGManager.java (roll()).
+     * [CONNECTS TO]   btd/model/gacha/CaseDef.java (weightOf()).
+     * [DEFENSE NOTE]  Normalizes weights on-the-fly across populated rarities so total probabilities always equal 1.0.
+     */
     public Rarity rollRarity(CaseDef def) {
         double total = 0;
         for (Rarity r : Rarity.values()) {
@@ -55,6 +85,7 @@ public class CaseRNGManager {
         return last;
     }
 
+    /** [PURPOSE] Helper check verifying whether case pool contains at least one tower of given rarity. */
     private boolean hasTower(CaseDef def, Rarity rarity) {
         for (TowerType t : def.pool()) {
             if (t.rarity() == rarity) {

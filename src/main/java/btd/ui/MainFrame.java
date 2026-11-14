@@ -7,12 +7,24 @@ import javax.swing.JPanel;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 
-/** Main window that holds the game screens. Create and use on Swing's event thread. */
+/**
+ * [PURPOSE]       Top-level desktop window (JFrame) hosting all game views using a CardLayout manager.
+ * [OOP / PATTERN] Top-Level Container / Composite Pattern / View Host.
+ * [CALLED BY]     btd/Main.java (main()).
+ * [CONNECTS TO]   btd/ui/AppController.java, btd/ui/theme/Theme.java.
+ * [DEFENSE NOTE]  Fixed 1280x720 canvas dimensions ensure consistent UI positioning across different operating systems.
+ */
 public class MainFrame extends JFrame {
 
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel screenPanel = new JPanel(cardLayout);
 
+    /**
+     * [PURPOSE]       Initializes top-level application window with title, non-resizable borders, and centered positioning.
+     * [OOP / PATTERN] Constructor / Window Initialization.
+     * [CALLED BY]     btd/Main.java (main()).
+     * [CONNECTS TO]   btd/ui/theme/Theme.java (CONTENT_WIDTH, CONTENT_HEIGHT).
+     */
     public MainFrame() {
         super("CasesTD");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,12 +38,20 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    /** Registers a panel under a name such as "landing" or "placeholder". */
+    /**
+     * [PURPOSE]       Registers a screen panel with the internal CardLayout manager under a unique card identifier.
+     * [OOP / PATTERN] Registry Pattern / Adapter.
+     * [CALLED BY]     btd/ui/AppController.java constructor.
+     */
     public void addScreen(String name, JPanel panel) {
         screenPanel.add(panel, name);
     }
 
-    /** Shows a screen that has already been registered. */
+    /**
+     * [PURPOSE]       Flips active view to the registered card matching name string.
+     * [OOP / PATTERN] CardLayout Switching / State Display.
+     * [CALLED BY]     btd/ui/AppController.java.
+     */
     public void showScreen(String name) {
         cardLayout.show(screenPanel, name);
     }

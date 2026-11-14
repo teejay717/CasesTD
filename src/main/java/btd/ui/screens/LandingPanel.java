@@ -23,9 +23,13 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
 /**
- * The landing page. Screen 1 is the closed crate with the name field;
- * clicking the crate loads the player's profile and shows screen 2 (menu).
- * Positions are in pixels on the 1280x720 canvas, estimated from the wireframe.
+ * [PURPOSE]       Two-stage landing screen: Screen 1 authenticates player username via crate opening,
+ *                 Screen 2 displays high score, play button, profile pill, and tutorial trigger.
+ * [OOP / PATTERN] State Machine View Pattern / Composite Component.
+ * [CALLED BY]     btd/ui/AppController.java.
+ * [CONNECTS TO]   btd/dao/PlayerDAO.java, btd/model/player/Player.java,
+ *                 btd/ui/screens/HelpPanel.java, btd/ui/components/GameButton.java.
+ * [DEFENSE NOTE]  Opening the crate calls PlayerDAO.findOrCreate(), creating a seamless account login/registration flow.
  */
 public class LandingPanel extends JPanel {
 
@@ -62,6 +66,11 @@ public class LandingPanel extends JPanel {
     private Player player;
     private boolean opened = false;
 
+    /**
+     * [PURPOSE]       Constructs LandingPanel, embeds custom name text input, help tutorial overlay, and mouse handlers.
+     * [OOP / PATTERN] Constructor / Component Setup.
+     * [CALLED BY]     btd/ui/AppController.java constructor.
+     */
     public LandingPanel(Runnable onPlay) {
         this.onPlay = onPlay;
         setPreferredSize(new Dimension(Theme.CONTENT_WIDTH, Theme.CONTENT_HEIGHT));
@@ -97,7 +106,13 @@ public class LandingPanel extends JPanel {
         });
     }
 
-    /** Loads (or creates) the player's profile, then switches to screen 2. */
+    /**
+     * [PURPOSE]       Authenticates/registers user profile via PlayerDAO and transitions view state to Screen 2.
+     * [OOP / PATTERN] State Transition / DAO Delegation.
+     * [CALLED BY]     mouseClicked() handler when crateButton clicked.
+     * [CONNECTS TO]   btd/dao/PlayerDAO.java (findOrCreate()).
+     * [DEFENSE NOTE]  Enforces 50-character maximum length limit before querying database.
+     */
     private void openCrate() {
         String name = getPlayerName();
         if (name.length() > 50) {
@@ -115,16 +130,20 @@ public class LandingPanel extends JPanel {
         repaint();
     }
 
-    /** The loaded profile, or null before the crate has been opened. */
+    /** [PURPOSE] Active authenticated Player profile object. */
     public Player getPlayer() {
         return player;
     }
 
-    /** The name the player typed, without extra spaces. */
+    /** [PURPOSE] Retrieves sanitized trimmed string from the username input text field. */
     public String getPlayerName() {
         return nameField.getText().trim();
     }
 
+    /**
+     * [PURPOSE]       Main render entry point switching between Start Screen and Menu Screen based on opened state.
+     * [OOP / PATTERN] Rendering Pipeline / View State Dispatch.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -144,7 +163,7 @@ public class LandingPanel extends JPanel {
         quitButton.draw(g2);
     }
 
-    /** Screen 1: logo, name box, "click to open", closed crate. */
+    /** [PURPOSE] Renders Screen 1: CasesTD logo, name prompt text, cream text input box, and closed crate button. */
     private void paintStartScreen(Graphics2D g2) {
         drawCropped(g2, logo, 137, 260, 318, 75, 418, 40, 459, 108);
 
@@ -157,7 +176,7 @@ public class LandingPanel extends JPanel {
         drawCropped(g2, clickToOpen, 129, 280, 342, 45, 490, 285, 300, 40);
     }
 
-    /** Screen 2: score, play, profile, help. */
+    /** [PURPOSE] Renders Screen 2: High score badge, play button, player avatar pill, and how-to-play trigger. */
     private void paintMenuScreen(Graphics2D g2) {
         drawCropped(g2, logo, 137, 260, 318, 75, 30, 22, 170, 40);
 
@@ -184,16 +203,13 @@ public class LandingPanel extends JPanel {
         howToPlayButton.draw(g2);
     }
 
-    /**
-     * Draws part of an image (the source rectangle) into a destination rectangle.
-     * The logo and "click to open" PNGs are 600x600 with empty space around the artwork.
-     */
+    /** [PURPOSE] Sub-image cropping utility clipping transparent borders from 600x600 icon assets. */
     private void drawCropped(Graphics2D g2, Image img, int sx, int sy, int sw, int sh,
                              int dx, int dy, int dw, int dh) {
         g2.drawImage(img, dx, dy, dx + dw, dy + dh, sx, sy, sx + sw, sy + sh, this);
     }
 
-    /** Draws text centered on centerX. If outline is not null, draws it behind the text. */
+    /** [PURPOSE] Draws center-aligned text with optional 8-way drop shadow outline. */
     private void drawText(Graphics2D g2, String text, int centerX, int baselineY, Font font, Color fill, Color outline) {
         g2.setFont(font);
         FontMetrics fm = g2.getFontMetrics();

@@ -4,9 +4,20 @@ import btd.dao.PlayerDAO;
 
 import java.sql.SQLException;
 
-/** Read-only check that the database connection and PlayerDAO work. Writes nothing. */
+/**
+ * [PURPOSE]       Independent console verification utility to test database connectivity and PlayerDAO queries.
+ * [OOP / PATTERN] Diagnostic Harness / Smoke Test / Separation of Concerns.
+ * [CALLED BY]     Developers and system administrators via command line.
+ * [CONNECTS TO]   btd/dao/PlayerDAO.java, btd/config/DatabaseConnection.java.
+ * [DEFENSE NOTE]  Read-only verification tool that issues SELECT queries without mutating database records.
+ */
 public class DbCheck {
 
+    /**
+     * [PURPOSE]       Executes read-only queries testing player retrieval by name (both existing and non-existent).
+     * [OOP / PATTERN] Main Entry Point / Smoke Test.
+     * [CALLED BY]     Command line execution.
+     */
     public static void main(String[] args) {
         try {
             PlayerDAO dao = new PlayerDAO();

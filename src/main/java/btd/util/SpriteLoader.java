@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Loads tower sprites by the sprite_path stored in the database. If the file does not exist yet
- * it returns null and the game draws a placeholder shape instead, so art can be added later
- * without changing any code.
+ * [PURPOSE]       Loads and caches tower and enemy sprite images from relative filesystem paths.
+ * [OOP / PATTERN] Flyweight Pattern / In-Memory Cache / Lazy Loading.
+ * [CALLED BY]     btd/ui/components/TowerArt.java (draw()), btd/ui/screens/GamePanel.java (paintEnemy()).
+ * [CONNECTS TO]   btd/model/tower/TowerType.java (spritePath).
+ * [DEFENSE NOTE]  Caches loaded images in a static HashMap to eliminate redundant disk reads on every 60 FPS frame.
  */
 public final class SpriteLoader {
 
@@ -19,6 +21,13 @@ public final class SpriteLoader {
     private SpriteLoader() {
     }
 
+    /**
+     * [PURPOSE]       Retrieves cached sprite Image or loads from disk if first requested.
+     * [OOP / PATTERN] Lazy Cache Lookup (Flyweight Pattern).
+     * [CALLED BY]     btd/ui/components/TowerArt.java, btd/ui/screens/GamePanel.java.
+     * [CONNECTS TO]   javax.imageio.ImageIO.
+     * [DEFENSE NOTE]  Returns null if file does not exist, triggering procedural fallback shapes in TowerArt.
+     */
     public static Image get(String path) {
         if (path == null || path.isBlank()) {
             return null;

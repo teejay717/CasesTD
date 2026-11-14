@@ -15,6 +15,13 @@ import javax.swing.JPanel;
 
 import btd.util.ImageLoader;
 
+/**
+ * [PURPOSE]       Modal tutorial overlay displaying a multi-page interactive 'How to Play' guide book.
+ * [OOP / PATTERN] Composite Pattern / Overlay Component / Event Swallowing.
+ * [CALLED BY]     btd/ui/screens/LandingPanel.java (helpButton).
+ * [CONNECTS TO]   btd/util/ImageLoader.java (loads help_book_1.png, help_book_2.png).
+ * [DEFENSE NOTE]  Registers empty mouse listeners to swallow click events, preventing click-through into the menu beneath.
+ */
 public class HelpPanel extends JPanel {
 
     private static final String[] SPREAD_IMAGES = {"help_book_1.png", "help_book_2.png"};
@@ -29,6 +36,11 @@ public class HelpPanel extends JPanel {
 
     private int current = 0;
 
+    /**
+     * [PURPOSE]       Constructs tutorial overlay with book pages, invisible hotspot buttons, and mouse click blockers.
+     * [OOP / PATTERN] Constructor / Component Initialization.
+     * [CALLED BY]     btd/ui/screens/LandingPanel.java.
+     */
     public HelpPanel() {
         super(null); // manual layout, positioned relative to the book
         setOpaque(false);
@@ -65,6 +77,11 @@ public class HelpPanel extends JPanel {
         setVisible(false);
     }
 
+    /**
+     * [PURPOSE]       Overrides visibility toggling to always reset tutorial pagination back to page 0.
+     * [OOP / PATTERN] Lifecycle Hook Overriding.
+     * [CALLED BY]     btd/ui/screens/LandingPanel.java.
+     */
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
@@ -73,6 +90,11 @@ public class HelpPanel extends JPanel {
         super.setVisible(visible);
     }
 
+    /**
+     * [PURPOSE]       Switches active book spread page and enables/disables navigation arrow buttons accordingly.
+     * [OOP / PATTERN] State Transition / Pagination Controller.
+     * [CALLED BY]     prevButton, nextButton.
+     */
     private void showSpread(int index) {
         current = Math.max(0, Math.min(spreads.length - 1, index));
         prevButton.setVisible(current > 0);
@@ -83,6 +105,7 @@ public class HelpPanel extends JPanel {
 
     // ----------------------------------------------------------------- layout
 
+    /** [PURPOSE] Calculates responsive bounding rectangle preserving book aspect ratio. */
     private Rectangle bookBounds() {
         int maxW = (int) (getWidth() * 0.90);
         int maxH = (int) (getHeight() * 0.80);
@@ -100,6 +123,11 @@ public class HelpPanel extends JPanel {
         return new Rectangle((getWidth() - w) / 2, (getHeight() - h) / 2, w, h);
     }
 
+    /**
+     * [PURPOSE]       Positions interactive hotspot buttons relative to fractional coordinates of book image.
+     * [OOP / PATTERN] Responsive Relative Layout.
+     * [CALLED BY]     Swing Layout Manager.
+     */
     @Override
     public void doLayout() {
         if (getWidth() <= 0 || getHeight() <= 0) {
@@ -115,6 +143,7 @@ public class HelpPanel extends JPanel {
         placeCentered(closeButton, b, 0.930, 0.071, x, x);
     }
 
+    /** [PURPOSE] Helper centering component c at fractional coordinates (fx, fy) within bounds b. */
     private static void placeCentered(java.awt.Component c, Rectangle b,
                                       double fx, double fy, int w, int h) {
         int cx = b.x + (int) (b.width * fx);
@@ -124,6 +153,11 @@ public class HelpPanel extends JPanel {
 
     // --------------------------------------------------------------- painting
 
+    /**
+     * [PURPOSE]       Draws book spread graphic or procedural parchment placeholder with bilinear interpolation.
+     * [OOP / PATTERN] Custom Rendering Pipeline.
+     * [CALLED BY]     Swing paintComponent().
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -147,7 +181,10 @@ public class HelpPanel extends JPanel {
 
     // ----------------------------------------------------------- arrow button
 
-    /** Arrow hit area; only draws a triangle when DRAW_ARROWS is true. */
+    /**
+     * [PURPOSE]       Custom arrow navigation button that renders vector directional triangle if DRAW_ARROWS is enabled.
+     * [OOP / PATTERN] Encapsulated Inner Component.
+     */
     private static class ArrowButton extends JButton {
         private final boolean pointsLeft;
 

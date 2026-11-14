@@ -12,10 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Reads the cases table and the case_towers join table. */
+/**
+ * [PURPOSE]       Reads all case definitions and resolves their drop pools from MySQL.
+ * [OOP / PATTERN] Data Access Object (DAO) Pattern / Junction Table Resolution.
+ * [CALLED BY]     btd/core/Catalog.java (load() at startup).
+ * [CONNECTS TO]   btd/config/DatabaseConnection.java, MySQL 'cases' and 'case_towers' tables.
+ * [DEFENSE NOTE]  Reuses pre-loaded TowerType records from towersById map, avoiding redundant SQL queries.
+ */
 public class CaseDAO {
 
-    /** Loads every case with its tower pool. The tower list comes from TowerDAO so rows are not read twice. */
+    /**
+     * [PURPOSE]       Loads all cases and populates their TowerType drop pools.
+     * [OOP / PATTERN] Data Transfer Object Mapping / Record Creation.
+     * [CALLED BY]     btd/core/Catalog.java (load()).
+     * [CONNECTS TO]   btd/model/gacha/CaseDef.java, btd/model/tower/TowerType.java.
+     * [DEFENSE NOTE]  Orders cases by cost ascending (Standard: 100, Premium: 250, Legendary: 500).
+     */
     public List<CaseDef> findAll(Map<Integer, TowerType> towersById) throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         List<CaseDef> result = new ArrayList<>();
@@ -39,6 +51,13 @@ public class CaseDAO {
         return result;
     }
 
+    /**
+     * [PURPOSE]       Queries case_towers junction table to find all towers droppable from a case.
+     * [OOP / PATTERN] Many-to-Many Relational Mapping.
+     * [CALLED BY]     findAll() internally.
+     * [CONNECTS TO]   MySQL 'case_towers' table.
+     * [DEFENSE NOTE]  Standard normalized junction table resolution via foreign key case_id.
+     */
     private List<TowerType> findPool(Connection conn, int caseId, Map<Integer, TowerType> towersById)
             throws SQLException {
         List<TowerType> pool = new ArrayList<>();
