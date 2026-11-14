@@ -62,6 +62,8 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
 
     private static final double STEP = 1.0 / 60.0;
     private static final int TOWER_SIZE = 34;
+    // the tower art has empty space around it, so the image is drawn larger than the tower itself
+    private static final int SPRITE_SIZE = GameMap.CELL * 2;
 
     private final Consumer<RunResult> onRunFinished;
     private final PlayerDAO playerDao = new PlayerDAO();
@@ -504,7 +506,12 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         g.setColor(ok ? new Color(255, 255, 255, 200) : new Color(220, 40, 40, 220));
         g.setStroke(new BasicStroke(2f));
         g.draw(new Ellipse2D.Double(mouseX - r, mouseY - r, r * 2, r * 2));
-        TowerArt.draw(g, placing, mouseX, mouseY, TOWER_SIZE);
+        TowerArt.draw(g, placing, mouseX, mouseY, artSize(placing));
+    }
+
+    /** Only real sprites are drawn bigger; the placeholder circle keeps the tower size. */
+    private static int artSize(TowerType type) {
+        return SpriteLoader.get(type.spritePath()) != null ? SPRITE_SIZE : TOWER_SIZE;
     }
 
     private void paintTowers(Graphics2D g) {
@@ -527,7 +534,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
                     g.fill(new Ellipse2D.Double(p[0] - 3.5, p[1] - 3.5, 7, 7));
                 }
             }
-            TowerArt.draw(g, t.getType(), t.getX(), t.getY(), TOWER_SIZE);
+            TowerArt.draw(g, t.getType(), t.getX(), t.getY(), artSize(t.getType()));
             if (t == selectedTower) {
                 g.setColor(Palette.GOLD);
                 g.setStroke(new BasicStroke(3f));
