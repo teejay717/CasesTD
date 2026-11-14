@@ -216,14 +216,16 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         timer.stop();
         int cleared = engine.getWavesCleared();
         int previousBest = player.getHighestScore();
-        boolean record = cleared > previousBest;
-        if (record) {
+        boolean record = false;
+        if (cleared > previousBest) {
             try {
                 playerDao.updateHighestScore(player.getPlayerId(), cleared);
+                player.setHighestScore(cleared);
+                record = true;
             } catch (SQLException | IllegalStateException ex) {
+                // only report a new record once it is actually saved
                 System.err.println("Could not save the score: " + ex.getMessage());
             }
-            player.setHighestScore(cleared);
         }
         onRunFinished.accept(new RunResult(cleared, engine.getKills(), session.getCasesOpened(), previousBest, record));
     }
