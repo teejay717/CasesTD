@@ -81,6 +81,9 @@ public class SniperTower extends Tower {
 
     @Override
     public String getPassiveDescription() {
+        if (getType().special() == Special.PIERCE) {
+            return "Lv 5 Headshot: double damage and 50% more pierce.";
+        }
         return "Lv 5 Headshot: double damage.";
     }
 }

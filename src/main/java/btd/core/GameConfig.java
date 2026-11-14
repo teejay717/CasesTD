@@ -49,7 +49,6 @@ public class GameConfig {
     }
 
     public Economy economy;
-    public int levelBonusPercent;
     public Scaling scaling;
     public List<WaveDef> waves;
 

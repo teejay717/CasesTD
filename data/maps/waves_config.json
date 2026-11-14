@@ -25,7 +25,6 @@
       "LEGENDARY": [1, 1, 1, 1]
     }
   },
-  "levelBonusPercent": 10,
   "scaling": {
     "healthStartPercent": 80,
     "healthPerWavePercent": 30,

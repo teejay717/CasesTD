@@ -136,7 +136,7 @@ public class GameSession {
         }
         int next = level + 1;
         if (next == Tower.MAX_LEVEL && levelFiveTypes.contains(tower.getType().id())) {
-            return "Max Lv 4 (another is Lv 5)";
+            return "Max Lv " + Tower.MAX_NORMAL_LEVEL + " (another is Lv " + Tower.MAX_LEVEL + ")";
         }
         int need = upgradeCost(tower);
         int have = copiesOf(tower.getType());
@@ -195,6 +195,7 @@ public class GameSession {
     public int getFreeCases() { return freeCases; }
     public int getCasesOpened() { return casesOpened; }
     public List<TowerType> getInventory() { return Collections.unmodifiableList(inventory); }
-    public List<Tower> getTowers() { return towers; }
+    /** Read-only view; towers are added and removed only through place() and sell(). */
+    public List<Tower> getTowers() { return Collections.unmodifiableList(towers); }
     public GameConfig getConfig() { return config; }
 }

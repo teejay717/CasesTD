@@ -82,7 +82,7 @@ Enemies: Basic (hp 30, speed 55, leak 1), Fast (hp 18, speed 105, leak 1), Armor
 - `effect_value` meaning depends on `special`: POISON = dps, BURN = dps per stack, BUFF = % boost, TURRETS = turret count, PIERCE = max enemies hit. `effect_duration_ms` = STUN / POISON / BURN time.
 - `sprite_path` points to `assets/sprites/towers/*.png`; those files do not exist yet, so the game draws placeholder shapes.
 
-Tuning file `data/maps/waves_config.json`: economy (start coins, free cases, lives, wave reward, kill coins, sell refunds, upgrade copy costs), levelBonusPercent, scaling, and hand-written waves 1 to 3. Waves 4+ are generated in code. Path: `data/maps/map1_path.csv` (corner points drawn for 1280 px width, scaled to the 960 px map area).
+Tuning file `data/maps/waves_config.json`: economy (start coins, free cases, lives, wave reward, kill coins, sell refunds, upgrade copy costs), scaling, and hand-written waves 1 to 3. Waves 4+ are generated in code. Path: `data/maps/map1_path.csv` (corner points drawn for 1280 px width, scaled to the 960 px map area).
 
 ## 7. Code architecture (`src/main/java/btd`)
 
@@ -91,7 +91,7 @@ Layers: `ui` (draws, forwards clicks, no rules) → `core` (rules) → `model` (
 **model**
 - `gacha/Rarity` (enum with display name, color, gem count), `gacha/CaseDef` (record: id, name, cost, 4 weights, pool), `player/Player`.
 - `tower/TowerType` (record = one towers row, the blueprint), `tower/Special` (enum), `tower/Upgradable` (interface: getLevel, applyLevel).
-- `tower/Tower` (abstract, implements Upgradable): final `update(dt, enemies, effects)` runs the cooldown and calls abstract `attack()`; abstract `applyMaxPassive()` and `getPassiveDescription()`; `applyAura()` hook; stats = base x (1 + 0.1 x (level - 1)) x passive x buff.
+- `tower/Tower` (abstract, implements Upgradable): final `update(dt, enemies, effects)` runs the cooldown and calls abstract `attack()`; abstract `applyMaxPassive()` and `getPassiveDescription()`; `applyAura()` hook; stats = base x LEVEL_MULTIPLIERS[level - 1] ({1.00, 1.45, 1.80, 2.03, 2.30}) x passive x buff.
 - Subclasses: `SingleTargetTower` (furthest enemy), `SplashTower` (area, plus poison/burn), `SniperTower` (highest health; PIERCE beam), `SupportTower` (STUN all stunnable enemies in range, TURRETS multi-target, BUFF via applyAura).
 - `enemy/Damageable` (interface), `enemy/Enemy` (abstract: health, speed, distance along path, poison/burn/stun, `takeDamage` calls overridable `reduceDamage`), subclasses `BasicEnemy`, `FastEnemy`, `ArmoredEnemy` (overrides reduceDamage), `BossEnemy` (overrides stun).
 
@@ -110,7 +110,7 @@ Layers: `ui` (draws, forwards clicks, no rules) → `core` (rules) → `model` (
 
 **ui** (all visuals are **placeholders** until the UI/UX team's art is ready; marked in comments)
 - `MainFrame` (CardLayout, 1280x720), `AppController` (landing → game → results; loads Catalog, config, map once).
-- `screens/LandingPanel` (team's landing page: name field, crate opens profile via PlayerDAO, Play button; I added `getPlayer()`), `HelpPanel`, `PlaceholderPanel` (unused now).
+- `screens/LandingPanel` (team's landing page: name field, crate opens profile via PlayerDAO, Play button; I added `getPlayer()`), `HelpPanel` (two-page help book overlay).
 - `screens/GamePanel`: Swing Timer ~60 fps, fixed 1/60 s steps, speed x1/x2/x3, mouse routing (shop → side panel → map), placing, selecting, right-click popup to sell inventory, Esc cancels, Space starts wave, QUIT button, 2 s game-over banner then saves score.
 - `screens/SidePanel` (x 960-1280: inventory grouped by type with counts, tower info with UPGRADE/SELL, SHOP / START WAVE / SPEED buttons; talks back through the `SidePanel.Actions` interface).
 - `screens/ShopOverlay` (3 case cards with odds, free case on the Standard card, 5 s ease-out spinner strip, click to skip, result card, COLLECT).
