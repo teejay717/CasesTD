@@ -416,7 +416,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         menu.show(this, screenX, screenY);
     }
 
-    /** [PURPOSE] Upgrades currently selected tower level if player has required coins and card copies. */
+    /** [PURPOSE] Upgrades currently selected tower level if player has the required  card copies. */
     @Override
     public void upgradeSelected() {
         if (selectedTower != null && session.upgrade(selectedTower)) {
