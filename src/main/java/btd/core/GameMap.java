@@ -129,7 +129,13 @@ public class GameMap {
      * [OOP / PATTERN] Linear Interpolation (LERP) across polyline segments.
      * [CALLED BY]     btd/model/enemy/Enemy.java (update()).
      * [CONNECTS TO]   cumulative distance array.
-     * [DEFENSE NOTE]  Finds bounding waypoint pair and performs linear interpolation based on segment progress.
+     * [DEFENSE NOTE]  How pointAt works step-by-step:
+     *                 1. Locates the two corner waypoints a (behind) and b (ahead) that sandwich the zombie
+     *                    using precomputed cumulative distances.
+     *                 2. Computes segment length = cumulative[i] - cumulative[i-1].
+     *                 3. Computes progress ratio t = (distance - cumulative[i-1]) / segment (value from 0.0 to 1.0).
+     *                 4. Uses LERP formula a + (b - a) * t to blend {x, y} coordinates along that segment.
+     *                 Returns new double[]{ x, y } where p[0] is X pixel and p[1] is Y pixel.
      */
     public double[] pointAt(double distance) {
         if (distance <= 0) {
@@ -191,13 +197,28 @@ public class GameMap {
         return true;
     }
 
-    /** [PURPOSE] Projects point onto 2D line segment using scalar parameter t clamped between 0 and 1. */
+    /**
+     * [SIMPLIFIED]    Checks how close your mouse is to the road so you cannot build towers on top of walking zombies.
+     * [PURPOSE]       Calculates the shortest pixel distance from cursor (px, py) to a road segment between (ax, ay) and (bx, by).
+     * [OOP / PATTERN] Vector Projection Collision Check.
+     * [CALLED BY]     btd/core/GameMap.java (distanceToPath(), canBuildAt()).
+     * [CONNECTS TO]   canBuildAt(), PATH_CLEARANCE (38px threshold).
+     * [DEFENSE NOTE]  Formula: t = clamp[0, 1](((p - a) · d) / |d|^2), distance = |p - (a + t · d)| where d = b - a.
+     *                 If distance < 38 pixels (PATH_CLEARANCE), canBuildAt() rejects tower placement.
+     * 
+     */
+
+    // It measures the pixel distance from your mouse cursor to the zombie road; 
+    // if you are closer than 38 pixels, the game blocks you from placing the tower.
+    
     private static double distanceToSegment(double px, double py, double ax, double ay, double bx, double by) {
-        double dx = bx - ax;
+        double dx = bx - ax; // Road direction & length from point A to B
         double dy = by - ay;
         double lengthSquared = dx * dx + dy * dy;
+        // How far along the road the mouse is closest to (0 = start, 0.5 = middle, 1 = end)
         double t = lengthSquared == 0 ? 0 : ((px - ax) * dx + (py - ay) * dy) / lengthSquared;
-        t = Math.max(0, Math.min(1, t));
+        t = Math.max(0, Math.min(1, t)); // Keep within road endpoints (clamp between 0 and 1)
+        // Distance in pixels from mouse to that closest spot on the road
         return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
     }
 }

@@ -97,7 +97,7 @@ public class SidePanel {
     public void setSelectedTower(Tower t) { this.selectedTower = t; }
     /** [PURPOSE] Sets tower type currently being placed onto the map grid. */
     public void setPlacing(TowerType t) { this.placing = t; }
-    /** [PURPOSE] Updates simulation speed multiplier display label (x1, x2, x4). */
+    /** [PURPOSE] Updates simulation speed multiplier display label (x1, x2, x3). */
     public void setSpeed(int speed) { this.speed = speed; }
 
     // ---- input ----

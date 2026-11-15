@@ -57,10 +57,13 @@ public abstract class Tower implements Upgradable {
 
     /**
      * [PURPOSE]       Executes simulation frame tick: decrements cooldown and fires when ready.
-     * [OOP / PATTERN] Template Method Pattern (invokes attack() hook).
+     * [OOP / PATTERN] Template Method Pattern (invokes attack() hook) / Delta Time (dt) Cooldown.
      * [CALLED BY]     btd/core/GameEngine.java (updateTowers()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java, btd/core/VisualEffect.java.
-     * [DEFENSE NOTE]  If no enemies are in range, cooldown stays at zero to fire immediately once a target appears.
+     * [DEFENSE NOTE]  cooldown -= dt counts down reload time in real-world seconds (dt ≈ 0.0166s at 60 FPS).
+     *                 enemies and effects lists are passed down from GameEngine (Mediator Pattern), ensuring
+     *                 Tower models remain completely decoupled from Swing GUI rendering and enemy spawning.
+     *                 If no enemies are in range, cooldown stays at zero to fire immediately once a target appears.
      */
     public final void update(double dt, List<Enemy> enemies, List<VisualEffect> effects) {
         cooldown -= dt;
@@ -119,10 +122,14 @@ public abstract class Tower implements Upgradable {
 
     /**
      * [PURPOSE]       Updates level and triggers applyMaxPassive() if level reaches 5.
-     * [OOP / PATTERN] Contract Implementation / State Transition.
+     * [OOP / PATTERN] Contract Implementation / State Transition / Template Method Hook.
      * [CALLED BY]     btd/core/GameSession.java (upgradeTower()).
      * [CONNECTS TO]   btd/model/tower/Tower.java (applyMaxPassive()).
-     * [DEFENSE NOTE]  Seamlessly promotes tower to final tier without rebuilding or replacing the instance.
+     * [DEFENSE NOTE]  Seamlessly promotes tower to final tier without replacing instance.
+     *                 Enforces the Bloons-style Tier-5 rule: only ONE tower per type can reach Level 5.
+     *                 Level 5 invokes abstract applyMaxPassive(), polymorphically overridden by subclasses:
+     *                 SingleTarget (+50% fire rate), Splash (+50% radius), Sniper (2x damage/pierce),
+     *                 and Support (+50% effect strength).
      */
     @Override
     public void applyLevel(int newLevel) {
@@ -171,7 +178,15 @@ public abstract class Tower implements Upgradable {
 
     // ---- targeting helpers ----
 
-    /** [PURPOSE] Euclidean distance check verifying if enemy center falls within range radius. */
+    /**
+     * [PURPOSE]       Euclidean distance check verifying if enemy center falls within range radius.
+     * [OOP / PATTERN] Geometry Helper / Pythagorean Theorem / Distance Math.
+     * [CALLED BY]     furthestInRange() (SingleTarget/Splash), SniperTower (highest HP), SupportTower (stuns/turrets).
+     * [CONNECTS TO]   btd/model/enemy/Enemy.java (getX(), getY()).
+     * [DEFENSE NOTE]  Uses Math.hypot(dx, dy) to compute sqrt(dx^2 + dy^2). Math.hypot is preferred over
+     *                 Math.sqrt() because it avoids intermediate numerical overflow/underflow.
+     *                 Returns true if distance <= getRange(), authorizing attack phase.
+     */
     protected boolean inRange(Enemy e) {
         return Math.hypot(e.getX() - x, e.getY() - y) <= getRange();
     }

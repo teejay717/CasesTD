@@ -76,11 +76,17 @@ public abstract class Enemy implements Damageable {
 
     /**
      * [PURPOSE]       Updates status effect timers, deals DoT ticks, moves along the path, and computes heading angle.
-     * [OOP / PATTERN] Simulation Tick / Vector Heading Calculation.
+     * [OOP / PATTERN] Simulation Tick / Delta Time (dt) Physics / Vector Heading Calculation.
      * [CALLED BY]     btd/core/GameEngine.java (updateEnemies()).
      * [CONNECTS TO]   btd/core/GameMap.java (pointAt()).
-     * [DEFENSE NOTE]  Heading angle is computed by sampling 1 pixel ahead on the track via Math.atan2,
-     *                 enabling smooth sprite orientation around corners.
+     * [DEFENSE NOTE]  Delta Time (dt ≈ 0.0166s at 60 FPS) provides frame-rate independence:
+     *                 1. poisonLeft -= dt / burnLeft -= dt: countdown timers decremented in real seconds.
+     *                 2. takeDamage(dps * dt): deals a smooth fractional slice of DPS each frame.
+     *                 3. distance += speed * dt: moves by speed pixels per second regardless of monitor refresh rate.
+     *                 4. p = map.pointAt(distance): converts 1D track distance into 2D screen pixels p[0]=x, p[1]=y,
+     *                    updating this.x and this.y so Towers can check range and UI can render the sprite.
+     *                 5. ahead = map.pointAt(distance + 1): looks 1px ahead to compute tangent angle via Math.atan2,
+     *                    allowing GamePanel to rotate the zombie sprite naturally around corners.
      */
     public void update(double dt, GameMap map) {
         // damage over time
@@ -111,6 +117,9 @@ public abstract class Enemy implements Damageable {
         // face along the track by looking 1 pixel ahead (0 = right, PI/2 = down)
         double[] ahead = map.pointAt(distance + 1);
         angle = Math.atan2(ahead[1] - p[1], ahead[0] - p[0]);
+
+        // [COORDINATE UPDATE] Unpacks 2D screen coordinates from pointAt() into instance fields:
+        // x and y are now refreshed for this frame so Tower.inRange() and GamePanel.paintEnemy() know where it is.
         x = p[0];
         y = p[1];
     }
@@ -218,9 +227,9 @@ public abstract class Enemy implements Damageable {
     public double getMaxHealth() { return maxHealth; }
     /** [PURPOSE] Accessor for distance traveled along the track in pixels. */
     public double getDistance() { return distance; }
-    /** [PURPOSE] Accessor for current X coordinate on map. */
+    /** [PURPOSE] Accessor for current X coordinate on map (updated every frame in update() via x = p[0]). */
     public double getX() { return x; }
-    /** [PURPOSE] Accessor for current Y coordinate on map. */
+    /** [PURPOSE] Accessor for current Y coordinate on map (updated every frame in update() via y = p[1]). */
     public double getY() { return y; }
     /** [PURPOSE] Accessor for heading direction angle in radians. */
     public double getAngle() { return angle; }

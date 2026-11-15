@@ -28,6 +28,15 @@ public class GameEngine {
     private final WaveSpawner spawner;
 
     private final List<Enemy> enemies = new ArrayList<>();
+    /**
+     * Master visual animation queue for the entire game.
+     * [DEFENSE NOTE] There is ONE shared effects list passed down to all towers rather than each tower
+     * owning its own queue. Benefits:
+     * 1. Memory efficiency: exactly 1 list instead of 30+ separate lists for 30 placed towers.
+     * 2. Single-pass rendering: GamePanel paints all active effects in one clean loop.
+     * 3. Persistence: if a tower is sold while its laser is fading, the animation finishes smoothly.
+     * 4. Mediator Pattern / MVC: models remain decoupled from Swing graphics.
+     */
     private final List<VisualEffect> effects = new ArrayList<>();
 
     private State state = State.BETWEEN_WAVES;
@@ -96,6 +105,8 @@ public class GameEngine {
         Iterator<Enemy> it = enemies.iterator();
         while (it.hasNext()) {
             Enemy e = it.next();
+            // [COORDINATE & STATE UPDATE] Recalculates distance += speed * dt, resolves LERP pointAt(),
+            // and updates e.x = p[0] and e.y = p[1] screen coordinates for this frame:
             e.update(dt, map);
             if (e.isDead()) {
                 session.addCoins(e.getReward());
