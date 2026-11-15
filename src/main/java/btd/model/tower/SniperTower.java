@@ -7,12 +7,13 @@ import java.awt.Color;
 import java.util.List;
 
 /**
- * [PURPOSE]       Extreme range sniper tower targeting highest-health enemies, with piercing beam capability.
- * [OOP / PATTERN] Concrete Subclass / Specialization / Polymorphism.
- * [CALLED BY]     btd/factory/TowerFactory.java (create()).
+ * [PURPOSE]       Long-range tower that shoots the enemy with the MOST health. (Sniper; Railgunner = PIERCE)
+ * [OOP / PATTERN] Concrete Subclass (extends Tower) / Method Overriding / Polymorphism.
+ * [CALLED BY]     btd/factory/TowerFactory.java (create(), when tower_class = "SniperTower").
  * [CONNECTS TO]   btd/model/tower/Tower.java, btd/model/enemy/Enemy.java,
  *                 btd/core/VisualEffect.java.
- * [DEFENSE NOTE]  Targets strongest enemy (highest HP) to crack armored enemies and bosses; Lv5 doubles damage.
+ * [DEFENSE NOTE]  Different target rule from the others: highest health, not closest to the base,
+ *                 so it goes for Armored zombies and bosses. Lv 5 "Headshot": 2x damage.
  */
 public class SniperTower extends Tower {
 
@@ -29,8 +30,8 @@ public class SniperTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Finds highest-health living enemy in range and fires single heavy shot or piercing laser.
-     * [OOP / PATTERN] Method Overriding (Template Method attack hook) / Strongest-Targeting Strategy.
+     * [PURPOSE]       Finds the living enemy in range with the most health, then either shoots it or fires a piercing beam.
+     * [OOP / PATTERN] Method Overriding (Template Method attack hook) / "Strongest" targeting.
      * [CALLED BY]     btd/model/tower/Tower.java (update()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java (takeDamage()), btd/core/VisualEffect.java (line()).
      * [DEFENSE NOTE]  Dispatches to pierce() if Special is PIERCE; otherwise hits target directly.
@@ -56,11 +57,12 @@ public class SniperTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Calculates collinear laser beam and pierces multiple enemies along the line of fire.
-     * [OOP / PATTERN] Vector Geometry / Stream Filtering & Sorting.
+     * [PURPOSE]       Railgunner beam: a straight line from the tower through the target, out to full range.
+     *                 Damages up to effect_value enemies on that line (5; 7.5 -> 8 at Lv 5), nearest first.
+     * [OOP / PATTERN] Vector Math (unit vector ux, uy) / Java Streams (filter -> sorted -> limit -> toList).
      * [CALLED BY]     btd/model/tower/SniperTower.java (attack()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java, btd/core/VisualEffect.java.
-     * [DEFENSE NOTE]  Hits up to effectValue enemies in order of distance along ray using 2D projection math.
+     * [DEFENSE NOTE]  The main target is always hit, even if it was not in the first maxHits on the beam.
      */
     private void pierce(Enemy target, List<Enemy> enemies, List<VisualEffect> effects) {
         double dx = target.getX() - getX();
@@ -86,12 +88,15 @@ public class SniperTower extends Tower {
         effects.add(VisualEffect.line(getX(), getY(), endX, endY, new Color(255, 120, 60), 0.25));
     }
 
-    /** [PURPOSE] Computes scalar dot product projection along beam unit vector. */
+    /** [PURPOSE] How far forward along the beam an enemy is (dot product with the beam direction). Negative = behind the tower. */
     private double distanceAlong(Enemy e, double ux, double uy) {
         return (e.getX() - getX()) * ux + (e.getY() - getY()) * uy;
     }
 
-    /** [PURPOSE] Calculates perpendicular distance from enemy center to beam line, checking collision within BEAM_WIDTH. */
+    /**
+     * [PURPOSE] Is the enemy on the beam? It must be in front of the tower, within range, and at most
+     *           BEAM_WIDTH (16 px) + its own radius away from the line sideways (cross product).
+     */
     private boolean onBeam(Enemy e, double ux, double uy) {
         double along = distanceAlong(e, ux, uy);
         if (along < 0 || along > getRange()) {
@@ -102,7 +107,7 @@ public class SniperTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Activates Level 5 Headshot passive: 2.0x damage multiplier and 1.5x pierce limit.
+     * [PURPOSE]       Lv 5 "Headshot": 2x damage; pierce count x 1.5 (only matters for the Railgunner).
      * [OOP / PATTERN] Hook Method Overriding.
      * [CALLED BY]     btd/model/tower/Tower.java (applyLevel()).
      * [CONNECTS TO]   passiveDamage, passiveEffect fields.
@@ -116,7 +121,7 @@ public class SniperTower extends Tower {
     /**
      * [PURPOSE]       Returns description of Level 5 Headshot bonus.
      * [OOP / PATTERN] Polymorphic Property Accessor.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     btd/ui/screens/SidePanel.java (paintTowerInfo()).
      */
     @Override
     public String getPassiveDescription() {

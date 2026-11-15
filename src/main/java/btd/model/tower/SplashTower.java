@@ -7,12 +7,14 @@ import java.awt.Color;
 import java.util.List;
 
 /**
- * [PURPOSE]       Area-of-effect tower dealing splash damage and applying DoT debuffs (poison, burn).
- * [OOP / PATTERN] Concrete Subclass / Specialization / Polymorphism.
- * [CALLED BY]     btd/factory/TowerFactory.java (create()).
+ * [PURPOSE]       Area damage tower: hits every enemy near the target. Some also poison or burn.
+ *                 (Grenadier, Mortar = plain blast; Scientist = POISON; Flamethrower = BURN)
+ * [OOP / PATTERN] Concrete Subclass (extends Tower) / Method Overriding / Polymorphism.
+ * [CALLED BY]     btd/factory/TowerFactory.java (create(), when tower_class = "SplashTower").
  * [CONNECTS TO]   btd/model/tower/Tower.java, btd/model/enemy/Enemy.java,
  *                 btd/core/VisualEffect.java.
- * [DEFENSE NOTE]  Hits all enemies within blast radius around lead target; Lv5 expands blast by +50%.
+ * [DEFENSE NOTE]  The blast is centered on the lead enemy, with radius = splash_radius from the DB.
+ *                 Lv 5 "Wide Blast": radius x 1.5.
  */
 public class SplashTower extends Tower {
 
@@ -27,7 +29,7 @@ public class SplashTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Strikes lead enemy and damages all units within splash radius; spawns explosion ring.
+     * [PURPOSE]       Picks the lead enemy, then damages EVERY living enemy within the radius of it, and adds a circle effect.
      * [OOP / PATTERN] Method Overriding (Template Method attack hook).
      * [CALLED BY]     btd/model/tower/Tower.java (update()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java (takeDamage(), poison(), burn()),
@@ -53,10 +55,11 @@ public class SplashTower extends Tower {
 
     /**
      * [PURPOSE]       Applies POISON or BURN status effects to caught enemies based on Special enum.
-     * [OOP / PATTERN] Status Effect Strategy / Helper Dispatch.
+     * [OOP / PATTERN] Switch on the Special enum.
      * [CALLED BY]     btd/model/tower/SplashTower.java (attack()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java (poison(), burn()).
-     * [DEFENSE NOTE]  DoT damage scales with tower level multiplier.
+     * [DEFENSE NOTE]  effect_value = damage per second, effect_duration_ms = how long. Both come from the DB.
+     *                 The damage per second is multiplied by the level multiplier. NONE does nothing.
      */
     private void applyEffect(Enemy e) {
         double seconds = getType().effectDurationMs() / 1000.0;
@@ -96,7 +99,7 @@ public class SplashTower extends Tower {
     /**
      * [PURPOSE]       Returns description of Level 5 Wide Blast bonus.
      * [OOP / PATTERN] Polymorphic Property Accessor.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     btd/ui/screens/SidePanel.java (paintTowerInfo()).
      */
     @Override
     public String getPassiveDescription() {

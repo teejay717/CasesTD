@@ -8,14 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * [PURPOSE]       Core simulation coordinator driving the 60 FPS tick loop: spawns enemies,
- *                 updates aura buffs, fires towers, culls dead units, awards gold, and checks game over.
- * [OOP / PATTERN] Game Loop Pattern / Facade Pattern / Mediator Pattern.
- * [CALLED BY]     btd/ui/screens/GamePanel.java (actionPerformed() timer hook).
+ * [PURPOSE]       Runs the game simulation one step at a time: spawns enemies, applies auras, lets towers shoot,
+ *                 moves enemies, gives coins, takes lives, and decides wave-cleared / game-over.
+ * [OOP / PATTERN] Game Loop step / Mediator (it coordinates towers, enemies, spawner and session).
+ *                 State is an enum: BETWEEN_WAVES -> WAVE_ACTIVE -> BETWEEN_WAVES ... -> GAME_OVER.
+ * [CALLED BY]     btd/ui/screens/GamePanel.java (startRun() creates it; advance() calls update(STEP) 60 times a second).
  * [CONNECTS TO]   btd/core/WaveSpawner.java, btd/core/GameSession.java,
  *                 btd/model/enemy/Enemy.java, btd/model/tower/Tower.java,
  *                 btd/core/VisualEffect.java.
- * [DEFENSE NOTE]  Orchestrates all active game subsystems in strict sequence each frame.
+ * [DEFENSE NOTE]  The engine has no Swing code at all. GamePanel draws; GameEngine only does the rules.
  */
 public class GameEngine {
 
@@ -37,9 +38,9 @@ public class GameEngine {
     private int lastWaveReward;
 
     /**
-     * [PURPOSE]       Constructs GameEngine and instantiates WaveSpawner.
-     * [OOP / PATTERN] Constructor / Dependency Injection.
-     * [CALLED BY]     btd/ui/AppController.java (startNewGame()).
+     * [PURPOSE]       Creates the engine for one run and its own WaveSpawner.
+     * [OOP / PATTERN] Constructor / Dependency Injection (config, map, session are passed in).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (startRun()).
      * [CONNECTS TO]   btd/core/WaveSpawner.java.
      */
     public GameEngine(GameConfig config, GameMap map, GameSession session) {
@@ -52,9 +53,10 @@ public class GameEngine {
     /**
      * [PURPOSE]       Transitions engine state to WAVE_ACTIVE and starts spawning wave queue.
      * [OOP / PATTERN] State Transition Method / Guard Clause.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java (startWaveButton), btd/ui/screens/GamePanel.java (spacebar shortcut).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (startWave()), which runs when you click START WAVE
+     *                 in the SidePanel or press Space.
      * [CONNECTS TO]   btd/core/WaveSpawner.java (begin()).
-     * [DEFENSE NOTE]  Returns false if a wave is already running or game is over.
+     * [DEFENSE NOTE]  Returns false if a wave is already running or the game is over, so double-clicking does nothing.
      */
     public boolean startNextWave() {
         if (state != State.BETWEEN_WAVES) {
@@ -67,12 +69,16 @@ public class GameEngine {
     }
 
     /**
-     * [PURPOSE]       Executes a single simulation tick: updates effects, spawns units, recalculates auras,
-     *                 fires towers, moves enemies along waypoints, awards gold, and triggers game over.
-     * [OOP / PATTERN] Main Game Loop Step / Mediator Pattern.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (Swing Timer tick).
+     * [PURPOSE]       One simulation step (dt is always 1/60 s). Order:
+     *                 1) age the visual effects   2) stop here if no wave is running
+     *                 3) spawn enemies that are due   4) reset buffs, then apply Radio Tower auras
+     *                 5) every tower shoots (Tower.update)   6) move every enemy; dead -> coins, reached end -> lose lives
+     *                 7) lives = 0 -> GAME_OVER; spawner empty and no enemies left -> wave cleared, reward coins.
+     * [OOP / PATTERN] Game Loop Step / Mediator.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (advance(), inside the fixed-timestep while loop).
      * [CONNECTS TO]   btd/core/WaveSpawner.java, btd/model/tower/Tower.java, btd/model/enemy/Enemy.java.
-     * [DEFENSE NOTE]  Aura buffs are reset and recalculated every frame before tower attack phases run.
+     * [DEFENSE NOTE]  Buffs are reset to 1.0 and re-applied every step, so if a Radio Tower is sold the buff disappears
+     *                 at once. An Iterator is used so enemies can be removed safely while looping over the list.
      */
     public void update(double dt) {
         updateEffects(dt);
@@ -119,7 +125,7 @@ public class GameEngine {
         }
     }
 
-    /** [PURPOSE] Iterates visual attack effect timers and culls expired animations. */
+    /** [PURPOSE] Counts down every visual effect and removes the finished ones. Runs even between waves so shots fade out. */
     private void updateEffects(double dt) {
         Iterator<VisualEffect> it = effects.iterator();
         while (it.hasNext()) {
@@ -135,13 +141,13 @@ public class GameEngine {
     public State getState() { return state; }
     /** [PURPOSE] Currently active or most recently completed wave number. */
     public int getWave() { return wave; }
-    /** [PURPOSE] Total number of waves successfully cleared this run. */
+    /** [PURPOSE] Waves cleared this run. This is the "score" saved as highest_score in the database. */
     public int getWavesCleared() { return wavesCleared; }
     /** [PURPOSE] Total enemies killed this run. */
     public int getKills() { return kills; }
     /** [PURPOSE] Gold coins awarded on the last cleared wave. */
     public int getLastWaveReward() { return lastWaveReward; }
-    /** [PURPOSE] List of active living enemies on the battlefield. */
+    /** [PURPOSE] Enemies currently on the map (GamePanel draws them; dead ones are already removed in update()). */
     public List<Enemy> getEnemies() { return enemies; }
     /** [PURPOSE] Active visual tracer line and circle animations. */
     public List<VisualEffect> getEffects() { return effects; }
@@ -149,6 +155,6 @@ public class GameEngine {
     public GameMap getMap() { return map; }
     /** [PURPOSE] Reference to active session state (gold, lives, towers). */
     public GameSession getSession() { return session; }
-    /** [PURPOSE] Total count of remaining enemies: alive on map plus queued in spawner. */
+    /** [PURPOSE] Enemies left this wave: on the map + not spawned yet. Shown in the HUD as "WAVE n (x left)". */
     public int getEnemiesLeft() { return enemies.size() + spawner.remaining(); }
 }

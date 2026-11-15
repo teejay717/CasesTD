@@ -19,12 +19,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * [PURPOSE]       Post-game summary panel displaying waves cleared, kill count, gacha stats, and high-score records.
- * [OOP / PATTERN] View Component / Presenter Pattern / Observer Event Handling.
- * [CALLED BY]     btd/ui/AppController.java (showResults()).
+ * [PURPOSE]       The "RUN OVER" screen: waves cleared, zombies defeated, cases opened, and new record or old best.
+ * [OOP / PATTERN] Inheritance (extends JPanel) / Callbacks (onPlayAgain, onMenu are Runnables from AppController).
+ * [CALLED BY]     btd/ui/AppController.java (constructor creates it; showResults() calls show()).
  * [CONNECTS TO]   btd/core/RunResult.java, btd/ui/components/TextButton.java,
- *                 btd/ui/components/Gfx.java, btd/ui/theme/Palette.java.
- * [DEFENSE NOTE]  Celebrates new record achievements with prominent gold badges and handles play-again/menu navigation.
+ *                 btd/ui/components/Gfx.java, btd/ui/theme/Palette.java, btd/util/ImageLoader.java.
+ * [DEFENSE NOTE]  It only shows data; it never reads the DB. The score was already saved by GamePanel.finishRun().
+ *                 "NEW HIGH SCORE!" in green if result.newRecord(), otherwise "Highest score: X".
  */
 public class ResultsPanel extends JPanel {
 
@@ -36,8 +37,8 @@ public class ResultsPanel extends JPanel {
     private String playerName = "";
 
     /**
-     * [PURPOSE]       Constructs ResultsPanel and binds mouse click/hover listeners to navigation buttons.
-     * [OOP / PATTERN] Constructor / Event Binding.
+     * [PURPOSE]       Adds the click handler (PLAY AGAIN -> onPlayAgain, MENU -> onMenu) and the hover handler.
+     * [OOP / PATTERN] Constructor / Event Listeners / Callbacks.
      * [CALLED BY]     btd/ui/AppController.java constructor.
      */
     public ResultsPanel(Runnable onPlayAgain, Runnable onMenu) {
@@ -63,8 +64,8 @@ public class ResultsPanel extends JPanel {
     }
 
     /**
-     * [PURPOSE]       Binds run outcome data and triggers panel redraw.
-     * [OOP / PATTERN] View Data Hydration.
+     * [PURPOSE]       Stores the run's result and the player's name, then repaints.
+     * [OOP / PATTERN] Setter + repaint().
      * [CALLED BY]     btd/ui/AppController.java (showResults()).
      * [CONNECTS TO]   btd/core/RunResult.java.
      */
@@ -75,9 +76,9 @@ public class ResultsPanel extends JPanel {
     }
 
     /**
-     * [PURPOSE]       Renders results card modal: draws parchment frame, stat metrics, high score indicator, and buttons.
-     * [OOP / PATTERN] Custom Rendering Pipeline.
-     * [CALLED BY]     Swing paintComponent().
+     * [PURPOSE]       Draws the background, a cream card, the stats from RunResult, and the two buttons.
+     * [OOP / PATTERN] Method Overriding (JPanel.paintComponent).
+     * [CALLED BY]     Swing, whenever the panel needs drawing (after repaint()).
      * [CONNECTS TO]   btd/ui/components/Gfx.java (outlinedCentered()).
      */
     @Override

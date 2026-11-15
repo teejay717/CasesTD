@@ -7,12 +7,13 @@ import javax.swing.SwingUtilities;
 
 /**
  * [PURPOSE]       Application entry point and desktop launch bootstrap for CasesTD.
- * [OOP / PATTERN] Bootstrap Pattern / Facade Initialization.
- * [CALLED BY]     JVM at application launch (must be executed with project root as working directory).
- * [CONNECTS TO]   btd/ui/MainFrame.java (instantiates top-level window),
- *                 btd/ui/AppController.java (binds card layout navigation).
- * [DEFENSE NOTE]  Dispatches GUI initialization onto Swing's Event Dispatch Thread (EDT)
- *                 via SwingUtilities.invokeLater() to ensure thread-safe component construction.
+ * [OOP / PATTERN] Entry Point (the only main() the game needs).
+ * [CALLED BY]     The JVM when you run the game. Run it from the project root folder, because files like
+ *                 data/db_config.properties and assets/... are opened with relative paths.
+ * [CONNECTS TO]   btd/ui/MainFrame.java (creates the window),
+ *                 btd/ui/AppController.java (creates the screens and switches between them).
+ * [DEFENSE NOTE]  Nothing is loaded from the database here. The DB is first used when the player opens the crate
+ *                 (PlayerDAO), and towers/cases are loaded when Play is pressed (AppController.loadData()).
  */
 public class Main {
 
@@ -21,8 +22,8 @@ public class Main {
      * [OOP / PATTERN] Concurrency / Thread Safety.
      * [CALLED BY]     Operating System / JVM runtime.
      * [CONNECTS TO]   btd/ui/MainFrame.java, btd/ui/AppController.java.
-     * [DEFENSE NOTE]  Never construct Swing UI elements on the main thread; invokeLater()
-     *                 prevents deadlocks and race conditions during component tree initialization.
+     * [DEFENSE NOTE]  Swing rule: build and change the UI only on the Event Dispatch Thread (EDT).
+     *                 invokeLater() puts the lambda on that thread instead of running it on the main thread.
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

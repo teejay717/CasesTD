@@ -6,10 +6,10 @@ import java.awt.Color;
 import java.awt.Font;
 
 /**
- * [PURPOSE]       Color palette and typography definitions for the in-game HUD, side panels, and shop overlays.
- * [OOP / PATTERN] Constant Interface / Design Tokens / Aesthetic Encapsulation.
- * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/GamePanel.java,
- *                 btd/ui/screens/ShopOverlay.java, btd/ui/components/TextButton.java.
+ * [PURPOSE]       Shared colors and fonts for the game screen (HUD, SidePanel, shop, results).
+ * [OOP / PATTERN] Constants Class (final class, public static final fields, private constructor).
+ * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/GamePanel.java, btd/ui/screens/ShopOverlay.java,
+ *                 btd/ui/screens/ResultsPanel.java, btd/ui/components/TextButton.java.
  * [CONNECTS TO]   btd/util/FontLoader.java.
  * [DEFENSE NOTE]  Centralizes warm cartoon wood/cream palette to preserve visual consistency across all UI components.
  */
@@ -33,9 +33,9 @@ public final class Palette {
     }
 
     /**
-     * [PURPOSE]       Derives the Luckiest Guy display font at requested point size for titles and buttons.
-     * [OOP / PATTERN] Static Factory / Delegation.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/components/TextButton.java.
+     * [PURPOSE]       The cartoon "Luckiest Guy" font at the given size, for titles, HUD and buttons.
+     * [OOP / PATTERN] Static Factory / Delegation (passes the work to FontLoader).
+     * [CALLED BY]     SidePanel, GamePanel, ShopOverlay, ResultsPanel, TextButton.
      * [CONNECTS TO]   btd/util/FontLoader.java.
      */
     public static Font heading(float size) {
@@ -43,9 +43,9 @@ public final class Palette {
     }
 
     /**
-     * [PURPOSE]       Returns a clean bold system sans-serif font for small stat and tooltip descriptions.
-     * [OOP / PATTERN] Static Factory / Fallback Typography.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/ShopOverlay.java.
+     * [PURPOSE]       A plain bold sans-serif font for small, easy-to-read text (stats, descriptions).
+     * [OOP / PATTERN] Static Factory.
+     * [CALLED BY]     SidePanel, ShopOverlay, ResultsPanel.
      */
     public static Font body(float size) {
         return new Font(Font.SANS_SERIF, Font.BOLD, 1).deriveFont(size);

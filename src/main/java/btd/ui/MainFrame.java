@@ -9,10 +9,10 @@ import java.awt.Dimension;
 
 /**
  * [PURPOSE]       Top-level desktop window (JFrame) hosting all game views using a CardLayout manager.
- * [OOP / PATTERN] Top-Level Container / Composite Pattern / View Host.
+ * [OOP / PATTERN] Inheritance (extends JFrame) / CardLayout (a stack of screens, only one shown at a time).
  * [CALLED BY]     btd/Main.java (main()).
  * [CONNECTS TO]   btd/ui/AppController.java, btd/ui/theme/Theme.java.
- * [DEFENSE NOTE]  Fixed 1280x720 canvas dimensions ensure consistent UI positioning across different operating systems.
+ * [DEFENSE NOTE]  Fixed 1280x720 and not resizable, because every screen draws at exact pixel positions.
  */
 public class MainFrame extends JFrame {
 
@@ -39,8 +39,8 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * [PURPOSE]       Registers a screen panel with the internal CardLayout manager under a unique card identifier.
-     * [OOP / PATTERN] Registry Pattern / Adapter.
+     * [PURPOSE]       Adds a screen under a name ("landing", "game", "results") so showScreen(name) can show it later.
+     * [OOP / PATTERN] CardLayout registration.
      * [CALLED BY]     btd/ui/AppController.java constructor.
      */
     public void addScreen(String name, JPanel panel) {
@@ -50,7 +50,7 @@ public class MainFrame extends JFrame {
     /**
      * [PURPOSE]       Flips active view to the registered card matching name string.
      * [OOP / PATTERN] CardLayout Switching / State Display.
-     * [CALLED BY]     btd/ui/AppController.java.
+     * [CALLED BY]     btd/ui/AppController.java (constructor, startRun(), showResults(), showMenu()).
      */
     public void showScreen(String name) {
         cardLayout.show(screenPanel, name);

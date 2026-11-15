@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * [PURPOSE]       Reads all 10 tower definitions from the MySQL 'towers' table.
- * [OOP / PATTERN] Data Access Object (DAO) Pattern / Object-Relational Mapping (ORM).
- * [CALLED BY]     btd/core/Catalog.java (load() at startup).
+ * [PURPOSE]       Reads all towers (10 in seed_data.sql) from the MySQL 'towers' table.
+ * [OOP / PATTERN] Data Access Object (DAO): all tower SQL is in this one class.
+ * [CALLED BY]     btd/core/Catalog.java (load(), the first time Play is pressed).
  * [CONNECTS TO]   btd/config/DatabaseConnection.java, btd/model/tower/TowerType.java (immutable record).
- * [DEFENSE NOTE]  Tower catalog is read-only at runtime; maps relational columns directly to immutable records.
+ * [DEFENSE NOTE]  Read-only: the game never INSERTs or UPDATEs towers. Each row becomes one TowerType record.
  */
 public class TowerDAO {
 
@@ -26,7 +26,9 @@ public class TowerDAO {
      * [OOP / PATTERN] ResultSet Mapping / Record Instantiation.
      * [CALLED BY]     btd/core/Catalog.java (load()).
      * [CONNECTS TO]   btd/model/tower/TowerType.java, btd/model/gacha/Rarity.java, btd/model/tower/Special.java.
-     * [DEFENSE NOTE]  Loads once at application start to avoid repeated SQL queries during the 60 FPS loop.
+     * [DEFENSE NOTE]  Runs once per app session (Catalog is cached), never during the 60 FPS loop.
+     *                 Rarity.valueOf("RARE") / Special.valueOf("STUN") turn the text columns into enums;
+     *                 a typo in the DB would throw IllegalArgumentException here.
      */
     public List<TowerType> findAll() throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();

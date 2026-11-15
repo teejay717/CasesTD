@@ -9,11 +9,13 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 /**
- * [PURPOSE]       Custom vector-rendered rounded button with drop shadow, dynamic font scaling, and hover highlights.
+ * [PURPOSE]       A button drawn with code (no image): rounded box, shadow, outlined text, greys out when disabled.
  * [OOP / PATTERN] Custom UI Component / Encapsulation.
- * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/ShopOverlay.java, btd/ui/screens/GamePanel.java.
+ *                 Not a JButton: the screen calls draw(), contains() and updateHover() itself.
+ * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/ShopOverlay.java, btd/ui/screens/GamePanel.java,
+ *                 btd/ui/screens/ResultsPanel.java.
  * [CONNECTS TO]   btd/ui/theme/Palette.java, btd/ui/components/Gfx.java.
- * [DEFENSE NOTE]  Automatically shrinks font point size in a while-loop if button label exceeds boundary width.
+ * [DEFENSE NOTE]  If the text is too wide, the font shrinks 1 pt at a time until it fits (minimum 9 pt).
  */
 public class TextButton {
 
@@ -27,7 +29,7 @@ public class TextButton {
     /**
      * [PURPOSE]       Constructs rounded vector button with geometry, base color, and initial font size.
      * [OOP / PATTERN] Constructor / State Initialization.
-     * [CALLED BY]     UI screens.
+     * [CALLED BY]     Field initializers in SidePanel, ShopOverlay, GamePanel and ResultsPanel.
      */
     public TextButton(String text, int x, int y, int width, int height, Color color, float fontSize) {
         this.text = text;
@@ -62,8 +64,8 @@ public class TextButton {
 
     /**
      * [PURPOSE]       Renders vector rounded rectangle with drop shadow, border stroke, and centered outlined text.
-     * [OOP / PATTERN] Custom Component Rendering Pipeline.
-     * [CALLED BY]     Panel paintComponent() methods.
+     * [OOP / PATTERN] Custom Component Drawing.
+     * [CALLED BY]     The paint methods of the screens that own the button.
      * [CONNECTS TO]   btd/ui/components/Gfx.java (outlinedCentered()).
      */
     public void draw(Graphics2D g) {

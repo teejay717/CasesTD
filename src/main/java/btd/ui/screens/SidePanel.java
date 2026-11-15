@@ -22,22 +22,23 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * [PURPOSE]       Right-side HUD sidebar displaying tower inventory cards, tower stat cards,
- *                 upgrade/sell action buttons, speed toggle (1x/2x/3x), and wave start triggers.
- * [OOP / PATTERN] View Component / Interface Segregation Principle / Command Pattern delegation.
- * [CALLED BY]     btd/ui/screens/GamePanel.java.
+ * [PURPOSE]       The brown bar on the right (x 960 to 1280): inventory cards, tower info card,
+ *                 UPGRADE / SELL, SHOP, START WAVE, and the speed button.
+ * [OOP / PATTERN] View Component / Callback Interface (Actions).
+ *                 Not a JPanel: GamePanel calls paint() and click() on it by hand.
+ * [CALLED BY]     btd/ui/screens/GamePanel.java (creates it with "new SidePanel(this)"; calls paint(), click(), mouseMoved()).
  * [CONNECTS TO]   btd/core/GameSession.java, btd/core/GameEngine.java,
- *                 btd/model/tower/Tower.java, btd/ui/components/TextButton.java.
- * [DEFENSE NOTE]  SidePanel purely handles rendering and click coordinates, delegating all domain mutations
- *                 back to GamePanel through the strongly-typed Actions callback interface.
+ *                 btd/model/tower/Tower.java, btd/ui/components/TextButton.java, btd/ui/components/TowerArt.java.
+ * [DEFENSE NOTE]  SidePanel only READS the session to draw. It never changes coins or towers itself;
+ *                 every button goes through the Actions interface, and GamePanel does the real work.
  */
 public class SidePanel {
 
     /**
-     * [PURPOSE]       Callback interface decoupling SidePanel UI input from GamePanel game loop state.
-     * [OOP / PATTERN] Interface Segregation Principle / Observer Pattern / Command Pattern.
+     * [PURPOSE]       The list of things SidePanel can ask the game to do (one method per button / click).
+     * [OOP / PATTERN] Interface / Callback (lets SidePanel work without knowing the GamePanel class).
      * [CALLED BY]     btd/ui/screens/SidePanel.java (click()).
-     * [CONNECTS TO]   btd/ui/screens/GamePanel.java (implements this contract).
+     * [CONNECTS TO]   btd/ui/screens/GamePanel.java ("implements SidePanel.Actions").
      */
     public interface Actions {
         void selectInventory(TowerType type);
@@ -52,7 +53,7 @@ public class SidePanel {
     public static final int X = 960;
     private static final int WIDTH = Theme.CONTENT_WIDTH - X;
 
-    /** [PURPOSE] Encapsulates on-screen bounding rectangle and tower metadata for an inventory grid slot. */
+    /** [PURPOSE] Where one inventory card was drawn (bounds) and which tower it is, so click() knows what was clicked. */
     private record InvCard(Rectangle bounds, TowerType type) {
     }
 
@@ -72,16 +73,16 @@ public class SidePanel {
     private int speed = 1;
 
     /**
-     * [PURPOSE]       Constructs SidePanel tied to action callback handler.
+     * [PURPOSE]       Stores who handles the button clicks (GamePanel passes itself: new SidePanel(this)).
      * [OOP / PATTERN] Constructor / Dependency Injection.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java constructor.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (field initializer).
      */
     public SidePanel(Actions actions) {
         this.actions = actions;
     }
 
     /**
-     * [PURPOSE]       Binds active session and engine to this panel upon new run initialization.
+     * [PURPOSE]       Gives the panel the NEW run's session and engine, and clears selection and speed.
      * [OOP / PATTERN] Model Binding.
      * [CALLED BY]     btd/ui/screens/GamePanel.java (startRun()).
      */
@@ -97,7 +98,7 @@ public class SidePanel {
     public void setSelectedTower(Tower t) { this.selectedTower = t; }
     /** [PURPOSE] Sets tower type currently being placed onto the map grid. */
     public void setPlacing(TowerType t) { this.placing = t; }
-    /** [PURPOSE] Updates simulation speed multiplier display label (x1, x2, x4). */
+    /** [PURPOSE] Updates the speed button label (x1, x2, x3). The real speed is in GamePanel. */
     public void setSpeed(int speed) { this.speed = speed; }
 
     // ---- input ----
@@ -105,7 +106,7 @@ public class SidePanel {
     /**
      * [PURPOSE]       Dispatches mouse coordinates to buttons for hover state rendering.
      * [OOP / PATTERN] Event Propagation.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (mouseMoved()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (handleMove()).
      */
     public void mouseMoved(int x, int y) {
         shopButton.updateHover(x, y);
@@ -116,11 +117,12 @@ public class SidePanel {
     }
 
     /**
-     * [PURPOSE]       Processes mouse clicks in side panel: selects cards, opens shop, starts waves, sells, or upgrades.
-     * [OOP / PATTERN] Input Dispatcher / Command Invocation.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (mousePressed()).
+     * [PURPOSE]       Finds what was clicked (a card or a button) and calls the matching Actions method.
+     * [OOP / PATTERN] Input Dispatcher / Callback.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (handlePress(), when x >= 960).
      * [CONNECTS TO]   Actions interface callbacks.
-     * [DEFENSE NOTE]  Right-click on inventory card triggers instant card sell for gold refund.
+     * [DEFENSE NOTE]  Right-click on a card does NOT sell right away: GamePanel.sellInventory() shows a
+     *                 small "Sell 1 ... for N coins" menu first. Disabled buttons (isEnabled() false) ignore clicks.
      */
     public void click(int x, int y, boolean rightClick) {
         for (InvCard card : cards) {
@@ -152,8 +154,8 @@ public class SidePanel {
     // ---- painting ----
 
     /**
-     * [PURPOSE]       Renders entire side panel: background wood bar, inventory grid, stat card, and control buttons.
-     * [OOP / PATTERN] Composite View Rendering Pipeline.
+     * [PURPOSE]       Draws the whole panel: background, INVENTORY cards, info card, then SHOP / START WAVE / speed.
+     * [OOP / PATTERN] Rendering (called every frame).
      * [CALLED BY]     btd/ui/screens/GamePanel.java (paintComponent()).
      */
     public void paint(Graphics2D g) {
@@ -177,11 +179,12 @@ public class SidePanel {
     }
 
     /**
-     * [PURPOSE]       Aggregates inventory cards by archetype and renders 2-column card grid with copy count badges.
-     * [OOP / PATTERN] Data Aggregation / Grid Layout Rendering.
+     * [PURPOSE]       Groups the inventory by tower type and draws one card per type with "x3" style counts, 2 per row.
+     * [OOP / PATTERN] Grouping with Maps / Grid Layout.
      * [CALLED BY]     paint().
-     * [CONNECTS TO]   btd/ui/components/TowerArt.java, btd/core/GameSession.java (getInventory()).
-     * [DEFENSE NOTE]  Uses LinkedHashMap to preserve first-seen order while counting duplicate stack copies.
+     * [CONNECTS TO]   btd/ui/components/TowerArt.java (draw(), size 40), btd/core/GameSession.java (getInventory()).
+     * [DEFENSE NOTE]  LinkedHashMap keeps the order towers were first won, so cards do not jump around.
+     *                 Shows at most 10 card types (5 rows x 2). The 'cards' list is rebuilt every frame for click().
      */
     private void paintInventory(Graphics2D g) {
         cards.clear();
@@ -222,14 +225,14 @@ public class SidePanel {
         }
     }
 
-    /** [PURPOSE] Truncates label string with ellipsis if longer than max characters. */
+    /** [PURPOSE] Cuts a name longer than 'max' letters and ends it with "." (all 10 current names fit in 12, so none are cut). */
     private String shorten(String s, int max) {
         return s.length() <= max ? s : s.substring(0, max - 1) + ".";
     }
 
     /**
-     * [PURPOSE]       Renders bottom contextual info card: selected tower stats, placement instructions, or hints.
-     * [OOP / PATTERN] Conditional Context Rendering.
+     * [PURPOSE]       The cream info card. Shows (in this priority): the selected tower, or the card being placed, or help text.
+     * [OOP / PATTERN] Conditional Rendering.
      * [CALLED BY]     paint().
      */
     private void paintInfo(Graphics2D g) {
@@ -253,10 +256,12 @@ public class SidePanel {
     }
 
     /**
-     * [PURPOSE]       Renders detailed stats for selected placed tower: damage, fire rate, range, passive, and upgrade buttons.
-     * [OOP / PATTERN] Inspection View / Dynamic Binding.
+     * [PURPOSE]       Selected tower: name, level, damage / rate / range, description, Lv 5 passive, UPGRADE and SELL.
+     * [OOP / PATTERN] Polymorphism (t.getDamage() and t.getPassiveDescription() run the subclass's version).
      * [CALLED BY]     paintInfo().
-     * [CONNECTS TO]   btd/core/GameSession.java (upgradeBlockReason(), upgradeCost()).
+     * [CONNECTS TO]   btd/core/GameSession.java (upgradeBlockReason(), upgradeCost(), refundFor()).
+     * [DEFENSE NOTE]  The UPGRADE button is greyed out when upgradeBlockReason() returns a message,
+     *                 and that message is shown in red under the buttons.
      */
     private void paintTowerInfo(Graphics2D g, int top) {
         Tower t = selectedTower;
@@ -296,7 +301,7 @@ public class SidePanel {
     }
 
     /**
-     * [PURPOSE]       Renders placement help card when a tower card is primed for construction on map.
+     * [PURPOSE]       Card being placed: its base stats (from TowerType, Level 1) and "click the map / Esc to cancel".
      * [OOP / PATTERN] Contextual Instruction View.
      * [CALLED BY]     paintInfo().
      */

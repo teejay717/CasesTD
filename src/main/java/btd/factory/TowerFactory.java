@@ -8,14 +8,14 @@ import btd.model.tower.Tower;
 import btd.model.tower.TowerType;
 
 /**
- * [PURPOSE]       Instantiates concrete Tower subclasses from the database tower_class string.
- * [OOP / PATTERN] Factory Method Pattern / Open-Closed Principle.
- * [CALLED BY]     btd/core/GameSession.java (place() method).
+ * [PURPOSE]       Turns a TowerType (blueprint) into the right Tower subclass object, using the tower_class column.
+ * [OOP / PATTERN] Factory Pattern (Simple / Static Factory) / Utility Class (final + private constructor).
+ * [CALLED BY]     btd/core/GameSession.java (place()).
  * [CONNECTS TO]   btd/model/tower/Tower.java, btd/model/tower/SingleTargetTower.java,
  *                 btd/model/tower/SplashTower.java, btd/model/tower/SniperTower.java,
  *                 btd/model/tower/SupportTower.java.
- * [DEFENSE NOTE]  Decouples tower creation from placement logic; adding a new tower class requires
- *                 modifying only this factory rather than changing code across all UI screens.
+ * [DEFENSE NOTE]  The rest of the code only says "give me a Tower" and never writes "new SniperTower(...)".
+ *                 A brand-new tower class = write the subclass + add one case here. Nothing else changes.
  */
 public final class TowerFactory {
 
@@ -24,7 +24,7 @@ public final class TowerFactory {
 
     /**
      * [PURPOSE]       Matches tower_class string to construct the corresponding concrete Tower subclass.
-     * [OOP / PATTERN] Pattern Matching Switch / Polymorphic Subclass Construction.
+     * [OOP / PATTERN] Switch expression on a String / returns the parent type Tower (polymorphism).
      * [CALLED BY]     btd/core/GameSession.java (place()).
      * [CONNECTS TO]   TowerType record, Concrete Tower subclasses.
      * [DEFENSE NOTE]  Throws IllegalArgumentException if an unrecognized tower class string is passed.

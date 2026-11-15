@@ -3,12 +3,13 @@ package btd.model.gacha;
 import java.awt.Color;
 
 /**
- * [PURPOSE]       Tier enumeration for tower and drop rarity, defining color accents and gem counts.
- * [OOP / PATTERN] Java Enum / Rich Domain Object Pattern.
- * [CALLED BY]     btd/model/gacha/CaseDef.java, btd/model/tower/TowerType.java,
- *                 btd/dao/TowerDAO.java, btd/ui/screens/SidePanel.java.
- * [CONNECTS TO]   btd/model/gacha/CaseDef.java, btd/ui/theme/Palette.java.
- * [DEFENSE NOTE]  Pairs each rarity with an exact UI theme color and gem count (1-4) for visual accessibility.
+ * [PURPOSE]       The 4 rarities: COMMON, RARE, EPIC, LEGENDARY. Each one has a display name, a color and a star count.
+ * [OOP / PATTERN] Enum with fields and a constructor (an enum can hold data, not just names).
+ * [CALLED BY]     btd/dao/TowerDAO.java (Rarity.valueOf("RARE")), btd/model/tower/TowerType.java,
+ *                 btd/model/gacha/CaseDef.java, btd/core/CaseRNGManager.java, and the UI (colors, names, stars).
+ * [CONNECTS TO]   java.awt.Color.
+ * [DEFENSE NOTE]  Order matters: CaseRNGManager loops Rarity.values() from COMMON to LEGENDARY.
+ *                 The enum names must match the text in the towers.rarity column exactly.
  */
 public enum Rarity {
     COMMON("Common", new Color(0x9EA7B8), 1),
@@ -21,9 +22,9 @@ public enum Rarity {
     private final int gems;
 
     /**
-     * [PURPOSE]       Initializes enum constant properties.
-     * [OOP / PATTERN] Enum Constructor.
-     * [CALLED BY]     Enum instantiation.
+     * [PURPOSE]       Stores the name, color and stars for each constant.
+     * [OOP / PATTERN] Enum Constructor (always private; you cannot call "new Rarity(...)").
+     * [CALLED BY]     Java itself, once for each of the 4 constants above, when the class loads.
      * [CONNECTS TO]   Internal fields.
      */
     Rarity(String displayName, Color color, int gems) {
@@ -42,7 +43,7 @@ public enum Rarity {
         return color;
     }
 
-    /** [PURPOSE] Numerical gem count rating (1 for Common up to 4 for Legendary). */
+    /** [PURPOSE] Star count, 1 (Common) to 4 (Legendary). ShopOverlay.paintResult() draws it as "*" characters. */
     public int getGems() {
         return gems;
     }

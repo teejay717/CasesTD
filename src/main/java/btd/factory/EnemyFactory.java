@@ -7,13 +7,13 @@ import btd.model.enemy.Enemy;
 import btd.model.enemy.FastEnemy;
 
 /**
- * [PURPOSE]       Instantiates concrete Enemy subclasses with wave-scaled health and speed multipliers.
- * [OOP / PATTERN] Factory Method Pattern / Encapsulated Object Creation.
- * [CALLED BY]     btd/core/WaveSpawner.java (update() method when deploying queued enemies).
+ * [PURPOSE]       Turns an enemy type name ("BasicEnemy", "BossEnemy"...) into the right Enemy subclass object.
+ * [OOP / PATTERN] Factory Pattern (Simple / Static Factory) / Utility Class (final + private constructor).
+ * [CALLED BY]     btd/core/WaveSpawner.java (update(), when a queued enemy's spawn time arrives).
  * [CONNECTS TO]   btd/model/enemy/Enemy.java, btd/model/enemy/BasicEnemy.java,
  *                 btd/model/enemy/FastEnemy.java, btd/model/enemy/ArmoredEnemy.java,
  *                 btd/model/enemy/BossEnemy.java.
- * [DEFENSE NOTE]  Hides subclass constructor scaling formulas behind a clean, single-point factory call.
+ * [DEFENSE NOTE]  The type names come from waves_config.json and WaveSpawner, so they must match these cases exactly.
  */
 public final class EnemyFactory {
 
@@ -21,11 +21,13 @@ public final class EnemyFactory {
     }
 
     /**
-     * [PURPOSE]       Constructs an enemy subclass scaled by wave multipliers and bounty coins.
-     * [OOP / PATTERN] Factory Method / Polymorphic Construction.
+     * [PURPOSE]       Creates one enemy. healthScale / speedScale come from GameConfig for the current wave,
+     *                 reward is its kill coins (e.g. BasicEnemy = 10).
+     * [OOP / PATTERN] Static Factory Method / returns the parent type Enemy (polymorphism).
      * [CALLED BY]     btd/core/WaveSpawner.java (update()).
      * [CONNECTS TO]   Concrete Enemy subclasses (BasicEnemy, FastEnemy, ArmoredEnemy, BossEnemy).
-     * [DEFENSE NOTE]  Scales stats dynamically per wave; BossEnemy automatically spawns on 10th waves.
+     * [DEFENSE NOTE]  This method does not decide WHEN a boss comes; WaveSpawner.begin() adds "BossEnemy" every 10th wave.
+     *                 An unknown name throws IllegalArgumentException.
      */
     public static Enemy create(String typeName, double healthScale, double speedScale, int reward) {
         return switch (typeName) {

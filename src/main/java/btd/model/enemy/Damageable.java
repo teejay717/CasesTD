@@ -1,8 +1,8 @@
 package btd.model.enemy;
 
 /**
- * [PURPOSE]       Core contract defining any game entity capable of receiving damage and dying.
- * [OOP / PATTERN] Interface Abstraction / Dependency Inversion Principle.
+ * [PURPOSE]       Contract for anything that can take damage and die. Enemy implements it.
+ * [OOP / PATTERN] Interface / Abstraction.
  * [CALLED BY]     btd/model/tower/SingleTargetTower.java, btd/model/tower/SplashTower.java,
  *                 btd/model/tower/SniperTower.java, btd/model/tower/SupportTower.java.
  * [CONNECTS TO]   btd/model/enemy/Enemy.java (implements this contract).
@@ -27,10 +27,10 @@ public interface Damageable {
     /**
      * [PURPOSE]       Queries whether the entity's health has reached zero or below.
      * [OOP / PATTERN] State Query / Predicate Method.
-     * [CALLED BY]     btd/core/GameEngine.java (updateEnemies()),
-     *                 btd/model/tower/Tower.java (furthestInRange()).
-     * [CONNECTS TO]   btd/core/GameSession.java (awardKill()).
-     * [DEFENSE NOTE]  Used by the engine loop to remove defeated units and trigger kill rewards.
+     * [CALLED BY]     btd/core/GameEngine.java (update()),
+     *                 btd/model/tower/Tower.java (furthestInRange()) and the other towers' targeting.
+     * [CONNECTS TO]   btd/core/GameSession.java (addCoins(), which GameEngine calls when this is true).
+     * [DEFENSE NOTE]  Used by the engine loop to remove dead enemies and give their kill coins.
      */
     boolean isDead();
 }

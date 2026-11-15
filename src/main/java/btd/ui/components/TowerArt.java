@@ -10,11 +10,15 @@ import java.awt.Image;
 import java.awt.geom.Ellipse2D;
 
 /**
- * [PURPOSE]       Draws tower avatar visuals: loads PNG sprite from database path or renders geometric placeholder shapes.
- * [OOP / PATTERN] Factory / Strategy / Fallback Renderer Pattern.
- * [CALLED BY]     btd/ui/screens/GamePanel.java (paintTower()), btd/ui/screens/SidePanel.java (paintInventoryCard()).
+ * [PURPOSE]       The ONE place that draws a tower picture. Uses the PNG from the DB's sprite_path,
+ *                 or a colored placeholder circle if the PNG is missing.
+ * [OOP / PATTERN] Utility Class (final + private constructor, static methods) / Fallback (PNG, else placeholder).
+ * [CALLED BY]     btd/ui/screens/GamePanel.java (paintGhost(), paintTowers()),
+ *                 btd/ui/screens/SidePanel.java (paintInventory()),
+ *                 btd/ui/screens/ShopOverlay.java (paintCases(), paintStrip(), paintResult()).
  * [CONNECTS TO]   btd/model/tower/TowerType.java, btd/util/SpriteLoader.java.
- * [DEFENSE NOTE]  Guarantees game is 100% playable with procedural vector art even if sprite assets are missing.
+ * [DEFENSE NOTE]  All 6 callers use this method with different sizes, so changing tower art means changing one file.
+ *                 A missing PNG never crashes the game; it just shows the placeholder.
  */
 public final class TowerArt {
 
@@ -22,8 +26,8 @@ public final class TowerArt {
     }
 
     /**
-     * [PURPOSE]       Resolves base background color associated with tower archetype class name.
-     * [OOP / PATTERN] Pattern Matching Switch.
+     * [PURPOSE]       Placeholder fill color by tower class (tan, orange, green, teal for Support).
+     * [OOP / PATTERN] Switch expression on a String.
      * [CALLED BY]     TowerArt.draw().
      */
     public static Color classColor(TowerType t) {
@@ -36,11 +40,14 @@ public final class TowerArt {
     }
 
     /**
-     * [PURPOSE]       Renders tower graphic centered on (cx, cy): draws cached sprite, or circular procedural vector glyph.
-     * [OOP / PATTERN] Rendering Pipeline / Fallback Strategy Pattern.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java, btd/ui/screens/SidePanel.java.
+     * [PURPOSE]       Draws tower t centered on (cx, cy), 'size' pixels wide and tall.
+     *                 1) SpriteLoader.get(path) returns an image -> draw it and stop.
+     *                 2) returns null -> draw a shadow, a circle in classColor(), a rarity-colored border, and a symbol.
+     * [OOP / PATTERN] Fallback Rendering.
+     * [CALLED BY]     GamePanel (size 80 or 34), SidePanel (40), ShopOverlay (34, 62, 100).
      * [CONNECTS TO]   btd/util/SpriteLoader.java (get()).
-     * [DEFENSE NOTE]  Outlines shape with rarity color (Common, Rare, Epic, Legendary) to communicate drop quality at a glance.
+     * [DEFENSE NOTE]  Placeholder symbols: SingleTarget = gun barrel, Splash = 3 balls, Sniper = crosshair, Support = plus sign.
+     *                 The border color is the rarity (grey, blue, purple, orange).
      */
     public static void draw(Graphics2D g, TowerType t, double cx, double cy, double size) {
         Image sprite = SpriteLoader.get(t.spritePath());

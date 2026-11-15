@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * [PURPOSE]       Static drawing utilities for rendered text: center alignment, high-contrast drop outlines, and word wrapping.
- * [OOP / PATTERN] Utility Class / Pure Fabrication / DRY Principle.
+ * [PURPOSE]       Text drawing helpers: centered text, text with a dark outline, and word wrapping.
+ * [OOP / PATTERN] Utility Class (final + private constructor) / DRY (Don't Repeat Yourself).
  * [CALLED BY]     btd/ui/components/TextButton.java, btd/ui/screens/SidePanel.java,
- *                 btd/ui/screens/GamePanel.java, btd/ui/screens/ShopOverlay.java.
+ *                 btd/ui/screens/GamePanel.java, btd/ui/screens/ShopOverlay.java, btd/ui/screens/ResultsPanel.java.
  * [CONNECTS TO]   java.awt.Graphics2D, java.awt.FontMetrics.
  * [DEFENSE NOTE]  Outlined text ensures readability over both bright grass and dark UI panels.
  */
@@ -23,7 +23,7 @@ public final class Gfx {
     /**
      * [PURPOSE]       Draws text centered horizontally at centerX with baseline at baselineY.
      * [OOP / PATTERN] Typography Helper.
-     * [CALLED BY]     UI panels.
+     * [CALLED BY]     SidePanel, ShopOverlay, ResultsPanel.
      */
     public static void centered(Graphics2D g, String text, double centerX, double baselineY, Font font, Color color) {
         g.setFont(font);
@@ -33,10 +33,10 @@ public final class Gfx {
     }
 
     /**
-     * [PURPOSE]       Renders text with a 2-pixel dark border outline using an 8-way directional offset stamp.
-     * [OOP / PATTERN] Graphic Filter / Outline Effect.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java, btd/ui/components/TextButton.java.
-     * [DEFENSE NOTE]  Draws 8 surrounding outline stamps before drawing the center fill text.
+     * [PURPOSE]       Draws text with a 2 px dark outline.
+     * [OOP / PATTERN] Outline Effect.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java, btd/ui/screens/SidePanel.java, outlinedCentered().
+     * [DEFENSE NOTE]  Draws the text 8 times in the outline color, shifted 2 px in every direction, then once on top in the fill color.
      */
     public static void outlined(Graphics2D g, String text, double x, double y, Font font, Color fill, Color outline) {
         g.setFont(font);
@@ -55,7 +55,7 @@ public final class Gfx {
     /**
      * [PURPOSE]       Combines outline effect with horizontal center alignment.
      * [OOP / PATTERN] Composite Utility Method.
-     * [CALLED BY]     btd/ui/components/TextButton.java, btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     btd/ui/components/TextButton.java, btd/ui/screens/GamePanel.java, btd/ui/screens/ResultsPanel.java.
      */
     public static void outlinedCentered(Graphics2D g, String text, double centerX, double y, Font font,
                                         Color fill, Color outline) {
@@ -65,8 +65,8 @@ public final class Gfx {
     }
 
     /**
-     * [PURPOSE]       Splits multi-word prose into wrapped lines that fit within maxWidth pixels.
-     * [OOP / PATTERN] Greedy Word Wrap Algorithm.
+     * [PURPOSE]       Splits text into lines that fit in maxWidth pixels (adds words to a line until the next one won't fit).
+     * [OOP / PATTERN] Greedy Word Wrap.
      * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/ShopOverlay.java.
      * [CONNECTS TO]   java.awt.FontMetrics.stringWidth().
      */

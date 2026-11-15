@@ -9,30 +9,32 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * [PURPOSE]       Manages two-phase gacha RNG rolling: determines rarity tier via weighted distribution,
- *                 then selects uniformly among towers belonging to that tier in the case pool.
- * [OOP / PATTERN] Strategy Pattern / Cumulative Distribution Function (CDF) Sampling / Inversion of Control.
- * [CALLED BY]     btd/core/GameSession.java (buyCase(), openFreeCase()).
+ * [PURPOSE]       Decides which tower a case gives, in two steps:
+ *                 1) pick a rarity using the case's weights (e.g. Standard Case: 65 / 25 / 8 / 2),
+ *                 2) pick one tower of that rarity from the case's pool, all equally likely.
+ * [OOP / PATTERN] Weighted Random ("roulette wheel") Selection / Dependency Injection (the Random is passed in).
+ * [CALLED BY]     btd/core/GameSession.java (open(), which buyCase() and openFreeCase() both use).
  * [CONNECTS TO]   btd/model/gacha/CaseDef.java, btd/model/tower/TowerType.java.
- * [DEFENSE NOTE]  Prevents dead drops: dynamically filters out rarities that have zero towers in the case pool.
+ * [DEFENSE NOTE]  Skips any rarity that has no tower in the pool, so a roll can never land on an empty rarity.
  */
 public class CaseRNGManager {
 
     private final Random random;
 
     /**
-     * [PURPOSE]       Default constructor initializing internal standard pseudo-random number generator.
-     * [OOP / PATTERN] Constructor Overloading.
-     * [CALLED BY]     btd/ui/AppController.java.
+     * [PURPOSE]       Default constructor: uses a normal new Random().
+     * [OOP / PATTERN] Constructor Overloading / Constructor Chaining (this(...)).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (startRun(): new GameSession(config, new CaseRNGManager())).
      */
     public CaseRNGManager() {
         this(new Random());
     }
 
     /**
-     * [PURPOSE]       Parameterized constructor allowing seeded Random injection for unit testing.
+     * [PURPOSE]       Constructor that takes the Random to use.
      * [OOP / PATTERN] Dependency Injection.
-     * [CALLED BY]     Test harnesses.
+     * [CALLED BY]     The default constructor above. (The project has no unit tests yet, but passing
+     *                 new Random(42) here would make every roll repeat the same way, which is useful for testing.)
      */
     public CaseRNGManager(Random random) {
         this.random = random;
@@ -57,11 +59,14 @@ public class CaseRNGManager {
     }
 
     /**
-     * [PURPOSE]       Picks rarity tier using cumulative weight distribution, skipping rarities absent from pool.
-     * [OOP / PATTERN] Cumulative Distribution Function (CDF) Roulette Wheel Selection.
+     * [PURPOSE]       Picks a rarity using the case's weights, skipping rarities with no tower in the pool.
+     * [OOP / PATTERN] Roulette Wheel Selection.
      * [CALLED BY]     btd/core/CaseRNGManager.java (roll()).
      * [CONNECTS TO]   btd/model/gacha/CaseDef.java (weightOf()).
-     * [DEFENSE NOTE]  Normalizes weights on-the-fly across populated rarities so total probabilities always equal 1.0.
+     * [DEFENSE NOTE]  How it works (Standard Case 65/25/8/2, total = 100):
+     *                 pick = random 0..100, e.g. 72. Subtract 65 (Common) -> 7, still >= 0.
+     *                 Subtract 25 (Rare) -> -18, below 0 -> result is RARE.
+     *                 Because 'total' only adds up rarities that exist in the pool, the odds stay correct.
      */
     public Rarity rollRarity(CaseDef def) {
         double total = 0;

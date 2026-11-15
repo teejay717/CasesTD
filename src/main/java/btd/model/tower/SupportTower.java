@@ -9,16 +9,19 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * [PURPOSE]       Utility defense tower providing crowd-control stuns, aura buffs, or autonomous mini-turrets.
- * [OOP / PATTERN] Concrete Subclass / Specialization / Polymorphism.
- * [CALLED BY]     btd/factory/TowerFactory.java (create()).
+ * [PURPOSE]       One class for the 3 helper towers. What it does depends on its Special:
+ *                 STUN = Policeman (stuns everyone in range), BUFF = Radio Tower (other towers shoot faster),
+ *                 TURRETS = Engineer (mini-turrets that each shoot a different enemy).
+ * [OOP / PATTERN] Concrete Subclass (extends Tower) / Method Overriding (also overrides getDamage, getFireRate, applyAura).
+ * [CALLED BY]     btd/factory/TowerFactory.java (create(), when tower_class = "SupportTower").
  * [CONNECTS TO]   btd/model/tower/Tower.java, btd/model/enemy/Enemy.java,
  *                 btd/core/VisualEffect.java.
- * [DEFENSE NOTE]  Policeman stuns all in range; Radio Tower buffs nearby tower fire rate; Turret Builder spawns mini-turrets.
+ * [DEFENSE NOTE]  The behavior comes from DB data (special column), so a new support tower can be added in SQL
+ *                 without a new Java class, as long as it uses one of these 3 specials.
  */
 public class SupportTower extends Tower {
 
-    /** Radio Tower buff grows +10% per level (kept as before; the big level table is for damage towers). */
+    /** Radio Tower buff strength grows 10% per level (Lv 1 = 1.0x, Lv 5 = 1.4x of the base 30%). */
     private static final double AURA_LEVEL_BONUS = 0.10;
 
     /**
@@ -38,9 +41,9 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Returns damage; Policeman stun tower does not scale base hit damage with levels.
-     * [OOP / PATTERN] Method Overriding (Conditional stat scaling).
-     * [CALLED BY]     btd/model/tower/Tower.java (update()).
+     * [PURPOSE]       Damage per hit. The Policeman's damage does NOT grow with level (its stun time grows instead).
+     * [OOP / PATTERN] Method Overriding with super call (other specials use Tower's normal formula).
+     * [CALLED BY]     stunAll(), fireTurrets(), btd/ui/screens/SidePanel.java (paintTowerInfo()).
      * [CONNECTS TO]   getType().baseDamage().
      */
     @Override
@@ -52,9 +55,10 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Returns fire rate; Policeman stun tower fire rate is fixed to prevent stun-lock spam.
-     * [OOP / PATTERN] Method Overriding (Conditional stat scaling).
-     * [CALLED BY]     btd/model/tower/Tower.java (update()).
+     * [PURPOSE]       Shots per second. The Policeman's rate does NOT grow with level, so stuns cannot be spammed.
+     *                 (A Radio Tower buff still applies to it.)
+     * [OOP / PATTERN] Method Overriding with super call.
+     * [CALLED BY]     btd/model/tower/Tower.java (update(), for the cooldown), btd/ui/screens/SidePanel.java.
      * [CONNECTS TO]   getType().fireRate().
      */
     @Override
@@ -66,11 +70,12 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Executes active attack phase: triggers stun pulse or mini-turret volley based on Special.
-     * [OOP / PATTERN] Method Overriding (Template Method attack hook) / Switch Dispatch.
+     * [PURPOSE]       STUN -> stunAll(), TURRETS -> fireTurrets(), anything else (BUFF) -> does not attack.
+     * [OOP / PATTERN] Method Overriding (Template Method attack hook) / switch expression.
      * [CALLED BY]     btd/model/tower/Tower.java (update()).
      * [CONNECTS TO]   stunAll(), fireTurrets().
-     * [DEFENSE NOTE]  Aura towers (BUFF) return false here because they operate passively during applyAura().
+     * [DEFENSE NOTE]  The Radio Tower returns false here. Its job is done in applyAura(), which GameEngine calls
+     *                 for every tower before they attack.
      */
     @Override
     protected boolean attack(List<Enemy> enemies, List<VisualEffect> effects) {
@@ -82,11 +87,13 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Stuns all eligible enemies in range; skips immune/stunned targets to preserve cooldown.
-     * [OOP / PATTERN] Crowd Control Logic / State Guard Checking.
+     * [PURPOSE]       Stuns (and lightly damages) every enemy in range that can be stunned right now.
+     * [OOP / PATTERN] Crowd Control / Guard Check (canBeStunned()).
      * [CALLED BY]     btd/model/tower/SupportTower.java (attack()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java (canBeStunned(), stun()), btd/core/VisualEffect.java.
-     * [DEFENSE NOTE]  Only resets cooldown if at least one enemy was successfully stunned (any == true).
+     * [DEFENSE NOTE]  Stun time = effect_duration_ms x STUN_LEVEL_SCALE (1.0 s at Lv 1 up to 2.0 s at Lv 5).
+     *                 Returns true only if someone was stunned. If everyone is immune, no cooldown is used,
+     *                 so the Policeman fires as soon as an enemy becomes stunnable.
      */
     private boolean stunAll(List<Enemy> enemies, List<VisualEffect> effects) {
         double seconds = getType().effectDurationMs() / 1000.0 * STUN_LEVEL_SCALE[getLevel() - 1];
@@ -105,11 +112,11 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Fires autonomous mini-turrets at distinct targets closest to exit.
-     * [OOP / PATTERN] Multi-target targeting strategy.
+     * [PURPOSE]       Engineer: each mini-turret shoots a DIFFERENT enemy, starting from the one closest to the base.
+     * [OOP / PATTERN] Multi-target targeting / Comparator (sort by distance walked, biggest first).
      * [CALLED BY]     btd/model/tower/SupportTower.java (attack()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java, btd/core/VisualEffect.java.
-     * [DEFENSE NOTE]  Sorts targets by distance along track so each turret hits a separate threat.
+     * [DEFENSE NOTE]  3 turrets + 2 enemies in range -> only 2 shots. The shot line starts at the turret, not the tower.
      */
     private boolean fireTurrets(List<Enemy> enemies, List<VisualEffect> effects) {
         List<Enemy> targets = new ArrayList<>();
@@ -130,9 +137,9 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Calculates active number of mini-turrets for TURRETS special.
-     * [OOP / PATTERN] Derived Property Calculation.
-     * [CALLED BY]     btd/model/tower/SupportTower.java (fireTurrets()), btd/ui/components/TowerArt.java.
+     * [PURPOSE]       Number of mini-turrets: effect_value (3), or 3 x 1.5 = 4.5 -> 5 at Lv 5. 0 if not an Engineer.
+     * [OOP / PATTERN] Derived (calculated) Property.
+     * [CALLED BY]     fireTurrets(), btd/ui/screens/GamePanel.java (paintTowers(), draws the turret dots).
      * [CONNECTS TO]   effectValue and passiveEffect.
      */
     public int getTurretCount() {
@@ -143,10 +150,10 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Calculates orbital position coordinates for mini-turret i around main tower base.
-     * [OOP / PATTERN] Trigonometric Orbital Math.
-     * [CALLED BY]     btd/model/tower/SupportTower.java (fireTurrets()), btd/ui/components/TowerArt.java.
-     * [CONNECTS TO]   Rendering and visual beam origins.
+     * [PURPOSE]       Position of turret i: spread evenly on a circle of radius 22 px around the tower, first one on top.
+     * [OOP / PATTERN] Trigonometry (cos for x, sin for y).
+     * [CALLED BY]     fireTurrets() (where the shot starts), btd/ui/screens/GamePanel.java (paintTowers()).
+     * [CONNECTS TO]   Drawing and shot-line start points.
      */
     public double[] turretPosition(int i, int total) {
         double angle = 2 * Math.PI * i / Math.max(1, total) - Math.PI / 2;
@@ -154,11 +161,12 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Applies fire rate boost aura to all neighboring towers within radius.
-     * [OOP / PATTERN] Method Overriding (Aura Buff Pattern).
-     * [CALLED BY]     btd/core/GameEngine.java (updateTowers()).
+     * [PURPOSE]       Radio Tower only: makes every OTHER tower within range shoot faster.
+     * [OOP / PATTERN] Method Overriding (overrides Tower's empty hook).
+     * [CALLED BY]     btd/core/GameEngine.java (update(), for every tower, before towers attack).
      * [CONNECTS TO]   btd/model/tower/Tower.java (addBuff()).
-     * [DEFENSE NOTE]  Aura scales +10% per level; Lv5 passive boosts buff strength by an additional 50%.
+     * [DEFENSE NOTE]  multiplier = 1 + 30% x levelBonus x passive.
+     *                 Lv 1 = 1.30x, Lv 5 = 1 + 0.30 x 1.4 x 1.5 = 1.63x fire rate for nearby towers.
      */
     @Override
     public void applyAura(List<Tower> towers) {
@@ -175,7 +183,8 @@ public class SupportTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Activates Level 5 Upgraded Gear passive: amplifies special effect strength by 50%.
+     * [PURPOSE]       Lv 5 "Upgraded Gear": passiveEffect = 1.5 (stronger buff, more turrets).
+     *                 The Policeman does not use passiveEffect; its Lv 5 bonus is the 2.0 s stun in STUN_LEVEL_SCALE.
      * [OOP / PATTERN] Hook Method Overriding.
      * [CALLED BY]     btd/model/tower/Tower.java (applyLevel()).
      * [CONNECTS TO]   passiveEffect field.
@@ -188,7 +197,7 @@ public class SupportTower extends Tower {
     /**
      * [PURPOSE]       Returns description of Level 5 Upgraded Gear bonus for side panel.
      * [OOP / PATTERN] Polymorphic Property Accessor.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     btd/ui/screens/SidePanel.java (paintTowerInfo()).
      */
     @Override
     public String getPassiveDescription() {

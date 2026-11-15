@@ -6,12 +6,12 @@ import java.awt.Color;
 import java.awt.Font;
 
 /**
- * [PURPOSE]       Shared layout constants, canvas dimensions (1280x720), and colors for primary application screens.
- * [OOP / PATTERN] Design Tokens / Global Configuration.
- * [CALLED BY]     btd/ui/MainFrame.java, btd/ui/screens/LandingPanel.java,
- *                 btd/ui/screens/ResultsPanel.java, btd/ui/screens/HelpPanel.java.
+ * [PURPOSE]       Window size (1280x720) plus a few shared colors and fonts.
+ * [OOP / PATTERN] Constants Class (final class, public static final fields, private constructor).
+ * [CALLED BY]     btd/ui/MainFrame.java, btd/ui/screens/LandingPanel.java, btd/ui/screens/ResultsPanel.java,
+ *                 btd/ui/screens/GamePanel.java, btd/ui/screens/SidePanel.java, btd/ui/screens/ShopOverlay.java.
  * [CONNECTS TO]   btd/util/FontLoader.java.
- * [DEFENSE NOTE]  Enforces strict 1280x720 internal rendering bounds matching standard 16:9 widescreen layout.
+ * [DEFENSE NOTE]  1280x720 is 16:9. The game map uses the left 960 px; SidePanel uses the right 320 px.
  */
 public final class Theme {
 

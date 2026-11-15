@@ -5,18 +5,19 @@ import btd.dao.PlayerDAO;
 import java.sql.SQLException;
 
 /**
- * [PURPOSE]       Independent console verification utility to test database connectivity and PlayerDAO queries.
- * [OOP / PATTERN] Diagnostic Harness / Smoke Test / Separation of Concerns.
- * [CALLED BY]     Developers and system administrators via command line.
+ * [PURPOSE]       Separate little program (its own main()) to check that MySQL works, without starting the game.
+ * [OOP / PATTERN] Smoke Test / separate entry point.
+ * [CALLED BY]     A developer running it by hand. The game itself never calls it.
  * [CONNECTS TO]   btd/dao/PlayerDAO.java, btd/config/DatabaseConnection.java.
- * [DEFENSE NOTE]  Read-only verification tool that issues SELECT queries without mutating database records.
+ * [DEFENSE NOTE]  Read-only (only SELECTs). It looks up "Sam", "sam" (to show the search is not case-sensitive),
+ *                 and a name that doesn't exist (to show Optional.empty() -> "not found").
  */
 public class DbCheck {
 
     /**
      * [PURPOSE]       Executes read-only queries testing player retrieval by name (both existing and non-existent).
      * [OOP / PATTERN] Main Entry Point / Smoke Test.
-     * [CALLED BY]     Command line execution.
+     * [CALLED BY]     Run by hand (e.g. from the IDE's Run button on this file).
      */
     public static void main(String[] args) {
         try {

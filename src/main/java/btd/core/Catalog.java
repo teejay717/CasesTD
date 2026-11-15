@@ -11,12 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * [PURPOSE]       In-memory catalog cache holding all tower archetypes and gacha case definitions loaded from MySQL.
- * [OOP / PATTERN] Repository Cache / In-Memory Registry / Singleton Cache Pattern.
- * [CALLED BY]     btd/Main.java (main()), btd/ui/AppController.java.
+ * [PURPOSE]       In-memory copy of all tower types and cases read from MySQL.
+ * [OOP / PATTERN] In-Memory Cache / Registry (lookup by id).
+ * [CALLED BY]     btd/ui/AppController.java (loadData(), the first time Play is pressed),
+ *                 then handed to btd/ui/screens/GamePanel.java and btd/ui/screens/ShopOverlay.java.
  * [CONNECTS TO]   btd/dao/TowerDAO.java, btd/dao/CaseDAO.java,
  *                 btd/model/tower/TowerType.java, btd/model/gacha/CaseDef.java.
- * [DEFENSE NOTE]  Loaded once at startup to prevent recurring database reads during active 60 FPS gameplay loops.
+ * [DEFENSE NOTE]  Loaded ONCE (on the first Play press, not at app startup). AppController keeps it in a field,
+ *                 so later runs reuse it and the 60 FPS game loop never touches the database.
  */
 public class Catalog {
 
@@ -41,9 +43,11 @@ public class Catalog {
     /**
      * [PURPOSE]       Queries database DAOs for all towers and case definitions, validating seed data presence.
      * [OOP / PATTERN] Static Factory Method / Data Hydration.
-     * [CALLED BY]     btd/Main.java (main()).
+     * [CALLED BY]     btd/ui/AppController.java (loadData()).
      * [CONNECTS TO]   btd/dao/TowerDAO.java (findAll()), btd/dao/CaseDAO.java (findAll()).
-     * [DEFENSE NOTE]  Throws SQLException if either table is empty, prompting user to run seed_data.sql.
+     * [DEFENSE NOTE]  Order matters: towers are loaded first and put in a map by id, because CaseDAO needs
+     *                 that map to turn the tower_ids in case_towers into TowerType objects.
+     *                 Throws SQLException if either table is empty, telling the user to run seed_data.sql.
      */
     public static Catalog load() throws SQLException {
         List<TowerType> towers = new TowerDAO().findAll();
@@ -58,9 +62,9 @@ public class Catalog {
         return new Catalog(towers, cases);
     }
 
-    /** [PURPOSE] Returns immutable list of all tower type records. */
+    /** [PURPOSE] Returns the list of all tower types (the records inside cannot change). */
     public List<TowerType> getTowers() { return towers; }
-    /** [PURPOSE] Returns immutable list of all gacha case definitions. */
+    /** [PURPOSE] Returns the list of all cases, cheapest first (used by ShopOverlay). */
     public List<CaseDef> getCases() { return cases; }
     /** [PURPOSE] Fast O(1) hash lookup of tower specification by its primary key ID. */
     public TowerType getTower(int id) { return towersById.get(id); }

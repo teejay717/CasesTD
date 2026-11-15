@@ -1,12 +1,12 @@
 package btd.model.player;
 
 /**
- * [PURPOSE]       Encapsulates player account profile data: unique ID, handle name, and personal best high score.
- * [OOP / PATTERN] Domain Entity / Data Encapsulation / POJO Pattern.
- * [CALLED BY]     btd/dao/PlayerDAO.java, btd/ui/AppController.java,
- *                 btd/core/GameSession.java, btd/ui/screens/LandingPanel.java.
- * [CONNECTS TO]   btd/dao/PlayerDAO.java, btd/ui/screens/ResultsPanel.java.
- * [DEFENSE NOTE]  Encapsulates score mutation and database representation in one domain object.
+ * [PURPOSE]       One row of the 'players' table: id, name, and highest score (most waves cleared in one run).
+ * [OOP / PATTERN] Entity / Encapsulation (private fields + getters; only highestScore has a setter).
+ * [CALLED BY]     Created in btd/dao/PlayerDAO.java (findByName()). Kept by btd/ui/screens/LandingPanel.java,
+ *                 passed by btd/ui/AppController.java to btd/ui/screens/GamePanel.java (startRun(), finishRun()).
+ * [CONNECTS TO]   btd/dao/PlayerDAO.java.
+ * [DEFENSE NOTE]  playerId and playerName are final, so they can't change. highestScore changes when a record is beaten.
  */
 public class Player {
 
@@ -17,9 +17,9 @@ public class Player {
     /**
      * [PURPOSE]       Constructs a Player entity.
      * [OOP / PATTERN] Entity Constructor / Encapsulation.
-     * [CALLED BY]     btd/dao/PlayerDAO.java (mapRow()).
+     * [CALLED BY]     btd/dao/PlayerDAO.java (findByName()).
      * [CONNECTS TO]   Internal state fields.
-     * [DEFENSE NOTE]  Instantiated directly from database query results upon login or player selection.
+     * [DEFENSE NOTE]  Built from one ResultSet row when the player types their name and opens the crate.
      */
     public Player(int playerId, String playerName, int highestScore) {
         this.playerId = playerId;
@@ -32,7 +32,7 @@ public class Player {
         return playerId;
     }
 
-    /** [PURPOSE] Unique gamer tag username. */
+    /** [PURPOSE] The player's name (UNIQUE in the DB, so no two players share it). */
     public String getPlayerName() {
         return playerName;
     }
@@ -43,19 +43,19 @@ public class Player {
     }
 
     /**
-     * [PURPOSE]       Updates personal best wave record when a new high score is achieved.
-     * [OOP / PATTERN] Encapsulated Setter.
-     * [CALLED BY]     btd/ui/AppController.java, btd/core/GameSession.java.
-     * [CONNECTS TO]   btd/dao/PlayerDAO.java (updateHighestScore()).
+     * [PURPOSE]       Updates the in-memory best score after a new record.
+     * [OOP / PATTERN] Setter.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (finishRun()), right after PlayerDAO.updateHighestScore() succeeds.
+     * [CONNECTS TO]   Keeps this object in sync with the database row, so the menu shows the new score without reloading.
      */
     public void setHighestScore(int highestScore) {
         this.highestScore = highestScore;
     }
 
     /**
-     * [PURPOSE]       Provides readable representation for landing panel player pickers and logs.
+     * [PURPOSE]       Text version of the player, e.g. "Sam (highest score: 14)".
      * [OOP / PATTERN] Method Overriding (Object.toString()).
-     * [CALLED BY]     btd/ui/screens/LandingPanel.java.
+     * [CALLED BY]     btd/util/DbCheck.java (prints players to the console). Not used by the game screens.
      */
     @Override
     public String toString() {

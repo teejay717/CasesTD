@@ -12,18 +12,20 @@ import java.util.Optional;
 /**
  * [PURPOSE]       Encapsulates all JDBC operations on the MySQL 'players' table.
  * [OOP / PATTERN] Data Access Object (DAO) Pattern / Separation of Concerns.
- * [CALLED BY]     btd/ui/screens/LandingPanel.java (login), btd/ui/screens/GamePanel.java (game over save).
+ * [CALLED BY]     btd/ui/screens/LandingPanel.java (openCrate(): findOrCreate()),
+ *                 btd/ui/screens/GamePanel.java (finishRun(): updateHighestScore()), btd/util/DbCheck.java.
  * [CONNECTS TO]   btd/config/DatabaseConnection.java, MySQL 'players' table (player_id, player_name, highest_score).
  * [DEFENSE NOTE]  Completely isolates SQL from GUI screens; prevents SQL injection using PreparedStatement.
  */
 public class PlayerDAO {
 
     /**
-     * [PURPOSE]       Finds an existing player profile by case-insensitive username.
-     * [OOP / PATTERN] Parameterized Query / Null-Safe Optional Return.
-     * [CALLED BY]     findOrCreate(name), btd/ui/screens/LandingPanel.java.
+     * [PURPOSE]       Finds a player by name. Not case-sensitive ("sam" finds "Sam") because of MySQL's default collation.
+     * [OOP / PATTERN] PreparedStatement (parameterized query) / Optional return.
+     * [CALLED BY]     findOrCreate(), btd/util/DbCheck.java.
      * [CONNECTS TO]   btd/config/DatabaseConnection.java.
-     * [DEFENSE NOTE]  Returns Optional<Player> to prevent NullPointerException if player does not exist yet.
+     * [DEFENSE NOTE]  Returns Optional.empty() instead of null when the player does not exist,
+     *                 so the caller must handle "not found" and cannot get a NullPointerException by accident.
      */
     public Optional<Player> findByName(String name) throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();
@@ -43,11 +45,12 @@ public class PlayerDAO {
     }
 
     /**
-     * [PURPOSE]       Retrieves an existing player profile or automatically inserts a new row if absent.
-     * [OOP / PATTERN] Idempotent Registration / User Onboarding.
-     * [CALLED BY]     btd/ui/screens/LandingPanel.java (when typing handle or clicking crate/play).
+     * [PURPOSE]       Returns the player with this name, creating them first (INSERT) if they are new.
+     * [OOP / PATTERN] Find-or-Create (calling it twice with the same name gives the same player).
+     * [CALLED BY]     btd/ui/screens/LandingPanel.java (openCrate(), when the crate is clicked).
      * [CONNECTS TO]   btd/model/player/Player.java, MySQL 'players' table.
-     * [DEFENSE NOTE]  Eliminates tedious manual registration screens; players are auto-created seamlessly.
+     * [DEFENSE NOTE]  "Login" with just a name, no password. New players start with highest_score = 0 (the column default).
+     *                 After the INSERT it reads the row back to get the new auto-increment player_id.
      */
     public Player findOrCreate(String name) throws SQLException {
         Optional<Player> existing = findByName(name);
@@ -63,9 +66,9 @@ public class PlayerDAO {
     }
 
     /**
-     * [PURPOSE]       Updates player highest score only if current run beats the historical record.
-     * [OOP / PATTERN] Atomic Conditional SQL Query / Race Condition Prevention.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (endRun() on game over).
+     * [PURPOSE]       Saves the new best score, but only if it is higher than the one in the DB.
+     * [OOP / PATTERN] Conditional UPDATE (the check is in the SQL WHERE clause).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (finishRun(), on game over or quit, only if waves cleared > old best).
      * [CONNECTS TO]   btd/config/DatabaseConnection.java, MySQL 'players' table.
      * [DEFENSE NOTE]  The clause 'AND highest_score < ?' guarantees in SQL that an inferior score
      *                 can never overwrite a personal best, preventing state regression without client locks.

@@ -5,11 +5,12 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 /**
- * [PURPOSE]       Image-based interactive button with custom hover graphics and mouse collision detection.
- * [OOP / PATTERN] Builder Pattern / UI Component Encapsulation.
- * [CALLED BY]     btd/ui/screens/LandingPanel.java, btd/ui/screens/ResultsPanel.java, btd/ui/screens/HelpPanel.java.
- * [CONNECTS TO]   java.awt.Graphics, btd/util/ImageLoader.java.
- * [DEFENSE NOTE]  Utilizes the Builder Pattern to allow clean, fluent construction of custom button configurations.
+ * [PURPOSE]       A button that is just a picture (PNG). Knows its box, draws itself, and tells if the mouse is on it.
+ * [OOP / PATTERN] Builder Pattern (GameButton.Builder) / Encapsulation.
+ * [CALLED BY]     btd/ui/screens/LandingPanel.java (X, crate, Play, help and How to Play buttons).
+ * [CONNECTS TO]   java.awt.Graphics. (The images are loaded by LandingPanel with ImageLoader and passed in.)
+ * [DEFENSE NOTE]  Builder: new GameButton.Builder(209, 209).position(536, 130).icon(img).build()
+ *                 reads better than a constructor with 6 arguments, and you only set what you need.
  */
 public class GameButton {
     private final int x, y, width, height;
@@ -47,9 +48,10 @@ public class GameButton {
     }
 
     /**
-     * [PURPOSE]       Renders active or hover image icon, drawing a semi-transparent highlight overlay if hoverIcon is absent.
-     * [OOP / PATTERN] Rendering Pipeline / Component Drawing.
-     * [CALLED BY]     Panel paintComponent() methods.
+     * [PURPOSE]       Draws the icon (or hoverIcon when hovered). With no hoverIcon, hovering adds a light white overlay.
+     * [OOP / PATTERN] Component Drawing.
+     * [CALLED BY]     btd/ui/screens/LandingPanel.java (paintComponent() and its helpers).
+     * [DEFENSE NOTE]  LandingPanel never calls updateHover(), so right now the hover look is never shown.
      */
     public void draw(Graphics g) {
         Image toDraw = (hover && hoverIcon != null) ? hoverIcon : icon;
@@ -61,9 +63,9 @@ public class GameButton {
     }
 
     /**
-     * [PURPOSE]       Fluent builder for constructing GameButton instances with custom bounds and icons.
-     * [OOP / PATTERN] Builder Pattern (GoF Creational Pattern).
-     * [CALLED BY]     UI screens.
+     * [PURPOSE]       Collects the settings step by step; build() makes the GameButton.
+     * [OOP / PATTERN] Builder Pattern (GoF creational pattern). Each setter returns 'this', so calls can be chained.
+     * [CALLED BY]     btd/ui/screens/LandingPanel.java (field initializers).
      */
     public static class Builder {
         private int width, height, x, y;

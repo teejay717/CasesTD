@@ -13,8 +13,8 @@ import javax.swing.JOptionPane;
 import java.sql.SQLException;
 
 /**
- * [PURPOSE]       Master application coordinator managing card-layout screen transitions and lazy catalog/config data loading.
- * [OOP / PATTERN] Controller Pattern (MVC) / Mediator Pattern / Coordinator Pattern.
+ * [PURPOSE]       Creates the 3 screens (landing, game, results), switches between them, and loads the game data once.
+ * [OOP / PATTERN] Controller / Mediator (screens never talk to each other directly; they call back into this class).
  * [CALLED BY]     btd/Main.java (main()).
  * [CONNECTS TO]   btd/ui/MainFrame.java, btd/ui/screens/LandingPanel.java,
  *                 btd/ui/screens/GamePanel.java, btd/ui/screens/ResultsPanel.java,
@@ -37,9 +37,11 @@ public class AppController {
 
     /**
      * [PURPOSE]       Constructs application controller, registers UI screen panels with MainFrame, and displays Landing screen.
-     * [OOP / PATTERN] Constructor / Dependency Wiring / Observer Callbacks.
+     * [OOP / PATTERN] Constructor / Callbacks via method references (this::startRun is a Runnable).
      * [CALLED BY]     btd/Main.java (main()).
      * [CONNECTS TO]   btd/ui/MainFrame.java (addScreen(), showScreen()).
+     * [DEFENSE NOTE]  LandingPanel gets this::startRun, so pressing Play there runs startRun() here.
+     *                 GamePanel gets this::showResults, so game over runs showResults() here.
      */
     public AppController(MainFrame frame) {
         this.frame = frame;
@@ -54,11 +56,11 @@ public class AppController {
     }
 
     /**
-     * [PURPOSE]       Initializes gameplay run: ensures game data is hydrated, binds session, and activates GamePanel.
-     * [OOP / PATTERN] Action Callback / State Machine Transition.
-     * [CALLED BY]     btd/ui/screens/LandingPanel.java (play button), btd/ui/screens/ResultsPanel.java (play again button).
+     * [PURPOSE]       Starts a run: load data if needed, give it to GamePanel, show the game screen.
+     * [OOP / PATTERN] Callback / Screen Transition.
+     * [CALLED BY]     btd/ui/screens/LandingPanel.java (Play button), btd/ui/screens/ResultsPanel.java (PLAY AGAIN button).
      * [CONNECTS TO]   btd/ui/screens/GamePanel.java (startRun()).
-     * [DEFENSE NOTE]  Validates that a player profile has been chosen before launching into active gameplay.
+     * [DEFENSE NOTE]  Does nothing if no player has logged in yet, or if loading the data failed.
      */
     private void startRun() {
         Player player = landing.getPlayer();
@@ -74,11 +76,12 @@ public class AppController {
     }
 
     /**
-     * [PURPOSE]       Lazy loads database catalog, wave config JSON, and map waypoint CSV on first run.
-     * [OOP / PATTERN] Lazy Initialization / Singleton Cache.
+     * [PURPOSE]       Loads towers + cases (MySQL), waves_config.json and map1_path.csv, but only the first time.
+     * [OOP / PATTERN] Lazy Initialization / Caching (the "if (x == null)" checks).
      * [CALLED BY]     startRun().
      * [CONNECTS TO]   btd/core/Catalog.java (load()), btd/core/GameConfig.java (load()), btd/core/GameMap.java (load()).
-     * [DEFENSE NOTE]  Catches SQLException/IllegalStateException and presents user-friendly modal dialog if MySQL is unreachable.
+     * [DEFENSE NOTE]  On the 2nd run (PLAY AGAIN) all three are already loaded, so nothing is read again.
+     *                 If MySQL is down or a file is missing, it shows a popup instead of crashing.
      */
     private boolean loadData() {
         try {
@@ -100,8 +103,8 @@ public class AppController {
     }
 
     /**
-     * [PURPOSE]       Displays game-over results screen with cleared wave statistics and record evaluation.
-     * [OOP / PATTERN] Screen Transition / Callback Handler.
+     * [PURPOSE]       Shows the results screen with the finished run's numbers.
+     * [OOP / PATTERN] Screen Transition / Callback (GamePanel holds it as a Consumer<RunResult>).
      * [CALLED BY]     btd/ui/screens/GamePanel.java (finishRun()).
      * [CONNECTS TO]   btd/ui/screens/ResultsPanel.java (show()).
      */

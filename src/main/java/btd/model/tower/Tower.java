@@ -6,25 +6,31 @@ import btd.model.enemy.Enemy;
 import java.util.List;
 
 /**
- * [PURPOSE]       Abstract base class for all defense towers placed on the grid.
- *                 Handles cooldowns, targeting math, level multipliers, and Lv5 passive hooks.
- * [OOP / PATTERN] Abstract Class / Template Method Pattern / Inheritance & Polymorphism.
- * [CALLED BY]     btd/factory/TowerFactory.java, btd/core/GameEngine.java, btd/core/GameSession.java.
+ * [PURPOSE]       Abstract parent of every PLACED tower. Holds what all towers share: position, level,
+ *                 cooldown, level multipliers, aura buff, and "find the enemy closest to the base".
+ * [OOP / PATTERN] Abstract Class / Template Method (update() is final and calls the abstract attack()) /
+ *                 Inheritance & Polymorphism (4 subclasses: SingleTarget, Splash, Sniper, Support).
+ * [CALLED BY]     Created by btd/factory/TowerFactory.java; stored in btd/core/GameSession.java;
+ *                 updated by btd/core/GameEngine.java; drawn by btd/ui/screens/GamePanel.java.
  * [CONNECTS TO]   btd/model/tower/Upgradable.java, btd/model/tower/TowerType.java,
  *                 btd/model/enemy/Enemy.java, btd/core/VisualEffect.java.
- * [DEFENSE NOTE]  Encapsulates generic tower loop logic while leaving attack mechanics,
- *                 auras, and max passives to specialized subclasses.
+ * [DEFENSE NOTE]  Cannot write "new Tower(...)" because it is abstract. GameEngine only knows "Tower",
+ *                 so calling t.update() runs the right subclass's attack() (polymorphism).
  */
 public abstract class Tower implements Upgradable {
 
-    /** Maximum level reachable via standard gold upgrades. */
+    /**
+     * Highest level for a tower when ANOTHER tower of the same type is already Level 5
+     * (only one Lv 5 per type is allowed; see GameSession.upgradeBlockReason()).
+     */
     public static final int MAX_NORMAL_LEVEL = 4;
-    /** Absolute maximum level unlocking the signature archetype passive. */
+    /** Absolute maximum level. Reaching it unlocks the subclass's Lv 5 passive (applyMaxPassive()). */
     public static final int MAX_LEVEL = 5;
 
     /**
-     * Damage and fire rate multiplier at each level (index 0 = Lv 1). Each level is worth a bit
-     * more than placing the copies it costs, so upgrading is never worse than placing duplicates.
+     * Multiplier at each level (index 0 = Lv 1). It is applied to BOTH damage and fire rate,
+     * so damage per second grows by the multiplier squared: Lv 2 = 1.45 x 1.45 = about 2.1x a Lv 1 tower.
+     * Upgrades cost spare copies, so this makes an upgrade roughly as strong as placing those copies.
      */
     private static final double[] LEVEL_MULTIPLIERS = {1.00, 1.45, 1.80, 2.03, 2.30};
 
@@ -45,9 +51,9 @@ public abstract class Tower implements Upgradable {
     /**
      * [PURPOSE]       Constructs a new placed tower instance on the grid.
      * [OOP / PATTERN] Constructor / State Initialization.
-     * [CALLED BY]     Subclass constructors (SingleTargetTower, SplashTower, SniperTower, SupportTower).
+     * [CALLED BY]     Subclass constructors through super(type, x, y).
      * [CONNECTS TO]   btd/model/tower/TowerType.java.
-     * [DEFENSE NOTE]  Position coordinates and database metadata record are immutable.
+     * [DEFENSE NOTE]  protected = only subclasses can call it. type, x and y are final: a tower never moves.
      */
     protected Tower(TowerType type, double x, double y) {
         this.type = type;
@@ -56,11 +62,12 @@ public abstract class Tower implements Upgradable {
     }
 
     /**
-     * [PURPOSE]       Executes simulation frame tick: decrements cooldown and fires when ready.
-     * [OOP / PATTERN] Template Method Pattern (invokes attack() hook).
-     * [CALLED BY]     btd/core/GameEngine.java (updateTowers()).
+     * [PURPOSE]       Called every step: count the cooldown down; when it hits 0, try to attack.
+     * [OOP / PATTERN] Template Method (the fixed steps are here, the attack() step is filled in by each subclass).
+     * [CALLED BY]     btd/core/GameEngine.java (update()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java, btd/core/VisualEffect.java.
-     * [DEFENSE NOTE]  If no enemies are in range, cooldown stays at zero to fire immediately once a target appears.
+     * [DEFENSE NOTE]  'final' = subclasses cannot change this loop. If attack() hit something, wait 1 / fireRate seconds
+     *                 (fire rate 2.0 -> 0.5 s). If nothing was in range, cooldown = 0 so it fires as soon as an enemy comes.
      */
     public final void update(double dt, List<Enemy> enemies, List<VisualEffect> effects) {
         cooldown -= dt;
@@ -88,25 +95,26 @@ public abstract class Tower implements Upgradable {
      * [OOP / PATTERN] Hook Method (Template Method Pattern).
      * [CALLED BY]     btd/model/tower/Tower.java (applyLevel()).
      * [CONNECTS TO]   Subclass passive multipliers.
-     * [DEFENSE NOTE]  SingleTarget gets +50% fire rate, Splash gets +50% radius, Sniper gets 2x damage, Support gets +50% aura/turrets.
+     * [DEFENSE NOTE]  SingleTarget: +50% fire rate. Splash: +50% blast radius. Sniper: 2x damage (+50% pierce for Railgunner).
+     *                 Support: +50% effect (Radio Tower buff, Engineer turrets); Policeman instead gets a 2x stun time.
      */
     protected abstract void applyMaxPassive();
 
     /**
      * [PURPOSE]       Provides readable description of Level 5 passive for side panel UI.
      * [OOP / PATTERN] Abstract Method / Polymorphism.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java.
-     * [CONNECTS TO]   UI tooltips and upgrade prompt labels.
+     * [CALLED BY]     btd/ui/screens/SidePanel.java (paintTowerInfo()).
+     * [CONNECTS TO]   The gold/brown passive text in the tower info card.
      * [DEFENSE NOTE]  Ensures UI can dynamically display perk details without instanceof checks.
      */
     public abstract String getPassiveDescription();
 
     /**
-     * [PURPOSE]       Aura buff application hook for support towers.
-     * [OOP / PATTERN] Hook Method (Default empty implementation).
-     * [CALLED BY]     btd/core/GameEngine.java (updateTowers()).
-     * [CONNECTS TO]   btd/model/tower/SupportTower.java (overrides for Radio Tower).
-     * [DEFENSE NOTE]  Iterates all towers on the field before attack phase to apply aura multipliers.
+     * [PURPOSE]       Lets a tower buff other towers. Does nothing by default.
+     * [OOP / PATTERN] Hook Method (empty default; a subclass overrides it only if it needs it).
+     * [CALLED BY]     btd/core/GameEngine.java (update(), for every tower, before any tower shoots).
+     * [CONNECTS TO]   btd/model/tower/SupportTower.java (overrides it; only the Radio Tower / BUFF actually buffs).
+     * [DEFENSE NOTE]  Because it is not abstract, SingleTarget/Splash/Sniper do not have to write an empty method.
      */
     public void applyAura(List<Tower> towers) {
     }
@@ -120,9 +128,10 @@ public abstract class Tower implements Upgradable {
     /**
      * [PURPOSE]       Updates level and triggers applyMaxPassive() if level reaches 5.
      * [OOP / PATTERN] Contract Implementation / State Transition.
-     * [CALLED BY]     btd/core/GameSession.java (upgradeTower()).
+     * [CALLED BY]     btd/core/GameSession.java (upgrade()).
      * [CONNECTS TO]   btd/model/tower/Tower.java (applyMaxPassive()).
-     * [DEFENSE NOTE]  Seamlessly promotes tower to final tier without rebuilding or replacing the instance.
+     * [DEFENSE NOTE]  The same Tower object is leveled up; it is not removed and rebuilt.
+     *                 Damage and fire rate change automatically because getDamage() reads 'level' every time.
      */
     @Override
     public void applyLevel(int newLevel) {
@@ -134,17 +143,17 @@ public abstract class Tower implements Upgradable {
 
     // ---- stats ----
 
-    /** [PURPOSE] Resolves damage/fire rate multiplier for current level from lookup array. */
+    /** [PURPOSE] Multiplier for the current level: LEVEL_MULTIPLIERS[level - 1] (arrays start at 0). */
     protected double levelMultiplier() {
         return LEVEL_MULTIPLIERS[level - 1];
     }
 
-    /** [PURPOSE] Calculates total damage including base, level multiplier, and Lv5 passive damage. */
+    /** [PURPOSE] Damage per hit = base damage x level multiplier x Lv 5 passive (1.0 unless Sniper Lv 5). */
     public double getDamage() {
         return type.baseDamage() * levelMultiplier() * passiveDamage;
     }
 
-    /** [PURPOSE] Calculates fire rate (shots/sec) factoring level, passive, and external aura buffs. */
+    /** [PURPOSE] Shots per second = base rate x level multiplier x Lv 5 passive x Radio Tower buff. */
     public double getFireRate() {
         return type.fireRate() * levelMultiplier() * passiveRate * fireRateBuff;
     }
@@ -154,17 +163,17 @@ public abstract class Tower implements Upgradable {
         return type.range();
     }
 
-    /** [PURPOSE] Accesses active aura buff multiplier applied by nearby SupportTowers. */
+    /** [PURPOSE] Current Radio Tower buff (1.0 = none). protected: used by SupportTower.getFireRate(). */
     protected double getFireRateBuff() {
         return fireRateBuff;
     }
 
-    /** [PURPOSE] Resets external aura buff back to 1.0 prior to fresh aura recalculation frame. */
+    /** [PURPOSE] Sets the buff back to 1.0 (no buff). GameEngine.update() calls this on every tower each step, before auras. */
     public void resetBuff() {
         fireRateBuff = 1.0;
     }
 
-    /** [PURPOSE] Sets aura buff to maximum of existing buff or newly offered multiplier. */
+    /** [PURPOSE] Called by SupportTower.applyAura(). Keeps the BIGGEST buff, so two Radio Towers do not stack. */
     public void addBuff(double multiplier) {
         fireRateBuff = Math.max(fireRateBuff, multiplier);
     }
@@ -177,9 +186,9 @@ public abstract class Tower implements Upgradable {
     }
 
     /**
-     * [PURPOSE]       Finds living enemy within range that has progressed furthest along track.
-     * [OOP / PATTERN] First/Progress Targeting Strategy.
-     * [CALLED BY]     btd/model/tower/SingleTargetTower.java, btd/model/tower/SplashTower.java.
+     * [PURPOSE]       Finds the living enemy in range that has walked the furthest (closest to the base).
+     * [OOP / PATTERN] "First" Targeting (shared helper in the parent class, so subclasses reuse it).
+     * [CALLED BY]     btd/model/tower/SingleTargetTower.java (attack()), btd/model/tower/SplashTower.java (attack()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java (getDistance()).
      * [DEFENSE NOTE]  Standard tower defense priority rule: shoot the enemy closest to leaking.
      */
@@ -199,6 +208,6 @@ public abstract class Tower implements Upgradable {
     public double getX() { return x; }
     /** [PURPOSE] Y coordinate on the grid. */
     public double getY() { return y; }
-    /** [PURPOSE] Passive fire rate multiplier. */
+    /** [PURPOSE] Lv 5 fire rate passive (1.5 for SingleTargetTower at Lv 5, otherwise 1.0). Not used by other classes yet. */
     public double getPassiveFireRate() { return passiveRate; }
 }

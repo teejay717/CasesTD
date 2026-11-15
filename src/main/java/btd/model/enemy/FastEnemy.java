@@ -1,11 +1,12 @@
 package btd.model.enemy;
 
 /**
- * [PURPOSE]       High-speed, low-health scout zombie designed to breach defenses before heavy towers can fire.
- * [OOP / PATTERN] Concrete Subclass / Specialization / Inheritance.
+ * [PURPOSE]       Fast, weak zombie: 18 HP, 105 px/s, 1 life if it leaks, 7 coins. First appears in wave 3.
+ * [OOP / PATTERN] Concrete Subclass / Inheritance.
  * [CALLED BY]     btd/factory/EnemyFactory.java (create()).
  * [CONNECTS TO]   btd/model/enemy/Enemy.java (super class).
- * [DEFENSE NOTE]  Tests tower fire rate and projectile velocity; fast movement counters slow-reloading snipers.
+ * [DEFENSE NOTE]  Towers hit instantly (no flying bullets), so speed matters because it spends less time inside
+ *                 each tower's range. Slow-firing towers like the Sniper get fewer shots at it.
  */
 public class FastEnemy extends Enemy {
 
@@ -21,11 +22,10 @@ public class FastEnemy extends Enemy {
     }
 
     /**
-     * [PURPOSE]       Returns collision and rendering radius for FastEnemy (9 pixels).
+     * [PURPOSE]       Radius 9 px, the smallest (used for drawing size and the Railgunner beam check).
      * [OOP / PATTERN] Method Overriding (Polymorphism).
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemyCircle()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemy()), btd/model/tower/SniperTower.java (onBeam()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java.
-     * [DEFENSE NOTE]  Smaller hitbox (9px) visually and mechanically reflects agile build.
      */
     @Override
     public double getRadius() {

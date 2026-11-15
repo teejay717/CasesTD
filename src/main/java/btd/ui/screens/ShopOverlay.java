@@ -21,14 +21,16 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * [PURPOSE]       Interactive modal gacha shop overlay: case selection cards with drop odds, CS:GO-style rolling spinner strip,
- *                 and animated win reveal card with celebratory rarity glow.
- * [OOP / PATTERN] State Machine (CASES -> SPINNING -> RESULT) / Modal Dialog Pattern / CS:GO Spinner Animation.
- * [CALLED BY]     btd/ui/screens/GamePanel.java.
+ * [PURPOSE]       The case shop drawn on top of the game: case cards with drop chances, the spinning strip,
+ *                 and the "YOU GOT" result card.
+ * [OOP / PATTERN] State Machine with an enum (CASES -> SPINNING -> RESULT -> back to CASES) / Modal Overlay.
+ *                 Not a JPanel: GamePanel calls paint(), click(), update() and mouseMoved() on it.
+ * [CALLED BY]     btd/ui/screens/GamePanel.java (created in startRun(); opened by openShop()).
  * [CONNECTS TO]   btd/core/GameSession.java (buyCase(), openFreeCase()),
- *                 btd/model/gacha/CaseDef.java, btd/core/Catalog.java.
- * [DEFENSE NOTE]  Deterministic outcome generation: tower drop is awarded in GameSession the instant gold is deducted;
- *                 the 5-second spinner animation simply creates suspenseful presentation.
+ *                 btd/model/gacha/CaseDef.java, btd/core/Catalog.java, btd/ui/components/TowerArt.java.
+ * [DEFENSE NOTE]  The prize is decided BEFORE the spin starts (GameSession rolls it and adds it to the inventory).
+ *                 The 5 s spin is only an animation that is set up to stop on that prize.
+ *                 While the shop is open, GamePanel.advance() does not update the engine, so the game is paused.
  */
 public class ShopOverlay {
 
@@ -69,7 +71,7 @@ public class ShopOverlay {
     private double offset;
 
     /**
-     * [PURPOSE]       Constructs ShopOverlay and generates buy buttons for all cases in catalog.
+     * [PURPOSE]       Makes one BUY button per case in the catalog (3 cases = 3 buttons).
      * [OOP / PATTERN] Constructor / Component Initialization.
      * [CALLED BY]     btd/ui/screens/GamePanel.java (startRun()).
      */
@@ -81,7 +83,7 @@ public class ShopOverlay {
         }
     }
 
-    /** [PURPOSE] Computes centered horizontal X coordinate for case card index i. */
+    /** [PURPOSE] Left x of case card i, so all cards (250 px wide, 20 px gap) are centered in the shop. */
     private int cardX(int i) {
         int count = catalog.getCases().size();
         int total = count * CARD_W + (count - 1) * 20;
@@ -98,9 +100,10 @@ public class ShopOverlay {
     }
 
     /**
-     * [PURPOSE]       Closes shop modal; guarded against closing mid-spin.
-     * [OOP / PATTERN] State Guard Clause.
-     * [DEFENSE NOTE]  Closing is blocked while view is SPINNING so player cannot cancel out mid-roll.
+     * [PURPOSE]       Closes the shop, but not while it is spinning.
+     * [OOP / PATTERN] Guard Clause.
+     * [CALLED BY]     clickCases() (the X button), btd/ui/screens/GamePanel.java (cancelAction(), Esc / right-click).
+     * [DEFENSE NOTE]  Mid-spin, Esc does nothing. The player can still click to skip to the result.
      */
     public void close() {
         if (view != View.SPINNING) {
@@ -111,10 +114,11 @@ public class ShopOverlay {
     // ---- logic ----
 
     /**
-     * [PURPOSE]       Advances spinner animation timer using quartic ease-out curve (1 - (1-t)^4).
-     * [OOP / PATTERN] Non-linear Animation Interpolation / Easing Function.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (advance()).
-     * [DEFENSE NOTE]  Quartic ease-out provides high initial speed followed by dramatic, suspenseful deceleration.
+     * [PURPOSE]       Moves the spin animation forward. t goes 0 -> 1 over 5 s; offset = finalOffset x (1 - (1 - t)^4).
+     * [OOP / PATTERN] Easing Function ("ease-out": fast at first, then slows down).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (advance(), only while the shop is open).
+     * [DEFENSE NOTE]  At t = 0.5 the strip has already moved about 94% of the way, so the last seconds are a slow crawl.
+     *                 When t reaches 1 the view switches to RESULT.
      */
     public void update(double dt) {
         if (!open || view != View.SPINNING) {
@@ -130,7 +134,8 @@ public class ShopOverlay {
     }
 
     /**
-     * [PURPOSE]       Processes click input: purchases case, skips spinning animation, or collects win reward.
+     * [PURPOSE]       What a click does depends on the view: CASES = buy / close, SPINNING = skip to result,
+     *                 RESULT = COLLECT goes back to the case list. (The tower is already in the inventory.)
      * [OOP / PATTERN] Input State Dispatcher.
      * [CALLED BY]     btd/ui/screens/GamePanel.java (handlePress()).
      */
@@ -154,7 +159,7 @@ public class ShopOverlay {
         }
     }
 
-    /** [PURPOSE] Updates hover states across active overlay buttons. */
+    /** [PURPOSE] Updates hover highlight on the shop buttons. Called by GamePanel.handleMove(). */
     public void mouseMoved(int x, int y) {
         closeButton.updateHover(x, y);
         collectButton.updateHover(x, y);
@@ -163,7 +168,7 @@ public class ShopOverlay {
         }
     }
 
-    /** [PURPOSE] Evaluates case purchase button clicks. */
+    /** [PURPOSE] In the CASES view: X closes the shop; an enabled BUY / OPEN FREE button opens that case. */
     private void clickCases(int x, int y) {
         if (closeButton.contains(x, y)) {
             close();
@@ -179,11 +184,14 @@ public class ShopOverlay {
     }
 
     /**
-     * [PURPOSE]       Executes case transaction: deducts gold/free ticket, rolls outcome, builds 46-item spinner tape.
-     * [OOP / PATTERN] Transaction Orchestration / Animation Setup.
+     * [PURPOSE]       Opens a case: 1) GameSession rolls the prize (free case or paid), 2) build a strip of 46 towers
+     *                 with the prize at slot 38, 3) work out how far to scroll so slot 38 stops under the gold line.
+     * [OOP / PATTERN] Animation Setup.
      * [CALLED BY]     clickCases().
      * [CONNECTS TO]   btd/core/GameSession.java (buyCase(), openFreeCase()).
-     * [DEFENSE NOTE]  Embeds winning tower at exact index 38 (WIN_INDEX) with random jitter to emulate realistic slot friction.
+     * [DEFENSE NOTE]  The free starter case only works on the FIRST case card (index 0 = Standard Case).
+     *                 The other 45 slots are random towers from the pool, just for show.
+     *                 'jitter' moves the stop point a little left or right so it doesn't always land dead center.
      */
     private void openCase(CaseDef def, int index) {
         TowerType result = (index == 0 && session.getFreeCases() > 0)
@@ -214,8 +222,8 @@ public class ShopOverlay {
     // ---- painting ----
 
     /**
-     * [PURPOSE]       Master render pipeline for shop: dims background canvas and dispatches to active view phase.
-     * [OOP / PATTERN] View Dispatcher / Canvas Dimming Overlay.
+     * [PURPOSE]       If open: darkens the game, draws the wooden board, then draws the current view.
+     * [OOP / PATTERN] switch on the View enum.
      * [CALLED BY]     btd/ui/screens/GamePanel.java (paintComponent()).
      */
     public void paint(Graphics2D g) {
@@ -242,7 +250,10 @@ public class ShopOverlay {
         }
     }
 
-    /** [PURPOSE] Renders case showcase cards: title, pool icon avatars, rarity drop percentages, and buy buttons. */
+    /**
+     * [PURPOSE] Draws each case card: name, small icons of every tower in its pool, the drop chances (rarities with 0% hidden),
+     *           and the button ("OPEN FREE", or "BUY cost" which is greyed out if you can't afford it).
+     */
     private void paintCases(Graphics2D g) {
         Gfx.centered(g, "CASE SHOP", X + W / 2.0, Y + 50, Palette.heading(38f), Palette.GOLD);
         Gfx.centered(g, "Roll duplicate towers to upgrade them to higher levels!",
@@ -301,7 +312,7 @@ public class ShopOverlay {
         closeButton.draw(g);
     }
 
-    /** [PURPOSE] Renders animated case spinning strip with top title and skip hint. */
+    /** [PURPOSE] SPINNING view: "Opening ..." title, the strip, and "(click to skip)". */
     private void paintSpinner(Graphics2D g) {
         Gfx.centered(g, "Opening " + spinningCase.name() + "...", X + W / 2.0, Y + 150, Palette.heading(30f), Palette.CREAM);
         paintStrip(g);
@@ -309,10 +320,11 @@ public class ShopOverlay {
     }
 
     /**
-     * [PURPOSE]       Renders horizontal rolling strip with viewport clipping and gold center-line alignment tick.
-     * [OOP / PATTERN] Clipping Region / Horizontal Viewport Scrolling.
+     * [PURPOSE]       Draws the strip of tower cards shifted left by 'offset', plus the gold line in the middle.
+     * [OOP / PATTERN] Clipping (g.setClip) / Scrolling by an offset.
      * [CALLED BY]     paintSpinner().
-     * [DEFENSE NOTE]  Uses java.awt.Shape clipping to ensure cards only appear inside the 760px window.
+     * [DEFENSE NOTE]  setClip() means anything drawn outside the 760 px window is cut off, then the old clip is restored.
+     *                 Cards fully outside the window are skipped (continue) to save drawing time.
      */
     private void paintStrip(Graphics2D g) {
         int wx = X + (W - WINDOW_W) / 2;
@@ -355,8 +367,9 @@ public class ShopOverlay {
     }
 
     /**
-     * [PURPOSE]       Renders winning tower card modal with rarity border, avatar art, gem rating, description, and collect button.
-     * [OOP / PATTERN] Result Card Presentation.
+     * [PURPOSE]       RESULT view: the won tower with a rarity-colored border, big art (size 100), name, stars,
+     *                 description, "You now have N", and the COLLECT button.
+     * [OOP / PATTERN] Result Card.
      * [CALLED BY]     paint().
      */
     private void paintResult(Graphics2D g) {

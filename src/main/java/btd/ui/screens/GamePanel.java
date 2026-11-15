@@ -52,15 +52,16 @@ import btd.ui.theme.Theme;
 import btd.util.SpriteLoader;
 
 /**
- * [PURPOSE]       Primary gameplay canvas running the 60 FPS fixed-timestep loop: renders procedural and bitmap
- *                 map terrain, rotates walking zombies, handles tower targeting lasers/explosions, manages tower placement,
- *                 and hosts the HUD, SidePanel, and ShopOverlay.
- * [OOP / PATTERN] Master View & Input Controller (MVC) / Mediator Pattern / Fixed Timestep Game Loop Pattern.
- * [CALLED BY]     btd/ui/AppController.java (startRun()).
+ * [PURPOSE]       The game screen. It runs the game loop (Swing Timer + fixed 1/60 s steps), handles mouse and keys,
+ *                 and draws everything: map, towers, zombies, shot effects, HUD, SidePanel and ShopOverlay.
+ * [OOP / PATTERN] View + Controller (draws and handles input; the rules are in GameEngine / GameSession) /
+ *                 Fixed-Timestep Game Loop / implements the SidePanel.Actions interface.
+ * [CALLED BY]     Created in btd/ui/AppController.java (constructor); AppController.startRun() calls startRun() here.
  * [CONNECTS TO]   btd/core/GameEngine.java, btd/core/GameSession.java,
  *                 btd/core/GameMap.java, btd/ui/screens/SidePanel.java,
  *                 btd/ui/screens/ShopOverlay.java, btd/dao/PlayerDAO.java.
- * [DEFENSE NOTE]  Implements SidePanel.Actions to decouple UI sidebar button clicks from core game simulation logic.
+ * [DEFENSE NOTE]  SidePanel does not know GamePanel; it only knows the Actions interface. When a SidePanel button is
+ *                 clicked it calls actions.upgradeSelected() etc., and GamePanel's version of that method runs.
  */
 public class GamePanel extends JPanel implements SidePanel.Actions {
 
@@ -99,8 +100,8 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     private double toastTimer;
 
     /**
-     * [PURPOSE]       Constructs GamePanel, attaches mouse listeners, and binds ESC/SPACE keyboard shortcuts.
-     * [OOP / PATTERN] Constructor / Input Binding / Observer Pattern.
+     * [PURPOSE]       Sets up the panel once: size, mouse listeners, and the Esc / Space keys. No run is started yet.
+     * [OOP / PATTERN] Constructor / Event Listeners (Observer: Swing calls us back on mouse events).
      * [CALLED BY]     btd/ui/AppController.java constructor.
      */
     public GamePanel(Consumer<RunResult> onRunFinished) {
@@ -132,9 +133,10 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     }
 
     /**
-     * [PURPOSE]       Binds keyboard shortcut key to executable action runnable using Swing InputMap/ActionMap.
-     * [OOP / PATTERN] Command Pattern / Swing Key Binding.
+     * [PURPOSE]       Makes a key (e.g. "SPACE") run an action, using Swing's InputMap / ActionMap.
+     * [OOP / PATTERN] Swing Key Binding / the action is passed as a Runnable (this::startWave).
      * [CALLED BY]     GamePanel constructor.
+     * [DEFENSE NOTE]  WHEN_IN_FOCUSED_WINDOW = the key works even if this panel itself does not have focus.
      */
     private void bindKey(String key, Runnable action) {
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(key), key);
@@ -147,11 +149,13 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     }
 
     /**
-     * [PURPOSE]       Initializes new gameplay session, loads map background, starts 60 FPS Swing Timer.
-     * [OOP / PATTERN] Lifecycle Hook / Session Hydration.
-     * [CALLED BY]     btd/ui/AppController.java (startRun()).
-     * [CONNECTS TO]   btd/core/GameSession.java, btd/core/GameEngine.java, btd/ui/screens/SidePanel.java.
-     * [DEFENSE NOTE]  Loads map background asset 'assets/map/map.png' with safe procedural fallback.
+     * [PURPOSE]       Starts a fresh run: new GameSession, GameEngine and ShopOverlay, resets all fields, starts the Timer.
+     * [OOP / PATTERN] Object Creation / Dependency Injection (passes config, map, session into the engine).
+     * [CALLED BY]     btd/ui/AppController.java (startRun()), on Play and on PLAY AGAIN.
+     * [CONNECTS TO]   btd/core/GameSession.java, btd/core/GameEngine.java, btd/ui/screens/ShopOverlay.java,
+     *                 btd/ui/screens/SidePanel.java (bind()).
+     * [DEFENSE NOTE]  Everything is created NEW here, so PLAY AGAIN never keeps coins or towers from the last run.
+     *                 If assets/map/map.png is missing, background = null and paintGround()/paintPath() draw the map in code.
      */
     public void startRun(Player player, Catalog catalog, GameConfig config, GameMap map) {
         this.player = player;
@@ -186,9 +190,10 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     // ---- game loop ----
 
     /**
-     * [PURPOSE]       Swing Timer tick handler: computes elapsed delta time, advances game simulation, triggers repaint.
-     * [OOP / PATTERN] Game Loop / Observer Callback.
-     * [CALLED BY]     javax.swing.Timer (tick event).
+     * [PURPOSE]       Runs about every 16 ms: measure real time since last tick, advance the game, then repaint.
+     * [OOP / PATTERN] Game Loop / Timer Callback.
+     * [CALLED BY]     The javax.swing.Timer field (new Timer(16, e -> tick())), on the Swing thread.
+     * [DEFENSE NOTE]  The time is capped at 0.05 s, so if the PC freezes for a second the game does not jump ahead.
      */
     private void tick() {
         long now = System.nanoTime();
@@ -199,9 +204,12 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     }
 
     /**
-     * [PURPOSE]       Fixed-timestep simulation tick accumulator: runs GameEngine updates at 60 FPS (also used by tests).
-     * [OOP / PATTERN] Fixed Timestep Accumulator Pattern.
-     * [CALLED BY]     tick(), unit tests.
+     * [PURPOSE]       Turns real time into fixed 1/60 s engine steps. Also pauses for the shop and handles game over.
+     * [OOP / PATTERN] Fixed Timestep with an Accumulator.
+     * [CALLED BY]     tick().
+     * [DEFENSE NOTE]  accumulator += real x speed; then "while (accumulator >= STEP) engine.update(STEP)".
+     *                 So the game runs the same on fast and slow PCs, and at x2 / x3 speed it just does 2-3x more steps.
+     *                 Shop open = the engine is not updated (paused). Game over = wait 2 s, then finishRun().
      */
     public void advance(double real) {
         if (toastTimer > 0) {
@@ -232,17 +240,18 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Displays temporary overlay banner message for gold notifications or wave clears. */
+    /** [PURPOSE] Shows a gold message at the top for some seconds ("Wave 3 cleared!", "BOSS WAVE!", "You can't build there."). */
     private void showToast(String text, double seconds) {
         toast = text;
         toastTimer = seconds;
     }
 
     /**
-     * [PURPOSE]       Concludes run session, updates player highest score in DB if beaten, triggers onRunFinished callback.
-     * [OOP / PATTERN] Lifecycle Hook / Data Access Synchronization.
-     * [CALLED BY]     tick(), confirmQuit().
-     * [CONNECTS TO]   btd/dao/PlayerDAO.java (updateHighestScore()).
+     * [PURPOSE]       Ends the run: stop the Timer, save the score if it is a new record, then tell AppController.
+     * [OOP / PATTERN] Callback (onRunFinished is AppController::showResults) / DAO call.
+     * [CALLED BY]     advance() (2 s after GAME OVER), confirmQuit() (QUIT button -> Yes).
+     * [CONNECTS TO]   btd/dao/PlayerDAO.java (updateHighestScore()), btd/core/RunResult.java.
+     * [DEFENSE NOTE]  'finished' stops it from running twice. "NEW HIGH SCORE" is only shown if the DB save worked.
      */
     private void finishRun() {
         if (finished) {
@@ -268,7 +277,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
 
     // ---- input ----
 
-    /** [PURPOSE] Updates cursor coordinates and delegates mouse hover events to SidePanel and quit button. */
+    /** [PURPOSE] Saves the mouse position (for the placing ghost) and updates hover effects on SidePanel, QUIT and the shop. */
     private void handleMove(MouseEvent e) {
         mouseX = e.getX();
         mouseY = e.getY();
@@ -279,7 +288,10 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Dispatches mouse press events: shop interactions, sidebar clicks, cancel, quit modal, or tower placing/selection. */
+    /**
+     * [PURPOSE] Decides where a click goes, in this order: shop (if open) -> SidePanel (x >= 960) ->
+     *           right-click = cancel -> QUIT button -> place the tower (if placing) -> otherwise select a tower.
+     */
     private void handlePress(MouseEvent e) {
         requestFocusInWindow();
         if (finished || engine.getState() == GameEngine.State.GAME_OVER) {
@@ -312,7 +324,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Radial hit-testing on placed towers around coordinates (x, y). */
+    /** [PURPOSE] Returns the placed tower under the mouse (within 21 px of its center), or null. */
     private Tower towerAt(int x, int y) {
         for (Tower t : session.getTowers()) {
             if (Math.hypot(t.getX() - x, t.getY() - y) <= TOWER_SIZE / 2.0 + 4) {
@@ -322,7 +334,10 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         return null;
     }
 
-    /** [PURPOSE] Places pending inventory tower onto map cell if valid path/distance constraints pass. */
+    /**
+     * [PURPOSE] Click on the map while placing: find that card in the inventory and call GameSession.place().
+     *           If place() returns null (bad spot), show "You can't build there." and stay in placing mode.
+     */
     private void placeAt(int x, int y) {
         List<TowerType> inventory = session.getInventory();
         int index = -1;
@@ -345,7 +360,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         selectTower(placed);
     }
 
-    /** [PURPOSE] Shows Swing confirmation dialog before quitting active run and saving score. */
+    /** [PURPOSE] QUIT button: asks "End this run now?" (JOptionPane). Yes = finishRun(), which saves the score. */
     private void confirmQuit() {
         int answer = JOptionPane.showConfirmDialog(this, "End this run now?\nYour waves cleared so far will be saved.",
                 "Quit run", JOptionPane.YES_NO_OPTION);
@@ -354,7 +369,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Cancels active tower placement, closes shop overlay, or clears tower selection. */
+    /** [PURPOSE] Esc or right-click: close the shop if it is open, otherwise stop placing and deselect the tower. */
     private void cancelAction() {
         if (shop != null && shop.isOpen()) {
             shop.close();
@@ -364,7 +379,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Selects clicked tower on map and updates SidePanel to display stats/upgrades. */
+    /** [PURPOSE] Selects a placed tower (or null = none) and tells SidePanel so it shows that tower's stats and buttons. */
     private void selectTower(Tower t) {
         selectedTower = t;
         side.setSelectedTower(t);
@@ -373,7 +388,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Sets pending tower placement mode with ghost preview. */
+    /** [PURPOSE] Enters placing mode for a tower type (null = leave it). While placing, the ghost and red grid are drawn. */
     private void setPlacing(TowerType type) {
         placing = type;
         side.setPlacing(type);
@@ -384,8 +399,9 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     }
 
     // ---- SidePanel.Actions ----
+    // The 7 methods below are the SidePanel.Actions interface. SidePanel.click() calls them.
 
-    /** [PURPOSE] Selects or deselects inventory tower type for map placement. */
+    /** [PURPOSE] Left-click an inventory card: start placing it, or stop if that card was already picked. */
     @Override
     public void selectInventory(TowerType type) {
         if (placing != null && placing.id() == type.id()) {
@@ -395,7 +411,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Displays right-click context menu allowing player to sell spare inventory copies for coins. */
+    /** [PURPOSE] Right-click an inventory card: pops up "Sell 1 X for N coins". Clicking it calls GameSession.sellInventory(). */
     @Override
     public void sellInventory(TowerType type, int screenX, int screenY) {
         JPopupMenu menu = new JPopupMenu();
@@ -416,7 +432,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         menu.show(this, screenX, screenY);
     }
 
-    /** [PURPOSE] Upgrades currently selected tower level if player has the required  card copies. */
+    /** [PURPOSE] UPGRADE button: GameSession.upgrade() checks the rules and spends the spare copies. */
     @Override
     public void upgradeSelected() {
         if (selectedTower != null && session.upgrade(selectedTower)) {
@@ -424,7 +440,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Sells currently selected tower on map, refunding coins to session. */
+    /** [PURPOSE] SELL button: GameSession.sell() removes the selected tower and refunds coins. */
     @Override
     public void sellSelected() {
         if (selectedTower != null) {
@@ -433,13 +449,13 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Opens gacha crate shop modal overlay, pausing real-time game simulation. */
+    /** [PURPOSE] SHOP button: opens the case shop. While it is open, advance() pauses the game. */
     @Override
     public void openShop() {
         shop.open();
     }
 
-    /** [PURPOSE] Triggers next combat wave spawn; shows BOSS WAVE banner if boss wave index. */
+    /** [PURPOSE] START WAVE button or Space: starts the next wave (not while the shop is open). Shows "BOSS WAVE!" on every 10th. */
     @Override
     public void startWave() {
         if (shop != null && !shop.isOpen() && engine.startNextWave() && engine.getWave() % config.scaling.bossEveryNthWave == 0) {
@@ -447,7 +463,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Cycles game simulation speed: 1x -> 2x -> 3x -> 1x. */
+    /** [PURPOSE] Speed button: 1x -> 2x -> 3x -> 1x. (speed % 3 + 1: 1 -> 2, 2 -> 3, 3 -> 1) */
     @Override
     public void cycleSpeed() {
         speed = speed % 3 + 1;
@@ -456,7 +472,11 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
 
     // ---- painting ----
 
-    /** [PURPOSE] Master paint method: renders map terrain, paths, grid, towers, enemies, attack effects, HUD, and overlays. */
+    /**
+     * [PURPOSE] Swing calls this after every repaint(). Draw order = back to front:
+     *           ground -> path -> red grid (placing) -> towers -> zombies -> shot effects -> ghost (placing)
+     *           -> HUD -> banners -> SidePanel -> shop. Later things are drawn on top of earlier ones.
+     */
     @Override
     protected void paintComponent(Graphics g0) {
         super.paintComponent(g0);
@@ -489,7 +509,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         shop.paint(g);
     }
 
-    /** [PURPOSE] Draws custom map background image or checkered procedural grass fallback. */
+    /** [PURPOSE] Draws map.png; if it is missing, draws a grey checkerboard instead. */
     private void paintGround(Graphics2D g) {
         if (background != null) {
             g.drawImage(background, 0, 0, GameMap.WIDTH, GameMap.HEIGHT, null);
@@ -505,7 +525,10 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Draws asphalt paths and lane markings if procedural, plus ZOMBIES spawn and BASE labels. */
+    /**
+     * [PURPOSE] If map.png is missing, draws the roads in code (dark edge, asphalt, dashed lane line).
+     *           Always draws the "ZOMBIES" label at the path start and "BASE" at the end.
+     */
     private void paintPath(Graphics2D g) {
         List<double[]> points = map.getPoints();
 
@@ -538,7 +561,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         Gfx.outlined(g, "BASE", end[0] - 70, end[1] - 36, Palette.heading(20f), Palette.GOLD, Palette.PANEL_DARK);
     }
 
-    /** [PURPOSE] Draws red semi-transparent overlay highlights on unbuildable map tiles when placing a tower. */
+    /** [PURPOSE] While placing: tints every 40x40 cell red if its center is not buildable (GameSession.canPlaceAt()). */
     private void paintPlacementGrid(Graphics2D g) {
         for (int cx = 0; cx < GameMap.WIDTH / GameMap.CELL; cx++) {
             for (int cy = 0; cy < GameMap.HEIGHT / GameMap.CELL; cy++) {
@@ -552,7 +575,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Draws translucent range circle and tower sprite tracking cursor in placement mode. */
+    /** [PURPOSE] While placing: draws the tower and its range circle under the mouse. White = OK, red = can't build. */
     private void paintGhost(Graphics2D g) {
         if (mouseX >= SidePanel.X) {
             return;
@@ -567,12 +590,15 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         TowerArt.draw(g, placing, mouseX, mouseY, artSize(placing));
     }
 
-    /** Only real sprites are drawn bigger; the placeholder circle keeps the tower size. */
+    /** Size to draw the tower: 80 px (CELL x 2) if a PNG exists, else 34 px for the placeholder circle. */
     private static int artSize(TowerType type) {
         return SpriteLoader.get(type.spritePath()) != null ? SPRITE_SIZE : TOWER_SIZE;
     }
 
-    /** [PURPOSE] Draws all active placed towers, support turrets, range rings, selection halos, and level pips. */
+    /**
+     * [PURPOSE] For each placed tower: range circle (if selected), Engineer turret dots, the tower art (TowerArt.draw),
+     *           gold ring (if selected), and one dot per level underneath (gold dots at Lv 5).
+     */
     private void paintTowers(Graphics2D g) {
         for (Tower t : session.getTowers()) {
             if (t == selectedTower) {
@@ -612,7 +638,10 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Renders walking zombie sprites facing travel angle, status rings, and health bars. */
+    /**
+     * [PURPOSE] Draws one zombie: its sprite (left/right foot, rotated to walk direction) or a circle if no PNG,
+     *           then colored rings (blue = stunned, purple = poisoned, orange = burning) and a health bar once hurt.
+     */
     private void paintEnemy(Graphics2D g, Enemy e) {
         double r = e.getRadius();
         double x = e.getX();
@@ -695,7 +724,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Renders attack animation: alpha-fading line for lasers or expanding circle for splash blast waves. */
+    /** [PURPOSE] Draws one VisualEffect: a line or a filled circle, with transparency from getFade() so it fades out. */
     private void paintEffect(Graphics2D g, VisualEffect fx) {
         float fade = (float) fx.getFade();
         Color c = fx.getColor();
@@ -713,7 +742,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         }
     }
 
-    /** [PURPOSE] Renders top HUD status pills: LIVES, COINS, WAVE PROGRESS, and QUIT button. */
+    /** [PURPOSE] Top bar: LIVES (turns red at 5 or less), COINS, WAVE ("n left" during a wave), and the QUIT button. */
     private void paintHud(Graphics2D g) {
         pill(g, 12, "LIVES  " + session.getLives(), session.getLives() <= 5 ? Palette.BAD : Palette.GOOD, 160);
         pill(g, 184, "COINS  " + session.getCoins(), new Color(0xC99700), 190);
@@ -736,7 +765,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
         Gfx.outlinedCentered(g, text, x + width / 2.0, 34, Palette.heading(20f), Color.WHITE, Palette.PANEL_DARK);
     }
 
-    /** [PURPOSE] Renders GAME OVER banner screen dimming overlay and gold toast announcements. */
+    /** [PURPOSE] Draws "GAME OVER" (dark screen), the "press START WAVE" hint between waves, and the current toast message. */
     private void paintBanners(Graphics2D g) {
         if (engine.getState() == GameEngine.State.GAME_OVER) {
             g.setColor(new Color(0, 0, 0, 140));

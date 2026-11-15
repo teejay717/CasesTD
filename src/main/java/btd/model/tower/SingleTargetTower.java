@@ -7,12 +7,12 @@ import java.awt.Color;
 import java.util.List;
 
 /**
- * [PURPOSE]       Concrete tower that fires focused single-target shots at the lead enemy.
- * [OOP / PATTERN] Concrete Subclass / Specialization / Polymorphism.
- * [CALLED BY]     btd/factory/TowerFactory.java (create()).
+ * [PURPOSE]       Tower that shoots ONE enemy per shot: the one closest to the base. (Soldier)
+ * [OOP / PATTERN] Concrete Subclass (extends Tower) / Method Overriding / Polymorphism.
+ * [CALLED BY]     btd/factory/TowerFactory.java (create(), when tower_class = "SingleTargetTower").
  * [CONNECTS TO]   btd/model/tower/Tower.java, btd/model/enemy/Enemy.java,
  *                 btd/core/VisualEffect.java.
- * [DEFENSE NOTE]  Lv5 Overdrive passive grants +50% fire rate for extreme single-target DPS.
+ * [DEFENSE NOTE]  Lv 5 "Overdrive": fires 50% faster.
  */
 public class SingleTargetTower extends Tower {
 
@@ -27,7 +27,7 @@ public class SingleTargetTower extends Tower {
     }
 
     /**
-     * [PURPOSE]       Locates furthest living enemy in range, applies damage, and creates tracer line effect.
+     * [PURPOSE]       Finds the enemy closest to the base (furthestInRange), damages it, and adds a yellow shot line.
      * [OOP / PATTERN] Method Overriding (Template Method attack hook).
      * [CALLED BY]     btd/model/tower/Tower.java (update()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java (takeDamage()), btd/core/VisualEffect.java (line()).
@@ -49,7 +49,7 @@ public class SingleTargetTower extends Tower {
      * [OOP / PATTERN] Hook Method Overriding.
      * [CALLED BY]     btd/model/tower/Tower.java (applyLevel()).
      * [CONNECTS TO]   passiveRate field.
-     * [DEFENSE NOTE]  Stacking 1.5x on top of Lv5 2.3x multiplier gives 3.45x baseline attack speed.
+     * [DEFENSE NOTE]  At Lv 5 the fire rate is base x 2.30 (level) x 1.5 (passive) = 3.45x a Lv 1 tower.
      */
     @Override
     protected void applyMaxPassive() {
@@ -59,7 +59,7 @@ public class SingleTargetTower extends Tower {
     /**
      * [PURPOSE]       Returns description of Level 5 Overdrive bonus for side panel.
      * [OOP / PATTERN] Polymorphic Property Accessor.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     btd/ui/screens/SidePanel.java (paintTowerInfo()).
      * [CONNECTS TO]   UI display.
      */
     @Override

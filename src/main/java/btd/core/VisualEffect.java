@@ -3,11 +3,12 @@ package btd.core;
 import java.awt.Color;
 
 /**
- * [PURPOSE]       Models temporary renderable attack animations: tracer lines for lasers and circles for blast waves.
- * [OOP / PATTERN] Value Object / Transient Entity / Factory Methods.
- * [CALLED BY]     btd/model/tower/*.java (attack()), btd/core/GameEngine.java (updateEffects()).
- * [CONNECTS TO]   btd/ui/screens/GamePanel.java (paintEffects()).
- * [DEFENSE NOTE]  Fades out linearly via getFade() over duration; automatically culled by engine when expired.
+ * [PURPOSE]       A short-lived shot animation: a LINE (bullet/laser) or a CIRCLE (explosion / stun wave).
+ *                 It is only for looks; the damage was already done by the tower.
+ * [OOP / PATTERN] Private Constructor + Static Factory Methods (line(), circle()).
+ * [CALLED BY]     Created in the towers' attack() methods; updated by btd/core/GameEngine.java (updateEffects()).
+ * [CONNECTS TO]   btd/ui/screens/GamePanel.java (paintEffect()) draws it.
+ * [DEFENSE NOTE]  getFade() goes from 1.0 to 0.0 over its life (0.1 - 0.3 s), so it fades out; then the engine removes it.
  */
 public class VisualEffect {
 
@@ -22,9 +23,9 @@ public class VisualEffect {
 
     /**
      * [PURPOSE]       Constructs visual effect with position, color, and lifespan duration.
-     * [OOP / PATTERN] Private Constructor (Encapsulates instantiation via static factories).
+     * [OOP / PATTERN] Private Constructor (other classes must use line() or circle()).
      * [CALLED BY]     line(), circle().
-     * [CONNECTS TO]   Internal animation timers.
+     * [CONNECTS TO]   timeLeft starts equal to duration.
      */
     private VisualEffect(Kind kind, double x1, double y1, double x2, double y2, Color color, double duration) {
         this.kind = kind;
@@ -38,9 +39,9 @@ public class VisualEffect {
     }
 
     /**
-     * [PURPOSE]       Factory method creating a laser/bullet tracer line from (x1, y1) to (x2, y2).
-     * [OOP / PATTERN] Static Factory Method.
-     * [CALLED BY]     btd/model/tower/SingleTargetTower.java, btd/model/tower/SniperTower.java, btd/model/tower/SupportTower.java.
+     * [PURPOSE]       Creates a shot line from (x1, y1) to (x2, y2).
+     * [OOP / PATTERN] Static Factory Method (the name says what you get, unlike "new VisualEffect(Kind.LINE, ...)").
+     * [CALLED BY]     SingleTargetTower.attack(), SniperTower.attack() and pierce(), SupportTower.fireTurrets().
      * [CONNECTS TO]   btd/core/VisualEffect constructor.
      */
     public static VisualEffect line(double x1, double y1, double x2, double y2, Color color, double seconds) {
@@ -48,9 +49,9 @@ public class VisualEffect {
     }
 
     /**
-     * [PURPOSE]       Factory method creating an expanding explosion or stun wave circle.
+     * [PURPOSE]       Creates a fading circle (explosion or stun wave). The circle does not grow; it only fades.
      * [OOP / PATTERN] Static Factory Method.
-     * [CALLED BY]     btd/model/tower/SplashTower.java, btd/model/tower/SupportTower.java.
+     * [CALLED BY]     SplashTower.attack(), SupportTower.stunAll().
      * [CONNECTS TO]   btd/core/VisualEffect constructor.
      */
     public static VisualEffect circle(double x, double y, double radius, Color color, double seconds) {
@@ -74,8 +75,8 @@ public class VisualEffect {
     /**
      * [PURPOSE]       Calculates normalized opacity alpha ratio from 1.0 (fresh) down to 0.0 (expired).
      * [OOP / PATTERN] Interpolation / Derived Property.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEffects()).
-     * [CONNECTS TO]   java.awt.AlphaComposite rendering.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEffect()).
+     * [CONNECTS TO]   GamePanel multiplies the color's alpha by this value (new Color(r, g, b, 255 * fade)).
      */
     public double getFade() {
         return Math.max(0, Math.min(1, timeLeft / duration));

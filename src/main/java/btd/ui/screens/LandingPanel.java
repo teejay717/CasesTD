@@ -23,13 +23,15 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
 /**
- * [PURPOSE]       Two-stage landing screen: Screen 1 authenticates player username via crate opening,
- *                 Screen 2 displays high score, play button, profile pill, and tutorial trigger.
- * [OOP / PATTERN] State Machine View Pattern / Composite Component.
- * [CALLED BY]     btd/ui/AppController.java.
+ * [PURPOSE]       The first screen, in two stages (the 'opened' flag):
+ *                 1) type your name and click the crate = log in,
+ *                 2) menu with your highest score, Play, your name, and How to Play.
+ * [OOP / PATTERN] Two-state screen (boolean opened) / uses GameButton.Builder for its image buttons.
+ * [CALLED BY]     btd/ui/AppController.java (constructor: new LandingPanel(this::startRun); startRun() calls getPlayer()).
  * [CONNECTS TO]   btd/dao/PlayerDAO.java, btd/model/player/Player.java,
- *                 btd/ui/screens/HelpPanel.java, btd/ui/components/GameButton.java.
- * [DEFENSE NOTE]  Opening the crate calls PlayerDAO.findOrCreate(), creating a seamless account login/registration flow.
+ *                 btd/ui/screens/HelpPanel.java, btd/ui/components/GameButton.java, btd/util/ImageLoader.java.
+ * [DEFENSE NOTE]  Clicking the crate calls PlayerDAO.findOrCreate(name): an existing name logs in, a new name
+ *                 is registered. There is no password. This is the first time the game talks to MySQL.
  */
 public class LandingPanel extends JPanel {
 
@@ -67,9 +69,10 @@ public class LandingPanel extends JPanel {
     private boolean opened = false;
 
     /**
-     * [PURPOSE]       Constructs LandingPanel, embeds custom name text input, help tutorial overlay, and mouse handlers.
-     * [OOP / PATTERN] Constructor / Component Setup.
+     * [PURPOSE]       Sets up the name text field, the hidden HelpPanel, and the mouse click handler.
+     * [OOP / PATTERN] Constructor / Callback (onPlay is AppController::startRun).
      * [CALLED BY]     btd/ui/AppController.java constructor.
+     * [DEFENSE NOTE]  setLayout(null) = components are placed at exact pixel positions with setBounds().
      */
     public LandingPanel(Runnable onPlay) {
         this.onPlay = onPlay;
@@ -107,11 +110,12 @@ public class LandingPanel extends JPanel {
     }
 
     /**
-     * [PURPOSE]       Authenticates/registers user profile via PlayerDAO and transitions view state to Screen 2.
-     * [OOP / PATTERN] State Transition / DAO Delegation.
-     * [CALLED BY]     mouseClicked() handler when crateButton clicked.
+     * [PURPOSE]       Logs in (or registers) by name with PlayerDAO, then switches to the menu stage.
+     * [OOP / PATTERN] State Transition / DAO call.
+     * [CALLED BY]     The mouseClicked() handler, when the crate is clicked and the name is not empty.
      * [CONNECTS TO]   btd/dao/PlayerDAO.java (findOrCreate()).
-     * [DEFENSE NOTE]  Enforces 50-character maximum length limit before querying database.
+     * [DEFENSE NOTE]  Checks the 50-character limit first, because player_name is VARCHAR(50) in the DB.
+     *                 If MySQL is down it shows a popup and stays on stage 1.
      */
     private void openCrate() {
         String name = getPlayerName();
@@ -130,19 +134,19 @@ public class LandingPanel extends JPanel {
         repaint();
     }
 
-    /** [PURPOSE] Active authenticated Player profile object. */
+    /** [PURPOSE] The logged-in Player, or null before the crate is opened. Used by AppController.startRun() and showResults(). */
     public Player getPlayer() {
         return player;
     }
 
-    /** [PURPOSE] Retrieves sanitized trimmed string from the username input text field. */
+    /** [PURPOSE] The typed name with spaces at the start and end removed (trim()). */
     public String getPlayerName() {
         return nameField.getText().trim();
     }
 
     /**
-     * [PURPOSE]       Main render entry point switching between Start Screen and Menu Screen based on opened state.
-     * [OOP / PATTERN] Rendering Pipeline / View State Dispatch.
+     * [PURPOSE]       Draws the background, then stage 1 (paintStartScreen) or stage 2 (paintMenuScreen), then the X button.
+     * [OOP / PATTERN] Method Overriding (JPanel.paintComponent) / branch on the 'opened' flag.
      */
     @Override
     protected void paintComponent(Graphics g) {
@@ -163,7 +167,7 @@ public class LandingPanel extends JPanel {
         quitButton.draw(g2);
     }
 
-    /** [PURPOSE] Renders Screen 1: CasesTD logo, name prompt text, cream text input box, and closed crate button. */
+    /** [PURPOSE] Stage 1: logo, "type your name here...", the cream name box, the crate, and "click to open". */
     private void paintStartScreen(Graphics2D g2) {
         drawCropped(g2, logo, 137, 260, 318, 75, 418, 40, 459, 108);
 
@@ -176,7 +180,7 @@ public class LandingPanel extends JPanel {
         drawCropped(g2, clickToOpen, 129, 280, 342, 45, 490, 285, 300, 40);
     }
 
-    /** [PURPOSE] Renders Screen 2: High score badge, play button, player avatar pill, and how-to-play trigger. */
+    /** [PURPOSE] Stage 2: logo, highest score, open crate, Play button, profile icon + name, help buttons. */
     private void paintMenuScreen(Graphics2D g2) {
         drawCropped(g2, logo, 137, 260, 318, 75, 30, 22, 170, 40);
 
@@ -203,13 +207,13 @@ public class LandingPanel extends JPanel {
         howToPlayButton.draw(g2);
     }
 
-    /** [PURPOSE] Sub-image cropping utility clipping transparent borders from 600x600 icon assets. */
+    /** [PURPOSE] Draws only part of an image: source box (sx, sy, sw, sh) into screen box (dx, dy, dw, dh). Cuts off empty borders. */
     private void drawCropped(Graphics2D g2, Image img, int sx, int sy, int sw, int sh,
                              int dx, int dy, int dw, int dh) {
         g2.drawImage(img, dx, dy, dx + dw, dy + dh, sx, sy, sx + sw, sy + sh, this);
     }
 
-    /** [PURPOSE] Draws center-aligned text with optional 8-way drop shadow outline. */
+    /** [PURPOSE] Draws text centered on centerX. If outline is not null, first draws it shifted 2 px around in a dark color. */
     private void drawText(Graphics2D g2, String text, int centerX, int baselineY, Font font, Color fill, Color outline) {
         g2.setFont(font);
         FontMetrics fm = g2.getFontMetrics();

@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 import btd.util.ImageLoader;
 
 /**
- * [PURPOSE]       Modal tutorial overlay displaying a multi-page interactive 'How to Play' guide book.
- * [OOP / PATTERN] Composite Pattern / Overlay Component / Event Swallowing.
- * [CALLED BY]     btd/ui/screens/LandingPanel.java (helpButton).
+ * [PURPOSE]       The "How to Play" book shown over the menu: 2 page images, prev/next arrows, and a close X.
+ * [OOP / PATTERN] Inheritance (extends JPanel) / Overlay / Inner Class (ArrowButton).
+ * [CALLED BY]     btd/ui/screens/LandingPanel.java (creates it hidden; the ? icon and HOW TO PLAY button toggle it).
  * [CONNECTS TO]   btd/util/ImageLoader.java (loads help_book_1.png, help_book_2.png).
  * [DEFENSE NOTE]  Registers empty mouse listeners to swallow click events, preventing click-through into the menu beneath.
  */
@@ -37,7 +37,7 @@ public class HelpPanel extends JPanel {
     private int current = 0;
 
     /**
-     * [PURPOSE]       Constructs tutorial overlay with book pages, invisible hotspot buttons, and mouse click blockers.
+     * [PURPOSE]       Loads the 2 page images and adds invisible buttons on top of the arrows and X drawn in the art.
      * [OOP / PATTERN] Constructor / Component Initialization.
      * [CALLED BY]     btd/ui/screens/LandingPanel.java.
      */
@@ -78,9 +78,9 @@ public class HelpPanel extends JPanel {
     }
 
     /**
-     * [PURPOSE]       Overrides visibility toggling to always reset tutorial pagination back to page 0.
-     * [OOP / PATTERN] Lifecycle Hook Overriding.
-     * [CALLED BY]     btd/ui/screens/LandingPanel.java.
+     * [PURPOSE]       Same as JPanel.setVisible(), but opening the book always starts on page 1.
+     * [OOP / PATTERN] Method Overriding with super call.
+     * [CALLED BY]     btd/ui/screens/LandingPanel.java (toggle), the close X button, the constructor.
      */
     @Override
     public void setVisible(boolean visible) {
@@ -91,9 +91,9 @@ public class HelpPanel extends JPanel {
     }
 
     /**
-     * [PURPOSE]       Switches active book spread page and enables/disables navigation arrow buttons accordingly.
-     * [OOP / PATTERN] State Transition / Pagination Controller.
-     * [CALLED BY]     prevButton, nextButton.
+     * [PURPOSE]       Shows page 'index' (clamped to a valid page) and hides the arrow you can't use (no "prev" on page 1).
+     * [OOP / PATTERN] Pagination.
+     * [CALLED BY]     prevButton, nextButton, setVisible(), the constructor.
      */
     private void showSpread(int index) {
         current = Math.max(0, Math.min(spreads.length - 1, index));
@@ -105,7 +105,7 @@ public class HelpPanel extends JPanel {
 
     // ----------------------------------------------------------------- layout
 
-    /** [PURPOSE] Calculates responsive bounding rectangle preserving book aspect ratio. */
+    /** [PURPOSE] The biggest box (max 90% wide, 80% tall) that fits the page image without stretching it, centered. */
     private Rectangle bookBounds() {
         int maxW = (int) (getWidth() * 0.90);
         int maxH = (int) (getHeight() * 0.80);
@@ -124,9 +124,9 @@ public class HelpPanel extends JPanel {
     }
 
     /**
-     * [PURPOSE]       Positions interactive hotspot buttons relative to fractional coordinates of book image.
-     * [OOP / PATTERN] Responsive Relative Layout.
-     * [CALLED BY]     Swing Layout Manager.
+     * [PURPOSE]       Puts the invisible buttons over the art, using fractions of the book size (0.93 = 93% across).
+     * [OOP / PATTERN] Method Overriding (Container.doLayout) / Relative Layout.
+     * [CALLED BY]     Swing, when the panel is shown or resized (and after revalidate() in showSpread()).
      */
     @Override
     public void doLayout() {
@@ -154,7 +154,7 @@ public class HelpPanel extends JPanel {
     // --------------------------------------------------------------- painting
 
     /**
-     * [PURPOSE]       Draws book spread graphic or procedural parchment placeholder with bilinear interpolation.
+     * [PURPOSE]       Draws the current page image, or a plain tan rounded box if the image is missing.
      * [OOP / PATTERN] Custom Rendering Pipeline.
      * [CALLED BY]     Swing paintComponent().
      */
@@ -182,8 +182,8 @@ public class HelpPanel extends JPanel {
     // ----------------------------------------------------------- arrow button
 
     /**
-     * [PURPOSE]       Custom arrow navigation button that renders vector directional triangle if DRAW_ARROWS is enabled.
-     * [OOP / PATTERN] Encapsulated Inner Component.
+     * [PURPOSE]       Invisible arrow button (the arrows are part of the page art). If DRAW_ARROWS = true it draws a triangle.
+     * [OOP / PATTERN] Private Static Inner Class / Inheritance (extends JButton).
      */
     private static class ArrowButton extends JButton {
         private final boolean pointsLeft;

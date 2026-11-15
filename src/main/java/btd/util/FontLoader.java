@@ -6,11 +6,12 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * [PURPOSE]       Loads the custom TrueType font 'LuckiestGuy-Regular.ttf' from disk with graceful fallback to SansSerif.
- * [OOP / PATTERN] Resource Loader / Static Factory / Singleton Font Cache.
- * [CALLED BY]     btd/ui/theme/Palette.java, btd/ui/theme/Theme.java.
+ * [PURPOSE]       Loads the 'LuckiestGuy-Regular.ttf' font file once; falls back to SansSerif if it fails.
+ * [OOP / PATTERN] Utility Class / Load Once (static final field filled when the class loads).
+ * [CALLED BY]     btd/ui/theme/Palette.java (heading()), btd/ui/theme/Theme.java (TITLE_FONT, BUTTON_FONT).
  * [CONNECTS TO]   assets/fonts/LuckiestGuy-Regular.ttf.
- * [DEFENSE NOTE]  Prevents crash if font asset is missing by logging warning and falling back to system font.
+ * [DEFENSE NOTE]  A missing font prints a warning (System.err) instead of crashing.
+ *                 getFont() only calls deriveFont(size), so the file is read from disk just once.
  */
 public final class FontLoader {
 
@@ -23,12 +24,13 @@ public final class FontLoader {
      * [PURPOSE]       Derives the loaded base font at the specified floating point size.
      * [OOP / PATTERN] Factory Method / Immutable Font Derivation.
      * [CALLED BY]     btd/ui/theme/Palette.java (heading()), btd/ui/theme/Theme.java.
+     * [DEFENSE NOTE]  Font objects are immutable, so deriveFont() returns a NEW font and BASE_FONT never changes.
      */
     public static Font getFont(float size) {
         return BASE_FONT.deriveFont(size);
     }
 
-    /** [PURPOSE] Reads TrueType font file from filesystem or defaults to SansSerif plain 12pt. */
+    /** [PURPOSE] Reads the .ttf file, or returns SansSerif 12 pt if the file is missing or broken. Runs once. */
     private static Font loadBaseFont() {
         try {
             return Font.createFont(Font.TRUETYPE_FONT,

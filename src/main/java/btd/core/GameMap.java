@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * [PURPOSE]       Represents the gameplay map, track waypoints, cumulative track distance, and tower build validation.
- * [OOP / PATTERN] Spatial Domain Model / Value Object / Boundary Enforcer.
- * [CALLED BY]     btd/Main.java (main()), btd/core/GameEngine.java, btd/core/GameSession.java, btd/ui/screens/GamePanel.java.
- * [CONNECTS TO]   data/maps/map1_path.csv, btd/model/enemy/Enemy.java.
- * [DEFENSE NOTE]  Waypoints loaded from CSV (1280x720 file canvas) are squeezed to fit active 960x720 canvas width.
+ * [PURPOSE]       The map: the path enemies walk (list of waypoints), its total length, and where towers may be built.
+ * [OOP / PATTERN] Domain Model / Static Factory Method (load()).
+ * [CALLED BY]     Loaded by btd/ui/AppController.java (loadData()); used by btd/core/GameEngine.java,
+ *                 btd/core/GameSession.java (canPlaceAt()), btd/model/enemy/Enemy.java (update()), GamePanel.
+ * [CONNECTS TO]   data/maps/map1_path.csv.
+ * [DEFENSE NOTE]  The CSV was drawn on a 1280-wide picture, but the map area is only 960 wide
+ *                 (the right 320 px is the SidePanel). So every x is multiplied by 960 / 1280 = 0.75.
  */
 public class GameMap {
 
@@ -54,9 +56,9 @@ public class GameMap {
     private double totalLength;
 
     /**
-     * [PURPOSE]       Reads CSV file of waypoint coordinates and scales them to fit canvas.
+     * [PURPOSE]       Reads the "x,y" waypoint lines from the CSV (skipping the header) and scales x to fit 960 px.
      * [OOP / PATTERN] Static Factory Method / CSV Parsing.
-     * [CALLED BY]     btd/Main.java (main()).
+     * [CALLED BY]     btd/ui/AppController.java (loadData()).
      * [CONNECTS TO]   btd/core/GameMap constructor.
      */
     public static GameMap load(String csvFile) {
@@ -84,7 +86,8 @@ public class GameMap {
      * [PURPOSE]       Constructs GameMap and precalculates cumulative Euclidean distances along path segments.
      * [OOP / PATTERN] Constructor / Spatial Precomputation.
      * [CALLED BY]     btd/core/GameMap.java (load()).
-     * [DEFENSE NOTE]  Precomputing cumulative lengths enables O(log N) or fast linear waypoint lookup in pointAt().
+     * [DEFENSE NOTE]  cumulative.get(i) = distance from the start to waypoint i. Computing it once here
+     *                 means pointAt() does not have to re-measure the path for every enemy every frame.
      */
     public GameMap(List<double[]> pathPoints) {
         points.addAll(pathPoints);
@@ -107,7 +110,11 @@ public class GameMap {
         return points;
     }
 
-    /** [PURPOSE] Scaled auxiliary road segments where towers cannot be built. */
+    /**
+     * [PURPOSE] Decorative roads (EXTRA_ROADS + DEAD_END_ROADS), scaled to 960 px. Enemies never walk them.
+     *           Only used by GamePanel.paintPath() to draw roads when map.png is missing.
+     *           (Building is blocked on EXTRA_ROADS but allowed on DEAD_END_ROADS; see canBuildAt().)
+     */
     public List<double[]> getExtraRoads() {
         List<double[]> result = new ArrayList<>();
         for (double[] r : EXTRA_ROADS) {
@@ -125,11 +132,14 @@ public class GameMap {
     }
 
     /**
-     * [PURPOSE]       Computes exact {x, y} coordinate on the track for a given distance traveled in pixels.
-     * [OOP / PATTERN] Linear Interpolation (LERP) across polyline segments.
-     * [CALLED BY]     btd/model/enemy/Enemy.java (update()).
-     * [CONNECTS TO]   cumulative distance array.
-     * [DEFENSE NOTE]  Finds bounding waypoint pair and performs linear interpolation based on segment progress.
+     * [PURPOSE]       Turns "distance walked" into an {x, y} position on the path.
+     * [OOP / PATTERN] Linear Interpolation (LERP) along a polyline.
+     * [CALLED BY]     btd/model/enemy/Enemy.java (update(), twice: once for the position, once 1 px ahead for the angle).
+     * [CONNECTS TO]   cumulative list.
+     * [DEFENSE NOTE]  1) walk the waypoints until cumulative[i] >= distance (simple loop, not binary search),
+     *                 2) t = how far along that segment, from 0.0 to 1.0,
+     *                 3) position = a + (b - a) * t.
+     *                 Enemies only store one number (distance), and this method turns it into x and y.
      */
     public double[] pointAt(double distance) {
         if (distance <= 0) {
@@ -167,9 +177,11 @@ public class GameMap {
     /**
      * [PURPOSE]       Validates whether a tower can be placed at (x, y): within boundaries, off roads, and clear of obstacles.
      * [OOP / PATTERN] Spatial Collision Validation / Guard Method.
-     * [CALLED BY]     btd/core/GameSession.java (canPlaceAt()), btd/ui/screens/GamePanel.java (paintPlacementPreview()).
+     * [CALLED BY]     btd/core/GameSession.java (canPlaceAt()) only.
      * [CONNECTS TO]   EXTRA_ROADS, OBSTACLES, PATH_CLEARANCE.
-     * [DEFENSE NOTE]  Enforces 38px track clearance, map margins, top HUD avoidance, and obstacle bounding boxes.
+     * [DEFENSE NOTE]  Rejects a spot if: it is within 20 px of the map edge or above y = 60 (the HUD bar),
+     *                 it is closer than 38 px to the enemy path or an EXTRA_ROAD, or it is inside an obstacle box (+10 px).
+     *                 Tower-to-tower spacing is NOT checked here; GameSession.canPlaceAt() adds that.
      */
     public boolean canBuildAt(double x, double y) {
         if (!(x >= 20 && x <= WIDTH - 20 && y >= 60 && y <= HEIGHT - 20)
@@ -191,7 +203,10 @@ public class GameMap {
         return true;
     }
 
-    /** [PURPOSE] Projects point onto 2D line segment using scalar parameter t clamped between 0 and 1. */
+    /**
+     * [PURPOSE] Shortest distance from point P to the line segment A-B.
+     *           t = where P projects onto the line (0 = at A, 1 = at B), clamped to 0..1 so it stays on the segment.
+     */
     private static double distanceToSegment(double px, double py, double ax, double ay, double bx, double by) {
         double dx = bx - ax;
         double dy = by - ay;
