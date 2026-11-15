@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * [PURPOSE]       Right-side HUD sidebar displaying tower inventory cards, tower stat cards,
- *                 upgrade/sell action buttons, speed toggle (1x/2x/4x), and wave start triggers.
+ *                 upgrade/sell action buttons, speed toggle (1x/2x/3x), and wave start triggers.
  * [OOP / PATTERN] View Component / Interface Segregation Principle / Command Pattern delegation.
  * [CALLED BY]     btd/ui/screens/GamePanel.java.
  * [CONNECTS TO]   btd/core/GameSession.java, btd/core/GameEngine.java,

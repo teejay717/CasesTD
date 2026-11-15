@@ -104,11 +104,11 @@ public class GameConfig {
     }
 
     /**
-     * [PURPOSE]       Calculates exponential enemy health scale multiplier for wave number.
+     * [PURPOSE]       Calculates a linear enemy health scale multiplier for wave number. 
      * [OOP / PATTERN] Mathematical Progression Formula / Compound Difficulty Scaling.
      * [CALLED BY]     btd/core/WaveSpawner.java (update()).
      * [CONNECTS TO]   btd/factory/EnemyFactory.java.
-     * [DEFENSE NOTE]  Combines linear per-wave growth with compound jump multipliers every N waves (waves 11, 21, 31...).
+     * [DEFENSE NOTE]  Combines linear per-wave growth with a compound jump multiplier after every 10th wave (waves 10->11, 20->21, 30->31...).
      */
     public double healthScale(int wave) {
         double start = scaling.healthStartPercent > 0 ? scaling.healthStartPercent / 100.0 : 1.0;
