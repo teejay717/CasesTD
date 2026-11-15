@@ -5,7 +5,7 @@ package btd.model.enemy;
  * [OOP / PATTERN] Concrete Subclass / Specialization / Method Overriding.
  * [CALLED BY]     btd/factory/EnemyFactory.java (create()).
  * [CONNECTS TO]   btd/model/enemy/Enemy.java (super class).
- * [DEFENSE NOTE]  Leaking this boss costs 10 base health points, posing an immediate run-ending threat.
+ * [DEFENSE NOTE]  Leaking this boss costs 10 base health points, half of the 20 starting lives.
  */
 public class BossEnemy extends Enemy {
 
@@ -35,9 +35,9 @@ public class BossEnemy extends Enemy {
     /**
      * [PURPOSE]       Returns collision radius for BossEnemy (24 pixels).
      * [OOP / PATTERN] Method Overriding (Polymorphism).
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemyCircle()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemy()), btd/model/tower/SniperTower.java (onBeam()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java.
-     * [DEFENSE NOTE]  Massive 24px radius visually dominates the track and guarantees beam hits.
+     * [DEFENSE NOTE]  Massive 24px radius visually dominates the track and makes piercing beam hits easier.
      */
     @Override
     public double getRadius() {

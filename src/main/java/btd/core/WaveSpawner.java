@@ -67,7 +67,7 @@ public class WaveSpawner {
      * [PURPOSE]       Procedural generator for infinite waves beyond wave 3, increasing counts and adding enemy variants.
      * [OOP / PATTERN] Procedural Content Generation (PCG).
      * [CALLED BY]     btd/core/WaveSpawner.java (begin()).
-     * [DEFENSE NOTE]  BasicEnemies scale linearly; FastEnemies unlock at wave 3; ArmoredEnemies unlock at wave 5.
+     * [DEFENSE NOTE]  BasicEnemies scale linearly; FastEnemies are always included (they first appear in JSON wave 3); ArmoredEnemies unlock at wave 5.
      */
     private List<GameConfig.SpawnDef> generate(int n) {
         List<GameConfig.SpawnDef> groups = new ArrayList<>();

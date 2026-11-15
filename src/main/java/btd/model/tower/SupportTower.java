@@ -14,7 +14,7 @@ import java.util.List;
  * [CALLED BY]     btd/factory/TowerFactory.java (create()).
  * [CONNECTS TO]   btd/model/tower/Tower.java, btd/model/enemy/Enemy.java,
  *                 btd/core/VisualEffect.java.
- * [DEFENSE NOTE]  Policeman stuns all in range; Radio Tower buffs nearby tower fire rate; Turret Builder spawns mini-turrets.
+ * [DEFENSE NOTE]  Policeman stuns all in range; Radio Tower buffs nearby tower fire rate; Engineer spawns mini-turrets.
  */
 public class SupportTower extends Tower {
 
@@ -40,7 +40,7 @@ public class SupportTower extends Tower {
     /**
      * [PURPOSE]       Returns damage; Policeman stun tower does not scale base hit damage with levels.
      * [OOP / PATTERN] Method Overriding (Conditional stat scaling).
-     * [CALLED BY]     btd/model/tower/Tower.java (update()).
+     * [CALLED BY]     stunAll(), fireTurrets(), btd/ui/screens/SidePanel.java (paintTowerInfo()).
      * [CONNECTS TO]   getType().baseDamage().
      */
     @Override
@@ -132,7 +132,7 @@ public class SupportTower extends Tower {
     /**
      * [PURPOSE]       Calculates active number of mini-turrets for TURRETS special.
      * [OOP / PATTERN] Derived Property Calculation.
-     * [CALLED BY]     btd/model/tower/SupportTower.java (fireTurrets()), btd/ui/components/TowerArt.java.
+     * [CALLED BY]     btd/model/tower/SupportTower.java (fireTurrets()), btd/ui/screens/GamePanel.java (paintTowers()).
      * [CONNECTS TO]   effectValue and passiveEffect.
      */
     public int getTurretCount() {
@@ -145,7 +145,7 @@ public class SupportTower extends Tower {
     /**
      * [PURPOSE]       Calculates orbital position coordinates for mini-turret i around main tower base.
      * [OOP / PATTERN] Trigonometric Orbital Math.
-     * [CALLED BY]     btd/model/tower/SupportTower.java (fireTurrets()), btd/ui/components/TowerArt.java.
+     * [CALLED BY]     btd/model/tower/SupportTower.java (fireTurrets()), btd/ui/screens/GamePanel.java (paintTowers()).
      * [CONNECTS TO]   Rendering and visual beam origins.
      */
     public double[] turretPosition(int i, int total) {
@@ -156,7 +156,7 @@ public class SupportTower extends Tower {
     /**
      * [PURPOSE]       Applies fire rate boost aura to all neighboring towers within radius.
      * [OOP / PATTERN] Method Overriding (Aura Buff Pattern).
-     * [CALLED BY]     btd/core/GameEngine.java (updateTowers()).
+     * [CALLED BY]     btd/core/GameEngine.java (update()).
      * [CONNECTS TO]   btd/model/tower/Tower.java (addBuff()).
      * [DEFENSE NOTE]  Aura scales +10% per level; Lv5 passive boosts buff strength by an additional 50%.
      */

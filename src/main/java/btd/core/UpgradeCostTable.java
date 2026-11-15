@@ -5,7 +5,7 @@ import btd.model.gacha.Rarity;
 /**
  * [PURPOSE]       Static lookup utility determining duplicate tower copy costs required for tier promotions (Levels 2-5).
  * [OOP / PATTERN] Utility Class / Pure Fabrication / Single Responsibility Principle.
- * [CALLED BY]     btd/core/GameSession.java (upgradeCost(), upgradeBlockReason()).
+ * [CALLED BY]     btd/core/GameSession.java (upgradeCost()).
  * [CONNECTS TO]   btd/core/GameConfig.java, btd/model/gacha/Rarity.java.
  * [DEFENSE NOTE]  Decouples economy balancing arrays from Tower domain classes; loaded from JSON config.
  */

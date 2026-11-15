@@ -6,7 +6,7 @@ import java.awt.Color;
  * [PURPOSE]       Models temporary renderable attack animations: tracer lines for lasers and circles for blast waves.
  * [OOP / PATTERN] Value Object / Transient Entity / Factory Methods.
  * [CALLED BY]     btd/model/tower/*.java (attack()), btd/core/GameEngine.java (updateEffects()).
- * [CONNECTS TO]   btd/ui/screens/GamePanel.java (paintEffects()).
+ * [CONNECTS TO]   btd/ui/screens/GamePanel.java (paintEffect()).
  * [DEFENSE NOTE]  Fades out linearly via getFade() over duration; automatically culled by engine when expired.
  */
 public class VisualEffect {
@@ -48,7 +48,7 @@ public class VisualEffect {
     }
 
     /**
-     * [PURPOSE]       Factory method creating an expanding explosion or stun wave circle.
+     * [PURPOSE]       Factory method creating a fading explosion or stun wave circle (it does not grow).
      * [OOP / PATTERN] Static Factory Method.
      * [CALLED BY]     btd/model/tower/SplashTower.java, btd/model/tower/SupportTower.java.
      * [CONNECTS TO]   btd/core/VisualEffect constructor.
@@ -74,8 +74,8 @@ public class VisualEffect {
     /**
      * [PURPOSE]       Calculates normalized opacity alpha ratio from 1.0 (fresh) down to 0.0 (expired).
      * [OOP / PATTERN] Interpolation / Derived Property.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEffects()).
-     * [CONNECTS TO]   java.awt.AlphaComposite rendering.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEffect()).
+     * [CONNECTS TO]   Color alpha channel (GamePanel uses new Color(r, g, b, 255 * fade)).
      */
     public double getFade() {
         return Math.max(0, Math.min(1, timeLeft / duration));

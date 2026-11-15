@@ -17,14 +17,14 @@ import java.util.List;
  */
 public abstract class Tower implements Upgradable {
 
-    /** Maximum level reachable via standard gold upgrades. */
+    /** Maximum level allowed when another tower of the same type is already Level 5 (only one Lv 5 per type). */
     public static final int MAX_NORMAL_LEVEL = 4;
     /** Absolute maximum level unlocking the signature archetype passive. */
     public static final int MAX_LEVEL = 5;
 
     /**
-     * Damage and fire rate multiplier at each level (index 0 = Lv 1). Each level is worth a bit
-     * more than placing the copies it costs, so upgrading is never worse than placing duplicates.
+     * Damage and fire rate multiplier at each level (index 0 = Lv 1). It applies to BOTH damage
+     * and fire rate, so DPS grows by the square (Lv 2 = 1.45 x 1.45 = ~2.1x), roughly matching the copies it costs.
      */
     private static final double[] LEVEL_MULTIPLIERS = {1.00, 1.45, 1.80, 2.03, 2.30};
 
@@ -58,7 +58,7 @@ public abstract class Tower implements Upgradable {
     /**
      * [PURPOSE]       Executes simulation frame tick: decrements cooldown and fires when ready.
      * [OOP / PATTERN] Template Method Pattern (invokes attack() hook) / Delta Time (dt) Cooldown.
-     * [CALLED BY]     btd/core/GameEngine.java (updateTowers()).
+     * [CALLED BY]     btd/core/GameEngine.java (update()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java, btd/core/VisualEffect.java.
      * [DEFENSE NOTE]  cooldown -= dt counts down reload time in real-world seconds (dt ≈ 0.0166s at 60 FPS).
      *                 enemies and effects lists are passed down from GameEngine (Mediator Pattern), ensuring
@@ -91,7 +91,7 @@ public abstract class Tower implements Upgradable {
      * [OOP / PATTERN] Hook Method (Template Method Pattern).
      * [CALLED BY]     btd/model/tower/Tower.java (applyLevel()).
      * [CONNECTS TO]   Subclass passive multipliers.
-     * [DEFENSE NOTE]  SingleTarget gets +50% fire rate, Splash gets +50% radius, Sniper gets 2x damage, Support gets +50% aura/turrets.
+     * [DEFENSE NOTE]  SingleTarget gets +50% fire rate, Splash gets +50% radius, Sniper gets 2x damage, Support gets +50% aura/turrets (Policeman instead gets a 2.0 s stun).
      */
     protected abstract void applyMaxPassive();
 
@@ -107,7 +107,7 @@ public abstract class Tower implements Upgradable {
     /**
      * [PURPOSE]       Aura buff application hook for support towers.
      * [OOP / PATTERN] Hook Method (Default empty implementation).
-     * [CALLED BY]     btd/core/GameEngine.java (updateTowers()).
+     * [CALLED BY]     btd/core/GameEngine.java (update()).
      * [CONNECTS TO]   btd/model/tower/SupportTower.java (overrides for Radio Tower).
      * [DEFENSE NOTE]  Iterates all towers on the field before attack phase to apply aura multipliers.
      */
@@ -123,7 +123,7 @@ public abstract class Tower implements Upgradable {
     /**
      * [PURPOSE]       Updates level and triggers applyMaxPassive() if level reaches 5.
      * [OOP / PATTERN] Contract Implementation / State Transition / Template Method Hook.
-     * [CALLED BY]     btd/core/GameSession.java (upgradeTower()).
+     * [CALLED BY]     btd/core/GameSession.java (upgrade()).
      * [CONNECTS TO]   btd/model/tower/Tower.java (applyMaxPassive()).
      * [DEFENSE NOTE]  Seamlessly promotes tower to final tier without replacing instance.
      *                 Enforces the Bloons-style Tier-5 rule: only ONE tower per type can reach Level 5.

@@ -13,9 +13,9 @@ import java.util.Map;
 /**
  * [PURPOSE]       Parses and holds game balance numbers from 'data/maps/waves_config.json' (economy, scaling, waves).
  * [OOP / PATTERN] Configuration Object Pattern / JSON Deserialization (Gson) / Data Binding.
- * [CALLED BY]     btd/Main.java (main()), btd/core/GameSession.java, btd/core/GameEngine.java, btd/core/WaveSpawner.java.
+ * [CALLED BY]     btd/ui/AppController.java (loadData()), btd/core/GameSession.java, btd/core/GameEngine.java, btd/core/WaveSpawner.java.
  * [CONNECTS TO]   data/maps/waves_config.json.
- * [DEFENSE NOTE]  Decouples balancing formulas and spawn curves from Java code, allowing live tuning without recompiling.
+ * [DEFENSE NOTE]  Decouples balancing formulas and spawn curves from Java code, allowing tuning without recompiling (edit the JSON, restart the game).
  */
 public class GameConfig {
 
@@ -65,7 +65,7 @@ public class GameConfig {
     /**
      * [PURPOSE]       Reads JSON file from disk and parses it into strongly-typed GameConfig instance via Google Gson.
      * [OOP / PATTERN] Static Factory Method / Serialization Pattern.
-     * [CALLED BY]     btd/Main.java (main()).
+     * [CALLED BY]     btd/ui/AppController.java (loadData()).
      * [CONNECTS TO]   com.google.gson.Gson.
      * [DEFENSE NOTE]  Throws IllegalStateException with helpful path instruction if file cannot be found.
      */
@@ -104,7 +104,7 @@ public class GameConfig {
     }
 
     /**
-     * [PURPOSE]       Calculates a linear enemy health scale multiplier for wave number. 
+     * [PURPOSE]       Calculates the enemy health scale multiplier for wave number (linear growth + jumps).
      * [OOP / PATTERN] Mathematical Progression Formula / Compound Difficulty Scaling.
      * [CALLED BY]     btd/core/WaveSpawner.java (update()).
      * [CONNECTS TO]   btd/factory/EnemyFactory.java.

@@ -12,11 +12,11 @@ import java.util.Map;
 
 /**
  * [PURPOSE]       In-memory catalog cache holding all tower archetypes and gacha case definitions loaded from MySQL.
- * [OOP / PATTERN] Repository Cache / In-Memory Registry / Singleton Cache Pattern.
- * [CALLED BY]     btd/Main.java (main()), btd/ui/AppController.java.
+ * [OOP / PATTERN] Repository Cache / In-Memory Registry / Lazy-Loaded Cache (kept in a field by AppController).
+ * [CALLED BY]     btd/ui/AppController.java (loadData()).
  * [CONNECTS TO]   btd/dao/TowerDAO.java, btd/dao/CaseDAO.java,
  *                 btd/model/tower/TowerType.java, btd/model/gacha/CaseDef.java.
- * [DEFENSE NOTE]  Loaded once at startup to prevent recurring database reads during active 60 FPS gameplay loops.
+ * [DEFENSE NOTE]  Loaded once, on the first Play press (AppController.loadData()), to prevent recurring database reads during active 60 FPS gameplay loops.
  */
 public class Catalog {
 
@@ -41,7 +41,7 @@ public class Catalog {
     /**
      * [PURPOSE]       Queries database DAOs for all towers and case definitions, validating seed data presence.
      * [OOP / PATTERN] Static Factory Method / Data Hydration.
-     * [CALLED BY]     btd/Main.java (main()).
+     * [CALLED BY]     btd/ui/AppController.java (loadData()).
      * [CONNECTS TO]   btd/dao/TowerDAO.java (findAll()), btd/dao/CaseDAO.java (findAll()).
      * [DEFENSE NOTE]  Throws SQLException if either table is empty, prompting user to run seed_data.sql.
      */
@@ -58,9 +58,9 @@ public class Catalog {
         return new Catalog(towers, cases);
     }
 
-    /** [PURPOSE] Returns immutable list of all tower type records. */
+    /** [PURPOSE] Returns list of all tower type records (each record is immutable). */
     public List<TowerType> getTowers() { return towers; }
-    /** [PURPOSE] Returns immutable list of all gacha case definitions. */
+    /** [PURPOSE] Returns list of all gacha case definitions (each record is immutable). */
     public List<CaseDef> getCases() { return cases; }
     /** [PURPOSE] Fast O(1) hash lookup of tower specification by its primary key ID. */
     public TowerType getTower(int id) { return towersById.get(id); }

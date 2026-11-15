@@ -7,8 +7,8 @@ import java.awt.Image;
 /**
  * [PURPOSE]       Image-based interactive button with custom hover graphics and mouse collision detection.
  * [OOP / PATTERN] Builder Pattern / UI Component Encapsulation.
- * [CALLED BY]     btd/ui/screens/LandingPanel.java, btd/ui/screens/ResultsPanel.java, btd/ui/screens/HelpPanel.java.
- * [CONNECTS TO]   java.awt.Graphics, btd/util/ImageLoader.java.
+ * [CALLED BY]     btd/ui/screens/LandingPanel.java.
+ * [CONNECTS TO]   java.awt.Graphics (images are loaded by LandingPanel with btd/util/ImageLoader.java and passed in).
  * [DEFENSE NOTE]  Utilizes the Builder Pattern to allow clean, fluent construction of custom button configurations.
  */
 public class GameButton {

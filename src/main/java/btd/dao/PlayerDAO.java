@@ -21,7 +21,7 @@ public class PlayerDAO {
     /**
      * [PURPOSE]       Finds an existing player profile by case-insensitive username.
      * [OOP / PATTERN] Parameterized Query / Null-Safe Optional Return.
-     * [CALLED BY]     findOrCreate(name), btd/ui/screens/LandingPanel.java.
+     * [CALLED BY]     findOrCreate(name), btd/util/DbCheck.java.
      * [CONNECTS TO]   btd/config/DatabaseConnection.java.
      * [DEFENSE NOTE]  Returns Optional<Player> to prevent NullPointerException if player does not exist yet.
      */
@@ -65,7 +65,7 @@ public class PlayerDAO {
     /**
      * [PURPOSE]       Updates player highest score only if current run beats the historical record.
      * [OOP / PATTERN] Atomic Conditional SQL Query / Race Condition Prevention.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (endRun() on game over).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (finishRun() on game over or quit).
      * [CONNECTS TO]   btd/config/DatabaseConnection.java, MySQL 'players' table.
      * [DEFENSE NOTE]  The clause 'AND highest_score < ?' guarantees in SQL that an inferior score
      *                 can never overwrite a personal best, preventing state regression without client locks.

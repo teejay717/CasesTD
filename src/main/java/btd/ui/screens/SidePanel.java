@@ -105,7 +105,7 @@ public class SidePanel {
     /**
      * [PURPOSE]       Dispatches mouse coordinates to buttons for hover state rendering.
      * [OOP / PATTERN] Event Propagation.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (mouseMoved()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (handleMove()).
      */
     public void mouseMoved(int x, int y) {
         shopButton.updateHover(x, y);
@@ -118,9 +118,9 @@ public class SidePanel {
     /**
      * [PURPOSE]       Processes mouse clicks in side panel: selects cards, opens shop, starts waves, sells, or upgrades.
      * [OOP / PATTERN] Input Dispatcher / Command Invocation.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (mousePressed()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (handlePress()).
      * [CONNECTS TO]   Actions interface callbacks.
-     * [DEFENSE NOTE]  Right-click on inventory card triggers instant card sell for gold refund.
+     * [DEFENSE NOTE]  Right-click on inventory card opens a "Sell 1 ... for N coins" popup (GamePanel.sellInventory()).
      */
     public void click(int x, int y, boolean rightClick) {
         for (InvCard card : cards) {

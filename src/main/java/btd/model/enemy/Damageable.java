@@ -27,9 +27,9 @@ public interface Damageable {
     /**
      * [PURPOSE]       Queries whether the entity's health has reached zero or below.
      * [OOP / PATTERN] State Query / Predicate Method.
-     * [CALLED BY]     btd/core/GameEngine.java (updateEnemies()),
+     * [CALLED BY]     btd/core/GameEngine.java (update()),
      *                 btd/model/tower/Tower.java (furthestInRange()).
-     * [CONNECTS TO]   btd/core/GameSession.java (awardKill()).
+     * [CONNECTS TO]   btd/core/GameSession.java (addCoins(), called by GameEngine).
      * [DEFENSE NOTE]  Used by the engine loop to remove defeated units and trigger kill rewards.
      */
     boolean isDead();

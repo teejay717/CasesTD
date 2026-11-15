@@ -7,7 +7,7 @@ import java.awt.Color;
  * [OOP / PATTERN] Java Enum / Rich Domain Object Pattern.
  * [CALLED BY]     btd/model/gacha/CaseDef.java, btd/model/tower/TowerType.java,
  *                 btd/dao/TowerDAO.java, btd/ui/screens/SidePanel.java.
- * [CONNECTS TO]   btd/model/gacha/CaseDef.java, btd/ui/theme/Palette.java.
+ * [CONNECTS TO]   btd/model/gacha/CaseDef.java, java.awt.Color.
  * [DEFENSE NOTE]  Pairs each rarity with an exact UI theme color and gem count (1-4) for visual accessibility.
  */
 public enum Rarity {

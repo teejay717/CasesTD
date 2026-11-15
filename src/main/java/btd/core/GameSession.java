@@ -39,7 +39,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Initializes new gameplay session using starting values from config.
      * [OOP / PATTERN] Constructor / State Initialization.
-     * [CALLED BY]     btd/ui/AppController.java (startNewGame()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (startRun()).
      * [CONNECTS TO]   btd/core/GameConfig.Economy.
      */
     public GameSession(GameConfig config, CaseRNGManager rng) {
@@ -75,7 +75,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Deducts gold cost and rolls a case, adding result to player inventory.
      * [OOP / PATTERN] Transaction Pattern / Guard Clause.
-     * [CALLED BY]     btd/ui/screens/ShopOverlay.java (buyCase()).
+     * [CALLED BY]     btd/ui/screens/ShopOverlay.java (openCase()).
      * [CONNECTS TO]   open(), btd/model/gacha/CaseDef.java.
      * [DEFENSE NOTE]  Returns null if insufficient gold, preventing overdrafts.
      */
@@ -90,7 +90,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Consumes one free starter case and rolls a tower without spending gold.
      * [OOP / PATTERN] Transaction Pattern / Guard Clause.
-     * [CALLED BY]     btd/ui/screens/ShopOverlay.java.
+     * [CALLED BY]     btd/ui/screens/ShopOverlay.java (openCase(), first case only while a free case is left).
      * [CONNECTS TO]   open().
      */
     public TowerType openFreeCase(CaseDef def) {
@@ -125,7 +125,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Sells an unplaced tower card from inventory, refunding gold based on rarity.
      * [OOP / PATTERN] State Mutation / List Removal.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (sellInventory(), right-click Sell menu).
      * [CONNECTS TO]   refundFor().
      */
     public boolean sellInventory(int index) {
@@ -147,7 +147,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Verifies valid placement: checks map walkability and enforces 34px tower separation.
      * [OOP / PATTERN] Spatial Validation / Guard Predicate.
-     * [CALLED BY]     place(), btd/ui/screens/GamePanel.java (paintPlacementPreview()).
+     * [CALLED BY]     place(), btd/ui/screens/GamePanel.java (paintPlacementGrid(), paintGhost()).
      * [CONNECTS TO]   btd/core/GameMap.java (canBuildAt()).
      * [DEFENSE NOTE]  Prevents placing towers on top of one another using Euclidean distance check.
      */
@@ -166,7 +166,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Instantiates and places a Level 1 tower onto the map from an inventory card.
      * [OOP / PATTERN] Factory Method Invocation / State Mutation.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (mouseReleased()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (placeAt()).
      * [CONNECTS TO]   btd/factory/TowerFactory.java (create()).
      * [DEFENSE NOTE]  Removes copy from inventory and returns concrete placed Tower reference.
      */
@@ -183,7 +183,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Evaluates why a tower cannot be upgraded: checks max level, duplicate Lv5 rule, or copy count.
      * [OOP / PATTERN] Validation / Human-Readable Rule Explanation.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     upgrade(), btd/ui/screens/SidePanel.java (paintTowerInfo()).
      * [CONNECTS TO]   upgradeCost(), copiesOf().
      * [DEFENSE NOTE]  Enforces the key rule: a player may only own ONE Level 5 tower of any given archetype at once.
      */
@@ -215,7 +215,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Consumes required duplicate copies from inventory and increments tower tier.
      * [OOP / PATTERN] State Mutation / Invariant Enforcement.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java (upgradeButton).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (upgradeSelected(), after SidePanel's UPGRADE button).
      * [CONNECTS TO]   btd/model/tower/Tower.java (applyLevel()).
      * [DEFENSE NOTE]  Adds tower type ID to levelFiveTypes set when reaching Level 5.
      */
@@ -247,7 +247,7 @@ public class GameSession {
     /**
      * [PURPOSE]       Removes placed tower from grid, refunds base gold value, and releases Lv5 uniqueness lock if applicable.
      * [OOP / PATTERN] Deletion / Cleanup.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java (sellButton).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (sellSelected(), after SidePanel's SELL button).
      * [CONNECTS TO]   towers list, levelFiveTypes set.
      */
     public void sell(Tower tower) {
@@ -273,7 +273,7 @@ public class GameSession {
     public List<TowerType> getInventory() { return Collections.unmodifiableList(inventory); }
     /**
      * [PURPOSE]       Returns unmodifiable view of all towers currently constructed on the map grid.
-     * [OOP / PATTERN] Encapsulation / Defensive Copying / Immutability.
+     * [OOP / PATTERN] Encapsulation / Read-Only View (wraps the same list, blocks add/remove; not a copy).
      * [DEFENSE NOTE]  Towers are added and removed only through place() and sell(), preventing external mutation.
      */
     public List<Tower> getTowers() { return Collections.unmodifiableList(towers); }

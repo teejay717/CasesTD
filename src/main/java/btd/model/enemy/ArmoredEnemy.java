@@ -37,9 +37,9 @@ public class ArmoredEnemy extends Enemy {
     /**
      * [PURPOSE]       Returns collision radius for ArmoredEnemy (13 pixels).
      * [OOP / PATTERN] Method Overriding (Polymorphism).
-     * [CALLED BY]     btd/ui/screens/GamePanel.java.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemy()), btd/model/tower/SniperTower.java (onBeam()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java.
-     * [DEFENSE NOTE]  Larger hitbox (13px) makes it easier for splash towers and piercing beams to strike.
+     * [DEFENSE NOTE]  Larger hitbox (13px) makes it easier for piercing beams to strike (splash uses the enemy's center point, not radius).
      */
     @Override
     public double getRadius() {
