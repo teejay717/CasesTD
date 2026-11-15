@@ -75,7 +75,7 @@ public class AppController {
 
     /**
      * [PURPOSE]       Lazy loads database catalog, wave config JSON, and map waypoint CSV on first run.
-     * [OOP / PATTERN] Lazy Initialization / Singleton Cache.
+     * [OOP / PATTERN] Lazy Initialization / Cached Fields (if null, load).
      * [CALLED BY]     startRun().
      * [CONNECTS TO]   btd/core/Catalog.java (load()), btd/core/GameConfig.java (load()), btd/core/GameMap.java (load()).
      * [DEFENSE NOTE]  Catches SQLException/IllegalStateException and presents user-friendly modal dialog if MySQL is unreachable.

@@ -11,7 +11,7 @@ import java.util.List;
  * [PURPOSE]       Static drawing utilities for rendered text: center alignment, high-contrast drop outlines, and word wrapping.
  * [OOP / PATTERN] Utility Class / Pure Fabrication / DRY Principle.
  * [CALLED BY]     btd/ui/components/TextButton.java, btd/ui/screens/SidePanel.java,
- *                 btd/ui/screens/GamePanel.java, btd/ui/screens/ShopOverlay.java.
+ *                 btd/ui/screens/GamePanel.java, btd/ui/screens/ShopOverlay.java, btd/ui/screens/ResultsPanel.java.
  * [CONNECTS TO]   java.awt.Graphics2D, java.awt.FontMetrics.
  * [DEFENSE NOTE]  Outlined text ensures readability over both bright grass and dark UI panels.
  */
@@ -35,7 +35,7 @@ public final class Gfx {
     /**
      * [PURPOSE]       Renders text with a 2-pixel dark border outline using an 8-way directional offset stamp.
      * [OOP / PATTERN] Graphic Filter / Outline Effect.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java, btd/ui/components/TextButton.java.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java, btd/ui/screens/SidePanel.java, outlinedCentered().
      * [DEFENSE NOTE]  Draws 8 surrounding outline stamps before drawing the center fill text.
      */
     public static void outlined(Graphics2D g, String text, double x, double y, Font font, Color fill, Color outline) {
@@ -55,7 +55,7 @@ public final class Gfx {
     /**
      * [PURPOSE]       Combines outline effect with horizontal center alignment.
      * [OOP / PATTERN] Composite Utility Method.
-     * [CALLED BY]     btd/ui/components/TextButton.java, btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     btd/ui/components/TextButton.java, btd/ui/screens/GamePanel.java, btd/ui/screens/ResultsPanel.java.
      */
     public static void outlinedCentered(Graphics2D g, String text, double centerX, double y, Font font,
                                         Color fill, Color outline) {

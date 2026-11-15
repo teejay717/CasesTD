@@ -7,9 +7,9 @@ import java.awt.Font;
 
 /**
  * [PURPOSE]       Color palette and typography definitions for the in-game HUD, side panels, and shop overlays.
- * [OOP / PATTERN] Constant Interface / Design Tokens / Aesthetic Encapsulation.
+ * [OOP / PATTERN] Constants Class / Design Tokens / Aesthetic Encapsulation.
  * [CALLED BY]     btd/ui/screens/SidePanel.java, btd/ui/screens/GamePanel.java,
- *                 btd/ui/screens/ShopOverlay.java, btd/ui/components/TextButton.java.
+ *                 btd/ui/screens/ShopOverlay.java, btd/ui/screens/ResultsPanel.java, btd/ui/components/TextButton.java.
  * [CONNECTS TO]   btd/util/FontLoader.java.
  * [DEFENSE NOTE]  Centralizes warm cartoon wood/cream palette to preserve visual consistency across all UI components.
  */

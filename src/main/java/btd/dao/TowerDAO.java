@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * [PURPOSE]       Reads all 10 tower definitions from the MySQL 'towers' table.
  * [OOP / PATTERN] Data Access Object (DAO) Pattern / Object-Relational Mapping (ORM).
- * [CALLED BY]     btd/core/Catalog.java (load() at startup).
+ * [CALLED BY]     btd/core/Catalog.java (load(), on the first Play press).
  * [CONNECTS TO]   btd/config/DatabaseConnection.java, btd/model/tower/TowerType.java (immutable record).
  * [DEFENSE NOTE]  Tower catalog is read-only at runtime; maps relational columns directly to immutable records.
  */
@@ -26,7 +26,7 @@ public class TowerDAO {
      * [OOP / PATTERN] ResultSet Mapping / Record Instantiation.
      * [CALLED BY]     btd/core/Catalog.java (load()).
      * [CONNECTS TO]   btd/model/tower/TowerType.java, btd/model/gacha/Rarity.java, btd/model/tower/Special.java.
-     * [DEFENSE NOTE]  Loads once at application start to avoid repeated SQL queries during the 60 FPS loop.
+     * [DEFENSE NOTE]  Loads once (first Play press, then cached by AppController) to avoid repeated SQL queries during the 60 FPS loop.
      */
     public List<TowerType> findAll() throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();

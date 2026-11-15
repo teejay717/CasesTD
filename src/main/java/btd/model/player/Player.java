@@ -4,7 +4,7 @@ package btd.model.player;
  * [PURPOSE]       Encapsulates player account profile data: unique ID, handle name, and personal best high score.
  * [OOP / PATTERN] Domain Entity / Data Encapsulation / POJO Pattern.
  * [CALLED BY]     btd/dao/PlayerDAO.java, btd/ui/AppController.java,
- *                 btd/core/GameSession.java, btd/ui/screens/LandingPanel.java.
+ *                 btd/ui/screens/GamePanel.java, btd/ui/screens/LandingPanel.java.
  * [CONNECTS TO]   btd/dao/PlayerDAO.java, btd/ui/screens/ResultsPanel.java.
  * [DEFENSE NOTE]  Encapsulates score mutation and database representation in one domain object.
  */
@@ -17,7 +17,7 @@ public class Player {
     /**
      * [PURPOSE]       Constructs a Player entity.
      * [OOP / PATTERN] Entity Constructor / Encapsulation.
-     * [CALLED BY]     btd/dao/PlayerDAO.java (mapRow()).
+     * [CALLED BY]     btd/dao/PlayerDAO.java (findByName()).
      * [CONNECTS TO]   Internal state fields.
      * [DEFENSE NOTE]  Instantiated directly from database query results upon login or player selection.
      */
@@ -45,7 +45,7 @@ public class Player {
     /**
      * [PURPOSE]       Updates personal best wave record when a new high score is achieved.
      * [OOP / PATTERN] Encapsulated Setter.
-     * [CALLED BY]     btd/ui/AppController.java, btd/core/GameSession.java.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (finishRun()).
      * [CONNECTS TO]   btd/dao/PlayerDAO.java (updateHighestScore()).
      */
     public void setHighestScore(int highestScore) {
@@ -55,7 +55,7 @@ public class Player {
     /**
      * [PURPOSE]       Provides readable representation for landing panel player pickers and logs.
      * [OOP / PATTERN] Method Overriding (Object.toString()).
-     * [CALLED BY]     btd/ui/screens/LandingPanel.java.
+     * [CALLED BY]     btd/util/DbCheck.java (console output).
      */
     @Override
     public String toString() {

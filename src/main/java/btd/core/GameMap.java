@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * [PURPOSE]       Represents the gameplay map, track waypoints, cumulative track distance, and tower build validation.
  * [OOP / PATTERN] Spatial Domain Model / Value Object / Boundary Enforcer.
- * [CALLED BY]     btd/Main.java (main()), btd/core/GameEngine.java, btd/core/GameSession.java, btd/ui/screens/GamePanel.java.
+ * [CALLED BY]     btd/ui/AppController.java (loadData()), btd/core/GameEngine.java, btd/core/GameSession.java, btd/ui/screens/GamePanel.java.
  * [CONNECTS TO]   data/maps/map1_path.csv, btd/model/enemy/Enemy.java.
  * [DEFENSE NOTE]  Waypoints loaded from CSV (1280x720 file canvas) are squeezed to fit active 960x720 canvas width.
  */
@@ -56,7 +56,7 @@ public class GameMap {
     /**
      * [PURPOSE]       Reads CSV file of waypoint coordinates and scales them to fit canvas.
      * [OOP / PATTERN] Static Factory Method / CSV Parsing.
-     * [CALLED BY]     btd/Main.java (main()).
+     * [CALLED BY]     btd/ui/AppController.java (loadData()).
      * [CONNECTS TO]   btd/core/GameMap constructor.
      */
     public static GameMap load(String csvFile) {
@@ -84,7 +84,7 @@ public class GameMap {
      * [PURPOSE]       Constructs GameMap and precalculates cumulative Euclidean distances along path segments.
      * [OOP / PATTERN] Constructor / Spatial Precomputation.
      * [CALLED BY]     btd/core/GameMap.java (load()).
-     * [DEFENSE NOTE]  Precomputing cumulative lengths enables O(log N) or fast linear waypoint lookup in pointAt().
+     * [DEFENSE NOTE]  Precomputing cumulative lengths enables a fast linear waypoint lookup in pointAt() (no re-measuring each frame).
      */
     public GameMap(List<double[]> pathPoints) {
         points.addAll(pathPoints);
@@ -107,7 +107,7 @@ public class GameMap {
         return points;
     }
 
-    /** [PURPOSE] Scaled auxiliary road segments where towers cannot be built. */
+    /** [PURPOSE] Scaled decorative road segments (EXTRA_ROADS + DEAD_END_ROADS) drawn by GamePanel when map.png is missing. Towers cannot be built on EXTRA_ROADS but can on DEAD_END_ROADS. */
     public List<double[]> getExtraRoads() {
         List<double[]> result = new ArrayList<>();
         for (double[] r : EXTRA_ROADS) {
@@ -173,7 +173,7 @@ public class GameMap {
     /**
      * [PURPOSE]       Validates whether a tower can be placed at (x, y): within boundaries, off roads, and clear of obstacles.
      * [OOP / PATTERN] Spatial Collision Validation / Guard Method.
-     * [CALLED BY]     btd/core/GameSession.java (canPlaceAt()), btd/ui/screens/GamePanel.java (paintPlacementPreview()).
+     * [CALLED BY]     btd/core/GameSession.java (canPlaceAt()) only; GamePanel reaches it through canPlaceAt().
      * [CONNECTS TO]   EXTRA_ROADS, OBSTACLES, PATH_CLEARANCE.
      * [DEFENSE NOTE]  Enforces 38px track clearance, map margins, top HUD avoidance, and obstacle bounding boxes.
      */

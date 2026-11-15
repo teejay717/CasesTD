@@ -23,7 +23,7 @@ public class BasicEnemy extends Enemy {
     /**
      * [PURPOSE]       Returns collision and rendering radius for BasicEnemy (11 pixels).
      * [OOP / PATTERN] Method Overriding (Polymorphism).
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemyCircle()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemy()), btd/model/tower/SniperTower.java (onBeam()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java (abstract method implementation).
      * [DEFENSE NOTE]  Standard size hitbox representing average zombie profile.
      */

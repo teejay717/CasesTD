@@ -206,9 +206,9 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     }
 
     /**
-     * [PURPOSE]       Fixed-timestep simulation tick accumulator: runs GameEngine updates at 60 FPS (also used by tests).
+     * [PURPOSE]       Fixed-timestep simulation tick accumulator: runs GameEngine updates at 60 steps per second.
      * [OOP / PATTERN] Fixed Timestep Accumulator Pattern.
-     * [CALLED BY]     tick(), unit tests.
+     * [CALLED BY]     tick().
      * [CONNECTS TO]   btd/ui/screens/ShopOverlay.java (update()), btd/core/GameEngine.java (update()),
      *                 finishRun(), showToast(), selectTower().
      * [DEFENSE NOTE]  Fixed-Timestep Accumulator (STEP = 1.0 / 60.0):

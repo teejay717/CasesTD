@@ -11,7 +11,7 @@ import java.util.List;
  * [PURPOSE]       Core simulation coordinator driving the 60 FPS tick loop: spawns enemies,
  *                 updates aura buffs, fires towers, culls dead units, awards gold, and checks game over.
  * [OOP / PATTERN] Game Loop Pattern / Facade Pattern / Mediator Pattern.
- * [CALLED BY]     btd/ui/screens/GamePanel.java (actionPerformed() timer hook).
+ * [CALLED BY]     btd/ui/screens/GamePanel.java (advance(), driven by the Swing Timer's tick()).
  * [CONNECTS TO]   btd/core/WaveSpawner.java, btd/core/GameSession.java,
  *                 btd/model/enemy/Enemy.java, btd/model/tower/Tower.java,
  *                 btd/core/VisualEffect.java.
@@ -48,7 +48,7 @@ public class GameEngine {
     /**
      * [PURPOSE]       Constructs GameEngine and instantiates WaveSpawner.
      * [OOP / PATTERN] Constructor / Dependency Injection.
-     * [CALLED BY]     btd/ui/AppController.java (startNewGame()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (startRun()).
      * [CONNECTS TO]   btd/core/WaveSpawner.java.
      */
     public GameEngine(GameConfig config, GameMap map, GameSession session) {
@@ -61,7 +61,7 @@ public class GameEngine {
     /**
      * [PURPOSE]       Transitions engine state to WAVE_ACTIVE and starts spawning wave queue.
      * [OOP / PATTERN] State Transition Method / Guard Clause.
-     * [CALLED BY]     btd/ui/screens/SidePanel.java (startWaveButton), btd/ui/screens/GamePanel.java (spacebar shortcut).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (startWave(): SidePanel START WAVE button or the Space key).
      * [CONNECTS TO]   btd/core/WaveSpawner.java (begin()).
      * [DEFENSE NOTE]  Returns false if a wave is already running or game is over.
      */
@@ -79,7 +79,7 @@ public class GameEngine {
      * [PURPOSE]       Executes a single simulation tick: updates effects, spawns units, recalculates auras,
      *                 fires towers, moves enemies along waypoints, awards gold, and triggers game over.
      * [OOP / PATTERN] Main Game Loop Step / Mediator Pattern.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (Swing Timer tick).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (advance(), fixed-step while loop).
      * [CONNECTS TO]   btd/core/WaveSpawner.java, btd/model/tower/Tower.java, btd/model/enemy/Enemy.java.
      * [DEFENSE NOTE]  Aura buffs are reset and recalculated every frame before tower attack phases run.
      */

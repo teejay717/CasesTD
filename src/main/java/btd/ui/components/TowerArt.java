@@ -11,10 +11,11 @@ import java.awt.geom.Ellipse2D;
 
 /**
  * [PURPOSE]       Draws tower avatar visuals: loads PNG sprite from database path or renders geometric placeholder shapes.
- * [OOP / PATTERN] Factory / Strategy / Fallback Renderer Pattern.
- * [CALLED BY]     btd/ui/screens/GamePanel.java (paintTower()), btd/ui/screens/SidePanel.java (paintInventoryCard()).
+ * [OOP / PATTERN] Utility Class / Fallback Renderer (PNG, else placeholder circle).
+ * [CALLED BY]     btd/ui/screens/GamePanel.java (paintGhost(), paintTowers()), btd/ui/screens/SidePanel.java (paintInventory()),
+ *                 btd/ui/screens/ShopOverlay.java (paintCases(), paintStrip(), paintResult()).
  * [CONNECTS TO]   btd/model/tower/TowerType.java, btd/util/SpriteLoader.java.
- * [DEFENSE NOTE]  Guarantees game is 100% playable with procedural vector art even if sprite assets are missing.
+ * [DEFENSE NOTE]  Guarantees game is 100% playable with placeholder circle art even if sprite assets are missing.
  */
 public final class TowerArt {
 
@@ -38,7 +39,7 @@ public final class TowerArt {
     /**
      * [PURPOSE]       Renders tower graphic centered on (cx, cy): draws cached sprite, or circular procedural vector glyph.
      * [OOP / PATTERN] Rendering Pipeline / Fallback Strategy Pattern.
-     * [CALLED BY]     btd/ui/screens/GamePanel.java, btd/ui/screens/SidePanel.java.
+     * [CALLED BY]     btd/ui/screens/GamePanel.java, btd/ui/screens/SidePanel.java, btd/ui/screens/ShopOverlay.java.
      * [CONNECTS TO]   btd/util/SpriteLoader.java (get()).
      * [DEFENSE NOTE]  Outlines shape with rarity color (Common, Rare, Epic, Legendary) to communicate drop quality at a glance.
      */

@@ -27,7 +27,7 @@ import java.util.Random;
  * [CALLED BY]     btd/ui/screens/GamePanel.java.
  * [CONNECTS TO]   btd/core/GameSession.java (buyCase(), openFreeCase()),
  *                 btd/model/gacha/CaseDef.java, btd/core/Catalog.java.
- * [DEFENSE NOTE]  Deterministic outcome generation: tower drop is awarded in GameSession the instant gold is deducted;
+ * [DEFENSE NOTE]  Outcome decided up front: tower drop is rolled and awarded in GameSession the instant gold is deducted;
  *                 the 5-second spinner animation simply creates suspenseful presentation.
  */
 public class ShopOverlay {

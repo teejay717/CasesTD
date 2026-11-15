@@ -9,7 +9,7 @@ import btd.core.GameMap;
  * [CALLED BY]     btd/core/WaveSpawner.java, btd/factory/EnemyFactory.java, btd/core/GameEngine.java.
  * [CONNECTS TO]   btd/model/enemy/Damageable.java, btd/core/GameMap.java,
  *                 btd/ui/screens/GamePanel.java.
- * [DEFENSE NOTE]  Encapsulates physics, status effect timers, and rotation interpolation
+ * [DEFENSE NOTE]  Encapsulates physics, status effect timers, and rotation (1 px look-ahead angle)
  *                 so subclasses only specify baseline stats and unique damage mitigations.
  */
 public abstract class Enemy implements Damageable {
@@ -67,7 +67,7 @@ public abstract class Enemy implements Damageable {
     /**
      * [PURPOSE]       Abstract accessor for the enemy collision and rendering radius.
      * [OOP / PATTERN] Abstract Method (Subclass Responsibility).
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemyCircle()),
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemy()),
      *                 btd/model/tower/SniperTower.java (onBeam()).
      * [CONNECTS TO]   Subclass hitbox configurations.
      * [DEFENSE NOTE]  Allows larger enemies (Boss) to have larger hitboxes for piercing beams and visuals.
@@ -77,7 +77,7 @@ public abstract class Enemy implements Damageable {
     /**
      * [PURPOSE]       Updates status effect timers, deals DoT ticks, moves along the path, and computes heading angle.
      * [OOP / PATTERN] Simulation Tick / Delta Time (dt) Physics / Vector Heading Calculation.
-     * [CALLED BY]     btd/core/GameEngine.java (updateEnemies()).
+     * [CALLED BY]     btd/core/GameEngine.java (update()).
      * [CONNECTS TO]   btd/core/GameMap.java (pointAt()).
      * [DEFENSE NOTE]  Delta Time (dt ≈ 0.0166s at 60 FPS) provides frame-rate independence:
      *                 1. poisonLeft -= dt / burnLeft -= dt: countdown timers decremented in real seconds.
@@ -213,8 +213,8 @@ public abstract class Enemy implements Damageable {
     /**
      * [PURPOSE]       Checks if the enemy traveled the full length of the waypoint track.
      * [OOP / PATTERN] Boundary Check / Predicate.
-     * [CALLED BY]     btd/core/GameEngine.java (updateEnemies()).
-     * [CONNECTS TO]   btd/core/GameMap.java (getTotalLength()), btd/core/GameSession.java (leakHealth()).
+     * [CALLED BY]     btd/core/GameEngine.java (update()).
+     * [CONNECTS TO]   btd/core/GameMap.java (getTotalLength()), btd/core/GameSession.java (loseLives()).
      * [DEFENSE NOTE]  When true, the engine removes the enemy and subtracts leakDamage from base health.
      */
     public boolean hasReachedEnd(GameMap map) {

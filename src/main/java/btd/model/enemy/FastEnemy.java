@@ -5,7 +5,7 @@ package btd.model.enemy;
  * [OOP / PATTERN] Concrete Subclass / Specialization / Inheritance.
  * [CALLED BY]     btd/factory/EnemyFactory.java (create()).
  * [CONNECTS TO]   btd/model/enemy/Enemy.java (super class).
- * [DEFENSE NOTE]  Tests tower fire rate and projectile velocity; fast movement counters slow-reloading snipers.
+ * [DEFENSE NOTE]  Tests tower fire rate (hits are instant, there are no projectiles); fast movement counters slow-reloading snipers.
  */
 public class FastEnemy extends Enemy {
 
@@ -23,7 +23,7 @@ public class FastEnemy extends Enemy {
     /**
      * [PURPOSE]       Returns collision and rendering radius for FastEnemy (9 pixels).
      * [OOP / PATTERN] Method Overriding (Polymorphism).
-     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemyCircle()).
+     * [CALLED BY]     btd/ui/screens/GamePanel.java (paintEnemy()), btd/model/tower/SniperTower.java (onBeam()).
      * [CONNECTS TO]   btd/model/enemy/Enemy.java.
      * [DEFENSE NOTE]  Smaller hitbox (9px) visually and mechanically reflects agile build.
      */

@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * [PURPOSE]       Reads all case definitions and resolves their drop pools from MySQL.
  * [OOP / PATTERN] Data Access Object (DAO) Pattern / Junction Table Resolution.
- * [CALLED BY]     btd/core/Catalog.java (load() at startup).
+ * [CALLED BY]     btd/core/Catalog.java (load(), on the first Play press).
  * [CONNECTS TO]   btd/config/DatabaseConnection.java, MySQL 'cases' and 'case_towers' tables.
  * [DEFENSE NOTE]  Reuses pre-loaded TowerType records from towersById map, avoiding redundant SQL queries.
  */

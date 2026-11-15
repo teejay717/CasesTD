@@ -25,7 +25,7 @@ public final class EnemyFactory {
      * [OOP / PATTERN] Factory Method / Polymorphic Construction.
      * [CALLED BY]     btd/core/WaveSpawner.java (update()).
      * [CONNECTS TO]   Concrete Enemy subclasses (BasicEnemy, FastEnemy, ArmoredEnemy, BossEnemy).
-     * [DEFENSE NOTE]  Scales stats dynamically per wave; BossEnemy automatically spawns on 10th waves.
+     * [DEFENSE NOTE]  Scales stats dynamically per wave; WaveSpawner.begin() decides when a BossEnemy comes (every 10th wave).
      */
     public static Enemy create(String typeName, double healthScale, double speedScale, int reward) {
         return switch (typeName) {

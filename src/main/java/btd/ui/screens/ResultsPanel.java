@@ -24,7 +24,7 @@ import java.awt.event.MouseEvent;
  * [CALLED BY]     btd/ui/AppController.java (showResults()).
  * [CONNECTS TO]   btd/core/RunResult.java, btd/ui/components/TextButton.java,
  *                 btd/ui/components/Gfx.java, btd/ui/theme/Palette.java.
- * [DEFENSE NOTE]  Celebrates new record achievements with prominent gold badges and handles play-again/menu navigation.
+ * [DEFENSE NOTE]  Celebrates new record achievements with a green NEW HIGH SCORE! banner and handles play-again/menu navigation.
  */
 public class ResultsPanel extends JPanel {
 
