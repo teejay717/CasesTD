@@ -487,7 +487,7 @@ public class GamePanel extends JPanel implements SidePanel.Actions {
     }
 
     /**
-     * [PURPOSE]       Upgrades currently selected tower level if player has required coins and card copies.
+     * [PURPOSE]       Upgrades currently selected tower level if player has required card copies.
      * [OOP / PATTERN] Callback Implementation (SidePanel.Actions) / State Mutation.
      * [CALLED BY]     btd/ui/screens/SidePanel.java (click() on UPGRADE button).
      * [CONNECTS TO]   btd/core/GameSession.java (upgrade()), showToast().
