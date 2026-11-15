@@ -1,0 +1,138 @@
+[
+  {
+    "id": "layer:ui",
+    "name": "Swing UI Layer",
+    "description": "Main entry point, AppController/MainFrame screen navigation, and the Swing screens, custom-painted components, and theme palette that render the tower defense game and case shop.",
+    "nodeIds": [
+      "file:src/main/java/btd/Main.java",
+      "file:src/main/java/btd/ui/AppController.java",
+      "file:src/main/java/btd/ui/MainFrame.java",
+      "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+      "file:src/main/java/btd/ui/screens/GamePanel.java",
+      "file:src/main/java/btd/ui/screens/LandingPanel.java",
+      "file:src/main/java/btd/ui/screens/HelpPanel.java",
+      "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+      "file:src/main/java/btd/ui/screens/SidePanel.java",
+      "file:src/main/java/btd/ui/screens/package-info.java",
+      "file:src/main/java/btd/ui/components/GameButton.java",
+      "file:src/main/java/btd/ui/components/TowerArt.java",
+      "file:src/main/java/btd/ui/components/Gfx.java",
+      "file:src/main/java/btd/ui/components/TextButton.java",
+      "file:src/main/java/btd/ui/components/package-info.java",
+      "file:src/main/java/btd/ui/theme/Palette.java",
+      "file:src/main/java/btd/ui/theme/Theme.java",
+      "file:src/main/java/btd/ui/theme/package-info.java"
+    ]
+  },
+  {
+    "id": "layer:game-core",
+    "name": "Game Core Engine",
+    "description": "Game loop, session state, wave spawning, map pathing, case RNG rolls, upgrade costs, and the tower/case catalog that drive each run.",
+    "nodeIds": [
+      "file:src/main/java/btd/core/CaseRNGManager.java",
+      "file:src/main/java/btd/core/Catalog.java",
+      "file:src/main/java/btd/core/GameSession.java",
+      "file:src/main/java/btd/core/UpgradeCostTable.java",
+      "file:src/main/java/btd/core/GameConfig.java",
+      "file:src/main/java/btd/core/GameMap.java",
+      "file:src/main/java/btd/core/RunResult.java",
+      "file:src/main/java/btd/core/GameEngine.java",
+      "file:src/main/java/btd/core/VisualEffect.java",
+      "file:src/main/java/btd/core/WaveSpawner.java",
+      "file:src/main/java/btd/core/package-info.java"
+    ]
+  },
+  {
+    "id": "layer:domain-model",
+    "name": "Domain Model and Factories",
+    "description": "OOP hierarchy of towers, enemies, gacha cases/rarities, and the player, plus the factories that instantiate tower and enemy subtypes.",
+    "nodeIds": [
+      "file:src/main/java/btd/model/tower/Special.java",
+      "file:src/main/java/btd/model/tower/TowerType.java",
+      "file:src/main/java/btd/model/tower/SingleTargetTower.java",
+      "file:src/main/java/btd/model/tower/SniperTower.java",
+      "file:src/main/java/btd/model/tower/SplashTower.java",
+      "file:src/main/java/btd/model/tower/SupportTower.java",
+      "file:src/main/java/btd/model/tower/Tower.java",
+      "file:src/main/java/btd/model/tower/package-info.java",
+      "file:src/main/java/btd/model/tower/Upgradable.java",
+      "file:src/main/java/btd/model/enemy/Enemy.java",
+      "file:src/main/java/btd/model/enemy/ArmoredEnemy.java",
+      "file:src/main/java/btd/model/enemy/BasicEnemy.java",
+      "file:src/main/java/btd/model/enemy/BossEnemy.java",
+      "file:src/main/java/btd/model/enemy/FastEnemy.java",
+      "file:src/main/java/btd/model/enemy/package-info.java",
+      "file:src/main/java/btd/model/enemy/Damageable.java",
+      "file:src/main/java/btd/model/gacha/CaseDef.java",
+      "file:src/main/java/btd/model/gacha/Rarity.java",
+      "file:src/main/java/btd/model/gacha/package-info.java",
+      "file:src/main/java/btd/model/player/Player.java",
+      "file:src/main/java/btd/model/player/package-info.java",
+      "file:src/main/java/btd/factory/TowerFactory.java",
+      "file:src/main/java/btd/factory/EnemyFactory.java",
+      "file:src/main/java/btd/factory/package-info.java"
+    ]
+  },
+  {
+    "id": "layer:data-access",
+    "name": "Data Access and Database",
+    "description": "JDBC connection setup, DAOs for towers, cases, and players, and the MySQL schema and seed scripts they read and write.",
+    "nodeIds": [
+      "file:src/main/java/btd/config/DatabaseConnection.java",
+      "file:src/main/java/btd/config/package-info.java",
+      "file:src/main/java/btd/dao/CaseDAO.java",
+      "file:src/main/java/btd/dao/TowerDAO.java",
+      "file:src/main/java/btd/dao/PlayerDAO.java",
+      "file:src/main/java/btd/dao/package-info.java",
+      "file:database/backups/.gitkeep",
+      "table:database/schema.sql",
+      "table:database/schema.sql:towers",
+      "table:database/schema.sql:cases",
+      "table:database/schema.sql:case_towers",
+      "table:database/schema.sql:players",
+      "table:database/seed_data.sql"
+    ]
+  },
+  {
+    "id": "layer:utility",
+    "name": "Utilities",
+    "description": "Sprite, image, and font loaders plus the database connectivity check helper shared across the UI and data layers.",
+    "nodeIds": [
+      "file:src/main/java/btd/util/DbCheck.java",
+      "file:src/main/java/btd/util/SpriteLoader.java",
+      "file:src/main/java/btd/util/FontLoader.java",
+      "file:src/main/java/btd/util/ImageLoader.java",
+      "file:src/main/java/btd/util/package-info.java"
+    ]
+  },
+  {
+    "id": "layer:assets-config",
+    "name": "Assets, Game Data and Build Config",
+    "description": "Maven pom.xml, the example DB properties, map path CSV and wave JSON config, and the asset folders (sprites, fonts, audio) with the bundled font license.",
+    "nodeIds": [
+      "file:data/maps/.gitkeep",
+      "config:data/db_config.example.properties",
+      "file:data/maps/map1_path.csv",
+      "config:data/maps/waves_config.json",
+      "file:assets/audio/.gitkeep",
+      "file:assets/fonts/.gitkeep",
+      "file:assets/sprites/cases/.gitkeep",
+      "file:assets/sprites/enemies/.gitkeep",
+      "file:assets/sprites/towers/.gitkeep",
+      "file:assets/ui/.gitkeep",
+      "document:assets/fonts/LuckiestGuy-LICENSE.txt",
+      "config:pom.xml"
+    ]
+  },
+  {
+    "id": "layer:documentation",
+    "name": "Documentation",
+    "description": "Project README, player-facing game guide, and project context notes describing the game design and class structure.",
+    "nodeIds": [
+      "file:docs/.gitkeep",
+      "document:docs/GAME_GUIDE.md",
+      "document:docs/PROJECT_CONTEXT.md",
+      "document:README.md"
+    ]
+  }
+]

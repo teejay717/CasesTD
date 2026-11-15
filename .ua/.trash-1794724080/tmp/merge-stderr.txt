@@ -1,0 +1,24 @@
+Found 8 batch files (7 logical batches, 1 multi-part):
+  batch-1.json: 52 nodes, 120 edges
+  batch-2-part-1.json: 38 nodes, 80 edges
+  batch-2-part-2.json: 53 nodes, 117 edges
+  batch-3.json: 49 nodes, 98 edges
+  batch-4.json: 45 nodes, 101 edges
+  batch-5.json: 18 nodes, 35 edges
+  batch-6.json: 30 nodes, 40 edges
+  batch-7.json: 9 nodes, 2 edges
+
+Input: 294 nodes, 593 edges
+
+Could not fix (4 issues — needs agent review):
+  - Edge function:src/main/java/btd/core/GameEngine.java:update → function:src/main/java/btd/core/GameSession.java:addCoins (calls): dropped, missing target 'function:src/main/java/btd/core/GameSession.java:addCoins'
+  - Edge function:src/main/java/btd/core/GameEngine.java:update → function:src/main/java/btd/core/GameSession.java:loseLives (calls): dropped, missing target 'function:src/main/java/btd/core/GameSession.java:loseLives'
+  - Edge function:src/main/java/btd/core/GameEngine.java:updateEffects → function:src/main/java/btd/core/VisualEffect.java:update (calls): dropped, missing target 'function:src/main/java/btd/core/VisualEffect.java:update'
+  - Edge function:src/main/java/btd/model/tower/Tower.java:furthestInRange → function:src/main/java/btd/model/enemy/Enemy.java:getDistance (calls): dropped, missing target 'function:src/main/java/btd/model/enemy/Enemy.java:getDistance'
+
+Output: 294 nodes, 589 edges
+
+Imports edge recovery:
+  Recovered 0 `imports` edges from importMap (83 entries scanned)
+
+Written to /Users/shrod/projects/CasesTD/.ua/intermediate/assembled-graph.json (267 KB)

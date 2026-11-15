@@ -1,0 +1,1491 @@
+{
+ "nodes": [
+  {
+   "id": "file:src/main/java/btd/Main.java",
+   "type": "file",
+   "name": "Main.java",
+   "filePath": "src/main/java/btd/Main.java",
+   "summary": "Application entry point that, on the Swing event thread, creates the MainFrame window, wires up the AppController screen router, and shows the window.",
+   "tags": [
+    "entry-point",
+    "bootstrap",
+    "swing"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/MainFrame.java",
+   "type": "file",
+   "name": "MainFrame.java",
+   "filePath": "src/main/java/btd/ui/MainFrame.java",
+   "summary": "Fixed-size JFrame window that hosts all game screens in a CardLayout panel sized by Theme and exposes methods to register and switch screens by name.",
+   "tags": [
+    "component",
+    "swing",
+    "window",
+    "navigation"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/components/Gfx.java",
+   "type": "file",
+   "name": "Gfx.java",
+   "filePath": "src/main/java/btd/ui/components/Gfx.java",
+   "summary": "Static Graphics2D text-drawing helpers for centered text, outlined (stroked) text, and word-wrapping strings to a maximum width, shared by the game UI screens.",
+   "tags": [
+    "utility",
+    "rendering",
+    "text",
+    "graphics"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/components/TextButton.java",
+   "type": "file",
+   "name": "TextButton.java",
+   "filePath": "src/main/java/btd/ui/components/TextButton.java",
+   "summary": "Lightweight custom-painted button (not a Swing component) with bounds, hover and enabled state, drawn as a rounded colored box with outlined label text using Palette styling.",
+   "tags": [
+    "component",
+    "ui-widget",
+    "rendering",
+    "button"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "type": "file",
+   "name": "HelpPanel.java",
+   "filePath": "src/main/java/btd/ui/screens/HelpPanel.java",
+   "summary": "How-to-Play overlay panel that displays help book image spreads with previous/next arrow buttons and an invisible close hit area, manually laid out relative to the book and swallowing clicks to the game beneath.",
+   "tags": [
+    "component",
+    "overlay",
+    "help-screen",
+    "swing"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "type": "file",
+   "name": "ResultsPanel.java",
+   "filePath": "src/main/java/btd/ui/screens/ResultsPanel.java",
+   "summary": "End-of-run results screen that paints the menu background, the player's RunResult statistics, and PLAY AGAIN / MENU TextButtons that invoke callbacks supplied by the controller.",
+   "tags": [
+    "component",
+    "screen",
+    "results",
+    "swing"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "type": "file",
+   "name": "SidePanel.java",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "summary": "In-game right-hand sidebar that paints the tower inventory cards, selected-tower or placement info, and shop/start-wave/speed/upgrade/sell buttons, routing clicks through an Actions callback interface implemented by GamePanel.",
+   "tags": [
+    "component",
+    "hud",
+    "event-handler",
+    "rendering"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/theme/Palette.java",
+   "type": "file",
+   "name": "Palette.java",
+   "filePath": "src/main/java/btd/ui/theme/Palette.java",
+   "summary": "Shared color constants for the game visuals (grass, path, panels, cream, good/bad, gold) plus heading and body font helpers backed by FontLoader.",
+   "tags": [
+    "config",
+    "theme",
+    "constants",
+    "styling"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/theme/Theme.java",
+   "type": "file",
+   "name": "Theme.java",
+   "filePath": "src/main/java/btd/ui/theme/Theme.java",
+   "summary": "Global UI constants defining the content window dimensions, core colors, and title/button fonts loaded via FontLoader.",
+   "tags": [
+    "config",
+    "theme",
+    "constants",
+    "styling"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/util/FontLoader.java",
+   "type": "file",
+   "name": "FontLoader.java",
+   "filePath": "src/main/java/btd/util/FontLoader.java",
+   "summary": "Loads the Luckiest Guy TrueType font from assets/fonts once at class init, falling back to SansSerif, and derives sized copies on request.",
+   "tags": [
+    "utility",
+    "asset-loading",
+    "font",
+    "singleton"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/util/ImageLoader.java",
+   "type": "file",
+   "name": "ImageLoader.java",
+   "filePath": "src/main/java/btd/util/ImageLoader.java",
+   "summary": "Loads UI images from assets/ui via ImageIO, returning null and logging to stderr when a file cannot be read.",
+   "tags": [
+    "utility",
+    "asset-loading",
+    "image",
+    "io"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/Main.java:Main",
+   "type": "class",
+   "name": "Main",
+   "filePath": "src/main/java/btd/Main.java",
+   "lineRange": [
+    9,
+    17
+   ],
+   "summary": "Entry-point class holding the static main method that launches the Swing UI.",
+   "tags": [
+    "class",
+    "core",
+    "exported"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/MainFrame.java:MainFrame",
+   "type": "class",
+   "name": "MainFrame",
+   "filePath": "src/main/java/btd/ui/MainFrame.java",
+   "lineRange": [
+    11,
+    38
+   ],
+   "summary": "JFrame subclass managing a CardLayout of named game screens.",
+   "tags": [
+    "class",
+    "ui",
+    "exported"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/components/Gfx.java:Gfx",
+   "type": "class",
+   "name": "Gfx",
+   "filePath": "src/main/java/btd/ui/components/Gfx.java",
+   "lineRange": [
+    11,
+    66
+   ],
+   "summary": "Non-instantiable utility class of static text rendering helpers.",
+   "tags": [
+    "class",
+    "ui",
+    "exported"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/components/TextButton.java:TextButton",
+   "type": "class",
+   "name": "TextButton",
+   "filePath": "src/main/java/btd/ui/components/TextButton.java",
+   "lineRange": [
+    12,
+    70
+   ],
+   "summary": "Custom-drawn clickable button with hover and enabled state, hit-tested manually by its owning panel.",
+   "tags": [
+    "class",
+    "ui",
+    "exported"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/screens/HelpPanel.java:HelpPanel",
+   "type": "class",
+   "name": "HelpPanel",
+   "filePath": "src/main/java/btd/ui/screens/HelpPanel.java",
+   "lineRange": [
+    18,
+    182
+   ],
+   "summary": "JPanel overlay paging through help book spreads with arrow and close buttons.",
+   "tags": [
+    "class",
+    "ui",
+    "exported"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/screens/ResultsPanel.java:ResultsPanel",
+   "type": "class",
+   "name": "ResultsPanel",
+   "filePath": "src/main/java/btd/ui/screens/ResultsPanel.java",
+   "lineRange": [
+    27,
+    106
+   ],
+   "summary": "JPanel showing the end-of-run summary with play-again and menu actions.",
+   "tags": [
+    "class",
+    "ui",
+    "exported"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/screens/SidePanel.java:SidePanel",
+   "type": "class",
+   "name": "SidePanel",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "lineRange": [
+    30,
+    260
+   ],
+   "summary": "Sidebar renderer and click router bound to the current GameSession and GameEngine, delegating player actions via its nested Actions interface.",
+   "tags": [
+    "class",
+    "ui",
+    "exported"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/theme/Palette.java:Palette",
+   "type": "class",
+   "name": "Palette",
+   "filePath": "src/main/java/btd/ui/theme/Palette.java",
+   "lineRange": [
+    9,
+    37
+   ],
+   "summary": "Constant holder for game colors and font helper methods.",
+   "tags": [
+    "class",
+    "ui",
+    "exported"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/theme/Theme.java:Theme",
+   "type": "class",
+   "name": "Theme",
+   "filePath": "src/main/java/btd/ui/theme/Theme.java",
+   "lineRange": [
+    9,
+    24
+   ],
+   "summary": "Constant holder for window size, base colors, and fonts.",
+   "tags": [
+    "class",
+    "ui",
+    "exported"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/util/FontLoader.java:FontLoader",
+   "type": "class",
+   "name": "FontLoader",
+   "filePath": "src/main/java/btd/util/FontLoader.java",
+   "lineRange": [
+    9,
+    30
+   ],
+   "summary": "Final utility class caching the base UI font and deriving sizes.",
+   "tags": [
+    "class",
+    "core",
+    "exported"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/util/ImageLoader.java:ImageLoader",
+   "type": "class",
+   "name": "ImageLoader",
+   "filePath": "src/main/java/btd/util/ImageLoader.java",
+   "lineRange": [
+    9,
+    23
+   ],
+   "summary": "Final utility class for loading UI images from disk.",
+   "tags": [
+    "class",
+    "core",
+    "exported"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/Main.java:main",
+   "type": "function",
+   "name": "main",
+   "filePath": "src/main/java/btd/Main.java",
+   "lineRange": [
+    10,
+    16
+   ],
+   "summary": "Schedules creation of MainFrame and AppController on the Swing event dispatch thread and shows the window.",
+   "tags": [
+    "entry-point",
+    "bootstrap",
+    "swing"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/MainFrame.java:showScreen",
+   "type": "function",
+   "name": "showScreen",
+   "filePath": "src/main/java/btd/ui/MainFrame.java",
+   "lineRange": [
+    35,
+    37
+   ],
+   "summary": "Switches the visible CardLayout card to a previously registered screen name.",
+   "tags": [
+    "navigation",
+    "swing",
+    "screen-switching"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/MainFrame.java:addScreen",
+   "type": "function",
+   "name": "addScreen",
+   "filePath": "src/main/java/btd/ui/MainFrame.java",
+   "lineRange": [
+    30,
+    32
+   ],
+   "summary": "Registers a JPanel under a screen name in the card layout.",
+   "tags": [
+    "navigation",
+    "swing",
+    "registration"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/components/Gfx.java:wrap",
+   "type": "function",
+   "name": "wrap",
+   "filePath": "src/main/java/btd/ui/components/Gfx.java",
+   "lineRange": [
+    47,
+    65
+   ],
+   "summary": "Splits text into lines that fit a maximum pixel width using font metrics.",
+   "tags": [
+    "utility",
+    "text",
+    "word-wrap"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/components/Gfx.java:outlined",
+   "type": "function",
+   "name": "outlined",
+   "filePath": "src/main/java/btd/ui/components/Gfx.java",
+   "lineRange": [
+    25,
+    37
+   ],
+   "summary": "Draws text with a dark stroked outline by rendering the glyph shape's stroke and fill.",
+   "tags": [
+    "utility",
+    "rendering",
+    "text"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/components/Gfx.java:centered",
+   "type": "function",
+   "name": "centered",
+   "filePath": "src/main/java/btd/ui/components/Gfx.java",
+   "lineRange": [
+    17,
+    22
+   ],
+   "summary": "Draws text horizontally centered on a given x coordinate.",
+   "tags": [
+    "utility",
+    "rendering",
+    "text"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/components/Gfx.java:outlinedCentered",
+   "type": "function",
+   "name": "outlinedCentered",
+   "filePath": "src/main/java/btd/ui/components/Gfx.java",
+   "lineRange": [
+    39,
+    44
+   ],
+   "summary": "Draws outlined text centered on a given x coordinate.",
+   "tags": [
+    "utility",
+    "rendering",
+    "text"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/components/TextButton.java:draw",
+   "type": "function",
+   "name": "draw",
+   "filePath": "src/main/java/btd/ui/components/TextButton.java",
+   "lineRange": [
+    45,
+    69
+   ],
+   "summary": "Paints the button's rounded body, hover highlight or disabled dimming, and outlined centered label.",
+   "tags": [
+    "rendering",
+    "button",
+    "graphics"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/components/TextButton.java:contains",
+   "type": "function",
+   "name": "contains",
+   "filePath": "src/main/java/btd/ui/components/TextButton.java",
+   "lineRange": [
+    37,
+    39
+   ],
+   "summary": "Hit-tests a point against the button bounds.",
+   "tags": [
+    "hit-test",
+    "input",
+    "button"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/components/TextButton.java:updateHover",
+   "type": "function",
+   "name": "updateHover",
+   "filePath": "src/main/java/btd/ui/components/TextButton.java",
+   "lineRange": [
+    41,
+    43
+   ],
+   "summary": "Updates hover state from the current mouse position.",
+   "tags": [
+    "hover",
+    "input",
+    "button"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/HelpPanel.java:bookBounds",
+   "type": "function",
+   "name": "bookBounds",
+   "filePath": "src/main/java/btd/ui/screens/HelpPanel.java",
+   "lineRange": [
+    86,
+    101
+   ],
+   "summary": "Computes the scaled, centered rectangle where the help book image is drawn.",
+   "tags": [
+    "layout",
+    "geometry",
+    "scaling"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/HelpPanel.java:doLayout",
+   "type": "function",
+   "name": "doLayout",
+   "filePath": "src/main/java/btd/ui/screens/HelpPanel.java",
+   "lineRange": [
+    103,
+    116
+   ],
+   "summary": "Positions the arrow and close buttons relative to the current book bounds.",
+   "tags": [
+    "layout",
+    "swing",
+    "positioning"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/HelpPanel.java:paintComponent",
+   "type": "function",
+   "name": "paintComponent",
+   "filePath": "src/main/java/btd/ui/screens/HelpPanel.java",
+   "lineRange": [
+    127,
+    146
+   ],
+   "summary": "Dims the background and draws the current help spread image or a placeholder.",
+   "tags": [
+    "rendering",
+    "swing",
+    "overlay"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/HelpPanel.java:showSpread",
+   "type": "function",
+   "name": "showSpread",
+   "filePath": "src/main/java/btd/ui/screens/HelpPanel.java",
+   "lineRange": [
+    76,
+    82
+   ],
+   "summary": "Clamps and switches to a spread index, toggling arrow visibility.",
+   "tags": [
+    "navigation",
+    "paging",
+    "state"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ResultsPanel.java:paintComponent",
+   "type": "function",
+   "name": "paintComponent",
+   "filePath": "src/main/java/btd/ui/screens/ResultsPanel.java",
+   "lineRange": [
+    64,
+    105
+   ],
+   "summary": "Paints the background, result title, player name, run statistics, and the two action buttons.",
+   "tags": [
+    "rendering",
+    "results",
+    "swing"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ResultsPanel.java:show",
+   "type": "function",
+   "name": "show",
+   "filePath": "src/main/java/btd/ui/screens/ResultsPanel.java",
+   "lineRange": [
+    58,
+    62
+   ],
+   "summary": "Stores the RunResult and player name to display and triggers a repaint.",
+   "tags": [
+    "state",
+    "results",
+    "update"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/SidePanel.java:click",
+   "type": "function",
+   "name": "click",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "lineRange": [
+    91,
+    116
+   ],
+   "summary": "Routes left/right clicks to inventory cards or sidebar buttons, invoking the matching Actions callback.",
+   "tags": [
+    "event-handler",
+    "input",
+    "routing"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/SidePanel.java:paint",
+   "type": "function",
+   "name": "paint",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "lineRange": [
+    120,
+    137
+   ],
+   "summary": "Paints the sidebar background, coin/lives/wave stats, inventory, info section, and control buttons.",
+   "tags": [
+    "rendering",
+    "hud",
+    "graphics"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/SidePanel.java:paintInventory",
+   "type": "function",
+   "name": "paintInventory",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "lineRange": [
+    139,
+    179
+   ],
+   "summary": "Lays out and draws inventory cards for each owned tower type with art and copy counts.",
+   "tags": [
+    "rendering",
+    "inventory",
+    "layout"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/SidePanel.java:paintInfo",
+   "type": "function",
+   "name": "paintInfo",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "lineRange": [
+    185,
+    203
+   ],
+   "summary": "Chooses between selected-tower, placement, or default help info for the info section.",
+   "tags": [
+    "rendering",
+    "hud",
+    "info"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/SidePanel.java:paintTowerInfo",
+   "type": "function",
+   "name": "paintTowerInfo",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "lineRange": [
+    205,
+    240
+   ],
+   "summary": "Draws the selected tower's level, stats, passive description, and upgrade/sell buttons with costs or block reasons.",
+   "tags": [
+    "rendering",
+    "tower",
+    "upgrade"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/SidePanel.java:paintPlacingInfo",
+   "type": "function",
+   "name": "paintPlacingInfo",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "lineRange": [
+    242,
+    259
+   ],
+   "summary": "Draws info about the tower type currently being placed.",
+   "tags": [
+    "rendering",
+    "placement",
+    "tower"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/SidePanel.java:bind",
+   "type": "function",
+   "name": "bind",
+   "filePath": "src/main/java/btd/ui/screens/SidePanel.java",
+   "lineRange": [
+    68,
+    74
+   ],
+   "summary": "Attaches a new GameSession and GameEngine and resets selection, placement, and speed state.",
+   "tags": [
+    "state",
+    "binding",
+    "session"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/theme/Palette.java:heading",
+   "type": "function",
+   "name": "heading",
+   "filePath": "src/main/java/btd/ui/theme/Palette.java",
+   "lineRange": [
+    29,
+    31
+   ],
+   "summary": "Returns the shared heading font at a given size.",
+   "tags": [
+    "font",
+    "styling",
+    "theme"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/theme/Palette.java:body",
+   "type": "function",
+   "name": "body",
+   "filePath": "src/main/java/btd/ui/theme/Palette.java",
+   "lineRange": [
+    34,
+    36
+   ],
+   "summary": "Returns the shared body font at a given size.",
+   "tags": [
+    "font",
+    "styling",
+    "theme"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/util/FontLoader.java:getFont",
+   "type": "function",
+   "name": "getFont",
+   "filePath": "src/main/java/btd/util/FontLoader.java",
+   "lineRange": [
+    17,
+    19
+   ],
+   "summary": "Returns the cached base font derived to the requested point size.",
+   "tags": [
+    "font",
+    "utility",
+    "asset-loading"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/util/ImageLoader.java:load",
+   "type": "function",
+   "name": "load",
+   "filePath": "src/main/java/btd/util/ImageLoader.java",
+   "lineRange": [
+    15,
+    22
+   ],
+   "summary": "Reads an image from assets/ui, returning null on I/O failure.",
+   "tags": [
+    "image",
+    "asset-loading",
+    "io"
+   ],
+   "complexity": "simple"
+  }
+ ],
+ "edges": [
+  {
+   "source": "file:src/main/java/btd/Main.java",
+   "target": "file:src/main/java/btd/ui/AppController.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/Main.java",
+   "target": "file:src/main/java/btd/ui/MainFrame.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/MainFrame.java",
+   "target": "file:src/main/java/btd/ui/theme/Theme.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "file:src/main/java/btd/ui/theme/Palette.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "target": "file:src/main/java/btd/util/ImageLoader.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "file:src/main/java/btd/core/RunResult.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "file:src/main/java/btd/ui/components/Gfx.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "file:src/main/java/btd/ui/components/TextButton.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "file:src/main/java/btd/ui/theme/Palette.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "file:src/main/java/btd/ui/theme/Theme.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "file:src/main/java/btd/util/ImageLoader.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/core/GameEngine.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/core/GameSession.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/model/tower/Tower.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/ui/components/Gfx.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/ui/components/TextButton.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/ui/components/TowerArt.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/ui/theme/Palette.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "file:src/main/java/btd/ui/theme/Theme.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Palette.java",
+   "target": "file:src/main/java/btd/util/FontLoader.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Theme.java",
+   "target": "file:src/main/java/btd/util/FontLoader.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/Main.java",
+   "target": "class:src/main/java/btd/Main.java:Main",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/Main.java",
+   "target": "class:src/main/java/btd/Main.java:Main",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/MainFrame.java",
+   "target": "class:src/main/java/btd/ui/MainFrame.java:MainFrame",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/MainFrame.java",
+   "target": "class:src/main/java/btd/ui/MainFrame.java:MainFrame",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "class:src/main/java/btd/ui/components/Gfx.java:Gfx",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "class:src/main/java/btd/ui/components/Gfx.java:Gfx",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "class:src/main/java/btd/ui/components/TextButton.java:TextButton",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "class:src/main/java/btd/ui/components/TextButton.java:TextButton",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "target": "class:src/main/java/btd/ui/screens/HelpPanel.java:HelpPanel",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "target": "class:src/main/java/btd/ui/screens/HelpPanel.java:HelpPanel",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "class:src/main/java/btd/ui/screens/ResultsPanel.java:ResultsPanel",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "class:src/main/java/btd/ui/screens/ResultsPanel.java:ResultsPanel",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "class:src/main/java/btd/ui/screens/SidePanel.java:SidePanel",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "class:src/main/java/btd/ui/screens/SidePanel.java:SidePanel",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Palette.java",
+   "target": "class:src/main/java/btd/ui/theme/Palette.java:Palette",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Palette.java",
+   "target": "class:src/main/java/btd/ui/theme/Palette.java:Palette",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Theme.java",
+   "target": "class:src/main/java/btd/ui/theme/Theme.java:Theme",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Theme.java",
+   "target": "class:src/main/java/btd/ui/theme/Theme.java:Theme",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/util/FontLoader.java",
+   "target": "class:src/main/java/btd/util/FontLoader.java:FontLoader",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/util/FontLoader.java",
+   "target": "class:src/main/java/btd/util/FontLoader.java:FontLoader",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/util/ImageLoader.java",
+   "target": "class:src/main/java/btd/util/ImageLoader.java:ImageLoader",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/util/ImageLoader.java",
+   "target": "class:src/main/java/btd/util/ImageLoader.java:ImageLoader",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/Main.java",
+   "target": "function:src/main/java/btd/Main.java:main",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/Main.java",
+   "target": "function:src/main/java/btd/Main.java:main",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/MainFrame.java",
+   "target": "function:src/main/java/btd/ui/MainFrame.java:showScreen",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/MainFrame.java",
+   "target": "function:src/main/java/btd/ui/MainFrame.java:showScreen",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/MainFrame.java",
+   "target": "function:src/main/java/btd/ui/MainFrame.java:addScreen",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/MainFrame.java",
+   "target": "function:src/main/java/btd/ui/MainFrame.java:addScreen",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:wrap",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:wrap",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:outlined",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:outlined",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:centered",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:centered",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:outlinedCentered",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/Gfx.java",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:outlinedCentered",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:draw",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:draw",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:contains",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:contains",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:updateHover",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/components/TextButton.java",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:updateHover",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "target": "function:src/main/java/btd/ui/screens/HelpPanel.java:bookBounds",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "target": "function:src/main/java/btd/ui/screens/HelpPanel.java:doLayout",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "target": "function:src/main/java/btd/ui/screens/HelpPanel.java:doLayout",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "target": "function:src/main/java/btd/ui/screens/HelpPanel.java:paintComponent",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/HelpPanel.java",
+   "target": "function:src/main/java/btd/ui/screens/HelpPanel.java:showSpread",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "function:src/main/java/btd/ui/screens/ResultsPanel.java:paintComponent",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "function:src/main/java/btd/ui/screens/ResultsPanel.java:show",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "target": "function:src/main/java/btd/ui/screens/ResultsPanel.java:show",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:click",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:click",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:paint",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:paint",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:paintInventory",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:paintInfo",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:paintTowerInfo",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:paintPlacingInfo",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:bind",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "target": "function:src/main/java/btd/ui/screens/SidePanel.java:bind",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Palette.java",
+   "target": "function:src/main/java/btd/ui/theme/Palette.java:heading",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Palette.java",
+   "target": "function:src/main/java/btd/ui/theme/Palette.java:heading",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Palette.java",
+   "target": "function:src/main/java/btd/ui/theme/Palette.java:body",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/theme/Palette.java",
+   "target": "function:src/main/java/btd/ui/theme/Palette.java:body",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/util/FontLoader.java",
+   "target": "function:src/main/java/btd/util/FontLoader.java:getFont",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/util/FontLoader.java",
+   "target": "function:src/main/java/btd/util/FontLoader.java:getFont",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/util/ImageLoader.java",
+   "target": "function:src/main/java/btd/util/ImageLoader.java:load",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/util/ImageLoader.java",
+   "target": "function:src/main/java/btd/util/ImageLoader.java:load",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/theme/Palette.java:heading",
+   "target": "function:src/main/java/btd/util/FontLoader.java:getFont",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/theme/Palette.java:body",
+   "target": "function:src/main/java/btd/util/FontLoader.java:getFont",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/components/TextButton.java:draw",
+   "target": "function:src/main/java/btd/ui/components/Gfx.java:outlinedCentered",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/ResultsPanel.java:paintComponent",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:draw",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/SidePanel.java:paint",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:draw",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/SidePanel.java:click",
+   "target": "function:src/main/java/btd/ui/components/TextButton.java:contains",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/Main.java:main",
+   "target": "class:src/main/java/btd/ui/AppController.java:AppController",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/SidePanel.java:paintInventory",
+   "target": "function:src/main/java/btd/ui/components/TowerArt.java:draw",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  }
+ ]
+}

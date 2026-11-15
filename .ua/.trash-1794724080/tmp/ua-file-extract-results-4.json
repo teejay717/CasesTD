@@ -1,0 +1,2885 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 9,
+  "filesSkipped": [],
+  "filesUnreadable": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 9,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 9,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "src/main/java/btd/core/GameEngine.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 113,
+      "nonEmptyLines": 97,
+      "functions": [
+        {
+          "name": "GameEngine",
+          "startLine": 29,
+          "endLine": 34,
+          "params": [
+            "config",
+            "map",
+            "session"
+          ]
+        },
+        {
+          "name": "startNextWave",
+          "startLine": 37,
+          "endLine": 45,
+          "params": []
+        },
+        {
+          "name": "update",
+          "startLine": 47,
+          "endLine": 90,
+          "params": [
+            "dt"
+          ]
+        },
+        {
+          "name": "updateEffects",
+          "startLine": 92,
+          "endLine": 101,
+          "params": [
+            "dt"
+          ]
+        },
+        {
+          "name": "getState",
+          "startLine": 103,
+          "endLine": 103,
+          "params": []
+        },
+        {
+          "name": "getWave",
+          "startLine": 104,
+          "endLine": 104,
+          "params": []
+        },
+        {
+          "name": "getWavesCleared",
+          "startLine": 105,
+          "endLine": 105,
+          "params": []
+        },
+        {
+          "name": "getKills",
+          "startLine": 106,
+          "endLine": 106,
+          "params": []
+        },
+        {
+          "name": "getLastWaveReward",
+          "startLine": 107,
+          "endLine": 107,
+          "params": []
+        },
+        {
+          "name": "getEnemies",
+          "startLine": 108,
+          "endLine": 108,
+          "params": []
+        },
+        {
+          "name": "getEffects",
+          "startLine": 109,
+          "endLine": 109,
+          "params": []
+        },
+        {
+          "name": "getMap",
+          "startLine": 110,
+          "endLine": 110,
+          "params": []
+        },
+        {
+          "name": "getSession",
+          "startLine": 111,
+          "endLine": 111,
+          "params": []
+        },
+        {
+          "name": "getEnemiesLeft",
+          "startLine": 112,
+          "endLine": 112,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "GameEngine",
+          "startLine": 11,
+          "endLine": 113,
+          "methods": [
+            "GameEngine",
+            "startNextWave",
+            "update",
+            "updateEffects",
+            "getState",
+            "getWave",
+            "getWavesCleared",
+            "getKills",
+            "getLastWaveReward",
+            "getEnemies",
+            "getEffects",
+            "getMap",
+            "getSession",
+            "getEnemiesLeft"
+          ],
+          "properties": [
+            "config",
+            "map",
+            "session",
+            "spawner",
+            "enemies",
+            "effects",
+            "state",
+            "wave",
+            "wavesCleared",
+            "kills",
+            "lastWaveReward"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "GameEngine",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "startNextWave",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "update",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "getState",
+          "line": 103,
+          "isDefault": false
+        },
+        {
+          "name": "getWave",
+          "line": 104,
+          "isDefault": false
+        },
+        {
+          "name": "getWavesCleared",
+          "line": 105,
+          "isDefault": false
+        },
+        {
+          "name": "getKills",
+          "line": 106,
+          "isDefault": false
+        },
+        {
+          "name": "getLastWaveReward",
+          "line": 107,
+          "isDefault": false
+        },
+        {
+          "name": "getEnemies",
+          "line": 108,
+          "isDefault": false
+        },
+        {
+          "name": "getEffects",
+          "line": 109,
+          "isDefault": false
+        },
+        {
+          "name": "getMap",
+          "line": 110,
+          "isDefault": false
+        },
+        {
+          "name": "getSession",
+          "line": 111,
+          "isDefault": false
+        },
+        {
+          "name": "getEnemiesLeft",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "GameEngine",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "GameEngine",
+          "callee": "new WaveSpawner",
+          "lineNumber": 33
+        },
+        {
+          "caller": "startNextWave",
+          "callee": "spawner.begin",
+          "lineNumber": 42
+        },
+        {
+          "caller": "update",
+          "callee": "updateEffects",
+          "lineNumber": 48
+        },
+        {
+          "caller": "update",
+          "callee": "enemies.addAll",
+          "lineNumber": 53
+        },
+        {
+          "caller": "update",
+          "callee": "spawner.update",
+          "lineNumber": 53
+        },
+        {
+          "caller": "update",
+          "callee": "session.getTowers",
+          "lineNumber": 55
+        },
+        {
+          "caller": "update",
+          "callee": "t.resetBuff",
+          "lineNumber": 57
+        },
+        {
+          "caller": "update",
+          "callee": "t.applyAura",
+          "lineNumber": 60
+        },
+        {
+          "caller": "update",
+          "callee": "t.update",
+          "lineNumber": 63
+        },
+        {
+          "caller": "update",
+          "callee": "enemies.iterator",
+          "lineNumber": 66
+        },
+        {
+          "caller": "update",
+          "callee": "it.hasNext",
+          "lineNumber": 67
+        },
+        {
+          "caller": "update",
+          "callee": "it.next",
+          "lineNumber": 68
+        },
+        {
+          "caller": "update",
+          "callee": "e.update",
+          "lineNumber": 69
+        },
+        {
+          "caller": "update",
+          "callee": "e.isDead",
+          "lineNumber": 70
+        },
+        {
+          "caller": "update",
+          "callee": "session.addCoins",
+          "lineNumber": 71
+        },
+        {
+          "caller": "update",
+          "callee": "e.getReward",
+          "lineNumber": 71
+        },
+        {
+          "caller": "update",
+          "callee": "it.remove",
+          "lineNumber": 73
+        },
+        {
+          "caller": "update",
+          "callee": "e.hasReachedEnd",
+          "lineNumber": 74
+        },
+        {
+          "caller": "update",
+          "callee": "session.loseLives",
+          "lineNumber": 75
+        },
+        {
+          "caller": "update",
+          "callee": "e.getLeakDamage",
+          "lineNumber": 75
+        },
+        {
+          "caller": "update",
+          "callee": "it.remove",
+          "lineNumber": 76
+        },
+        {
+          "caller": "update",
+          "callee": "session.getLives",
+          "lineNumber": 80
+        },
+        {
+          "caller": "update",
+          "callee": "spawner.isFinished",
+          "lineNumber": 84
+        },
+        {
+          "caller": "update",
+          "callee": "enemies.isEmpty",
+          "lineNumber": 84
+        },
+        {
+          "caller": "update",
+          "callee": "config.waveClearReward",
+          "lineNumber": 86
+        },
+        {
+          "caller": "update",
+          "callee": "session.addCoins",
+          "lineNumber": 87
+        },
+        {
+          "caller": "updateEffects",
+          "callee": "effects.iterator",
+          "lineNumber": 93
+        },
+        {
+          "caller": "updateEffects",
+          "callee": "it.hasNext",
+          "lineNumber": 94
+        },
+        {
+          "caller": "updateEffects",
+          "callee": "it.next",
+          "lineNumber": 95
+        },
+        {
+          "caller": "updateEffects",
+          "callee": "fx.update",
+          "lineNumber": 96
+        },
+        {
+          "caller": "updateEffects",
+          "callee": "fx.isDone",
+          "lineNumber": 97
+        },
+        {
+          "caller": "updateEffects",
+          "callee": "it.remove",
+          "lineNumber": 98
+        },
+        {
+          "caller": "getEnemiesLeft",
+          "callee": "enemies.size",
+          "lineNumber": 112
+        },
+        {
+          "caller": "getEnemiesLeft",
+          "callee": "spawner.remaining",
+          "lineNumber": 112
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 14,
+        "functionCount": 14,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/core/VisualEffect.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 54,
+      "nonEmptyLines": 43,
+      "functions": [
+        {
+          "name": "VisualEffect",
+          "startLine": 16,
+          "endLine": 25,
+          "params": [
+            "kind",
+            "x1",
+            "y1",
+            "x2",
+            "y2",
+            "color",
+            "duration"
+          ]
+        },
+        {
+          "name": "line",
+          "startLine": 27,
+          "endLine": 29,
+          "params": [
+            "x1",
+            "y1",
+            "x2",
+            "y2",
+            "color",
+            "seconds"
+          ]
+        },
+        {
+          "name": "circle",
+          "startLine": 31,
+          "endLine": 33,
+          "params": [
+            "x",
+            "y",
+            "radius",
+            "color",
+            "seconds"
+          ]
+        },
+        {
+          "name": "update",
+          "startLine": 35,
+          "endLine": 37,
+          "params": [
+            "dt"
+          ]
+        },
+        {
+          "name": "isDone",
+          "startLine": 39,
+          "endLine": 41,
+          "params": []
+        },
+        {
+          "name": "getFade",
+          "startLine": 44,
+          "endLine": 46,
+          "params": []
+        },
+        {
+          "name": "getKind",
+          "startLine": 48,
+          "endLine": 48,
+          "params": []
+        },
+        {
+          "name": "getX1",
+          "startLine": 49,
+          "endLine": 49,
+          "params": []
+        },
+        {
+          "name": "getY1",
+          "startLine": 50,
+          "endLine": 50,
+          "params": []
+        },
+        {
+          "name": "getX2",
+          "startLine": 51,
+          "endLine": 51,
+          "params": []
+        },
+        {
+          "name": "getY2",
+          "startLine": 52,
+          "endLine": 52,
+          "params": []
+        },
+        {
+          "name": "getColor",
+          "startLine": 53,
+          "endLine": 53,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "VisualEffect",
+          "startLine": 6,
+          "endLine": 54,
+          "methods": [
+            "VisualEffect",
+            "line",
+            "circle",
+            "update",
+            "isDone",
+            "getFade",
+            "getKind",
+            "getX1",
+            "getY1",
+            "getX2",
+            "getY2",
+            "getColor"
+          ],
+          "properties": [
+            "kind",
+            "x1",
+            "y1",
+            "x2",
+            "y2",
+            "color",
+            "duration",
+            "timeLeft"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "line",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "circle",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "update",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "isDone",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "getFade",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "getKind",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "getX1",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "getY1",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "getX2",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "getY2",
+          "line": 52,
+          "isDefault": false
+        },
+        {
+          "name": "getColor",
+          "line": 53,
+          "isDefault": false
+        },
+        {
+          "name": "VisualEffect",
+          "line": 6,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "line",
+          "callee": "new VisualEffect",
+          "lineNumber": 28
+        },
+        {
+          "caller": "circle",
+          "callee": "new VisualEffect",
+          "lineNumber": 32
+        },
+        {
+          "caller": "getFade",
+          "callee": "Math.max",
+          "lineNumber": 45
+        },
+        {
+          "caller": "getFade",
+          "callee": "Math.min",
+          "lineNumber": 45
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 12,
+        "functionCount": 12,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/factory/TowerFactory.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 25,
+      "nonEmptyLines": 21,
+      "functions": [
+        {
+          "name": "TowerFactory",
+          "startLine": 13,
+          "endLine": 14,
+          "params": []
+        },
+        {
+          "name": "create",
+          "startLine": 16,
+          "endLine": 24,
+          "params": [
+            "type",
+            "x",
+            "y"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "TowerFactory",
+          "startLine": 11,
+          "endLine": 25,
+          "methods": [
+            "TowerFactory",
+            "create"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "create",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "TowerFactory",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "create",
+          "callee": "type.towerClass",
+          "lineNumber": 17
+        },
+        {
+          "caller": "create",
+          "callee": "new SingleTargetTower",
+          "lineNumber": 18
+        },
+        {
+          "caller": "create",
+          "callee": "new SplashTower",
+          "lineNumber": 19
+        },
+        {
+          "caller": "create",
+          "callee": "new SniperTower",
+          "lineNumber": 20
+        },
+        {
+          "caller": "create",
+          "callee": "new SupportTower",
+          "lineNumber": 21
+        },
+        {
+          "caller": "create",
+          "callee": "new IllegalArgumentException",
+          "lineNumber": 22
+        },
+        {
+          "caller": "create",
+          "callee": "type.towerClass",
+          "lineNumber": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/enemy/Enemy.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 140,
+      "nonEmptyLines": 120,
+      "functions": [
+        {
+          "name": "Enemy",
+          "startLine": 35,
+          "endLine": 41,
+          "params": [
+            "maxHealth",
+            "speed",
+            "reward",
+            "leakDamage"
+          ]
+        },
+        {
+          "name": "getTypeName",
+          "startLine": 44,
+          "endLine": 46,
+          "params": []
+        },
+        {
+          "name": "getRadius",
+          "startLine": 49,
+          "endLine": 49,
+          "params": []
+        },
+        {
+          "name": "update",
+          "startLine": 51,
+          "endLine": 82,
+          "params": [
+            "dt",
+            "map"
+          ]
+        },
+        {
+          "name": "takeDamage",
+          "startLine": 84,
+          "endLine": 87,
+          "params": [
+            "amount"
+          ]
+        },
+        {
+          "name": "reduceDamage",
+          "startLine": 90,
+          "endLine": 92,
+          "params": [
+            "amount"
+          ]
+        },
+        {
+          "name": "isDead",
+          "startLine": 94,
+          "endLine": 97,
+          "params": []
+        },
+        {
+          "name": "canBeStunned",
+          "startLine": 100,
+          "endLine": 102,
+          "params": []
+        },
+        {
+          "name": "stun",
+          "startLine": 105,
+          "endLine": 111,
+          "params": [
+            "seconds"
+          ]
+        },
+        {
+          "name": "poison",
+          "startLine": 113,
+          "endLine": 116,
+          "params": [
+            "dps",
+            "seconds"
+          ]
+        },
+        {
+          "name": "burn",
+          "startLine": 119,
+          "endLine": 123,
+          "params": [
+            "dpsPerStack",
+            "seconds"
+          ]
+        },
+        {
+          "name": "hasReachedEnd",
+          "startLine": 125,
+          "endLine": 127,
+          "params": [
+            "map"
+          ]
+        },
+        {
+          "name": "getHealth",
+          "startLine": 129,
+          "endLine": 129,
+          "params": []
+        },
+        {
+          "name": "getMaxHealth",
+          "startLine": 130,
+          "endLine": 130,
+          "params": []
+        },
+        {
+          "name": "getDistance",
+          "startLine": 131,
+          "endLine": 131,
+          "params": []
+        },
+        {
+          "name": "getX",
+          "startLine": 132,
+          "endLine": 132,
+          "params": []
+        },
+        {
+          "name": "getY",
+          "startLine": 133,
+          "endLine": 133,
+          "params": []
+        },
+        {
+          "name": "getAngle",
+          "startLine": 134,
+          "endLine": 134,
+          "params": []
+        },
+        {
+          "name": "getReward",
+          "startLine": 135,
+          "endLine": 135,
+          "params": []
+        },
+        {
+          "name": "getLeakDamage",
+          "startLine": 136,
+          "endLine": 136,
+          "params": []
+        },
+        {
+          "name": "isStunned",
+          "startLine": 137,
+          "endLine": 137,
+          "params": []
+        },
+        {
+          "name": "isPoisoned",
+          "startLine": 138,
+          "endLine": 138,
+          "params": []
+        },
+        {
+          "name": "isBurning",
+          "startLine": 139,
+          "endLine": 139,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "Enemy",
+          "startLine": 9,
+          "endLine": 140,
+          "methods": [
+            "Enemy",
+            "getTypeName",
+            "getRadius",
+            "update",
+            "takeDamage",
+            "reduceDamage",
+            "isDead",
+            "canBeStunned",
+            "stun",
+            "poison",
+            "burn",
+            "hasReachedEnd",
+            "getHealth",
+            "getMaxHealth",
+            "getDistance",
+            "getX",
+            "getY",
+            "getAngle",
+            "getReward",
+            "getLeakDamage",
+            "isStunned",
+            "isPoisoned",
+            "isBurning"
+          ],
+          "properties": [
+            "MAX_BURN_STACKS",
+            "STUN_IMMUNITY_SECONDS",
+            "maxHealth",
+            "speed",
+            "reward",
+            "leakDamage",
+            "health",
+            "distance",
+            "x",
+            "y",
+            "angle",
+            "stunLeft",
+            "stunImmuneLeft",
+            "poisonDps",
+            "poisonLeft",
+            "burnStacks",
+            "burnDpsPerStack",
+            "burnLeft"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "STUN_IMMUNITY_SECONDS",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "getTypeName",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "getRadius",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "update",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "takeDamage",
+          "line": 84,
+          "isDefault": false
+        },
+        {
+          "name": "isDead",
+          "line": 94,
+          "isDefault": false
+        },
+        {
+          "name": "canBeStunned",
+          "line": 100,
+          "isDefault": false
+        },
+        {
+          "name": "stun",
+          "line": 105,
+          "isDefault": false
+        },
+        {
+          "name": "poison",
+          "line": 113,
+          "isDefault": false
+        },
+        {
+          "name": "burn",
+          "line": 119,
+          "isDefault": false
+        },
+        {
+          "name": "hasReachedEnd",
+          "line": 125,
+          "isDefault": false
+        },
+        {
+          "name": "getHealth",
+          "line": 129,
+          "isDefault": false
+        },
+        {
+          "name": "getMaxHealth",
+          "line": 130,
+          "isDefault": false
+        },
+        {
+          "name": "getDistance",
+          "line": 131,
+          "isDefault": false
+        },
+        {
+          "name": "getX",
+          "line": 132,
+          "isDefault": false
+        },
+        {
+          "name": "getY",
+          "line": 133,
+          "isDefault": false
+        },
+        {
+          "name": "getAngle",
+          "line": 134,
+          "isDefault": false
+        },
+        {
+          "name": "getReward",
+          "line": 135,
+          "isDefault": false
+        },
+        {
+          "name": "getLeakDamage",
+          "line": 136,
+          "isDefault": false
+        },
+        {
+          "name": "isStunned",
+          "line": 137,
+          "isDefault": false
+        },
+        {
+          "name": "isPoisoned",
+          "line": 138,
+          "isDefault": false
+        },
+        {
+          "name": "isBurning",
+          "line": 139,
+          "isDefault": false
+        },
+        {
+          "name": "Enemy",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getTypeName",
+          "callee": "getClass().getSimpleName",
+          "lineNumber": 45
+        },
+        {
+          "caller": "getTypeName",
+          "callee": "getClass",
+          "lineNumber": 45
+        },
+        {
+          "caller": "update",
+          "callee": "takeDamage",
+          "lineNumber": 54
+        },
+        {
+          "caller": "update",
+          "callee": "takeDamage",
+          "lineNumber": 58
+        },
+        {
+          "caller": "update",
+          "callee": "map.pointAt",
+          "lineNumber": 76
+        },
+        {
+          "caller": "update",
+          "callee": "map.pointAt",
+          "lineNumber": 78
+        },
+        {
+          "caller": "update",
+          "callee": "Math.atan2",
+          "lineNumber": 79
+        },
+        {
+          "caller": "takeDamage",
+          "callee": "reduceDamage",
+          "lineNumber": 86
+        },
+        {
+          "caller": "canBeStunned",
+          "callee": "isDead",
+          "lineNumber": 101
+        },
+        {
+          "caller": "stun",
+          "callee": "canBeStunned",
+          "lineNumber": 106
+        },
+        {
+          "caller": "poison",
+          "callee": "Math.max",
+          "lineNumber": 114
+        },
+        {
+          "caller": "poison",
+          "callee": "Math.max",
+          "lineNumber": 115
+        },
+        {
+          "caller": "burn",
+          "callee": "Math.min",
+          "lineNumber": 121
+        },
+        {
+          "caller": "burn",
+          "callee": "Math.max",
+          "lineNumber": 122
+        },
+        {
+          "caller": "hasReachedEnd",
+          "callee": "map.getTotalLength",
+          "lineNumber": 126
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 23,
+        "functionCount": 23,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/tower/SingleTargetTower.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 29,
+      "functions": [
+        {
+          "name": "SingleTargetTower",
+          "startLine": 12,
+          "endLine": 14,
+          "params": [
+            "type",
+            "x",
+            "y"
+          ]
+        },
+        {
+          "name": "attack",
+          "startLine": 16,
+          "endLine": 25,
+          "params": [
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "applyMaxPassive",
+          "startLine": 27,
+          "endLine": 30,
+          "params": []
+        },
+        {
+          "name": "getPassiveDescription",
+          "startLine": 32,
+          "endLine": 35,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "SingleTargetTower",
+          "startLine": 10,
+          "endLine": 36,
+          "methods": [
+            "SingleTargetTower",
+            "attack",
+            "applyMaxPassive",
+            "getPassiveDescription"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "SingleTargetTower",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "getPassiveDescription",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "SingleTargetTower",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "attack",
+          "callee": "furthestInRange",
+          "lineNumber": 18
+        },
+        {
+          "caller": "attack",
+          "callee": "target.takeDamage",
+          "lineNumber": 22
+        },
+        {
+          "caller": "attack",
+          "callee": "getDamage",
+          "lineNumber": 22
+        },
+        {
+          "caller": "attack",
+          "callee": "effects.add",
+          "lineNumber": 23
+        },
+        {
+          "caller": "attack",
+          "callee": "VisualEffect.line",
+          "lineNumber": 23
+        },
+        {
+          "caller": "attack",
+          "callee": "getX",
+          "lineNumber": 23
+        },
+        {
+          "caller": "attack",
+          "callee": "getY",
+          "lineNumber": 23
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getX",
+          "lineNumber": 23
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getY",
+          "lineNumber": 23
+        },
+        {
+          "caller": "attack",
+          "callee": "new Color",
+          "lineNumber": 23
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 4,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/tower/SniperTower.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 89,
+      "nonEmptyLines": 77,
+      "functions": [
+        {
+          "name": "SniperTower",
+          "startLine": 14,
+          "endLine": 16,
+          "params": [
+            "type",
+            "x",
+            "y"
+          ]
+        },
+        {
+          "name": "attack",
+          "startLine": 18,
+          "endLine": 36,
+          "params": [
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "pierce",
+          "startLine": 39,
+          "endLine": 61,
+          "params": [
+            "target",
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "distanceAlong",
+          "startLine": 63,
+          "endLine": 65,
+          "params": [
+            "e",
+            "ux",
+            "uy"
+          ]
+        },
+        {
+          "name": "onBeam",
+          "startLine": 67,
+          "endLine": 74,
+          "params": [
+            "e",
+            "ux",
+            "uy"
+          ]
+        },
+        {
+          "name": "applyMaxPassive",
+          "startLine": 76,
+          "endLine": 80,
+          "params": []
+        },
+        {
+          "name": "getPassiveDescription",
+          "startLine": 82,
+          "endLine": 88,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "SniperTower",
+          "startLine": 10,
+          "endLine": 89,
+          "methods": [
+            "SniperTower",
+            "attack",
+            "pierce",
+            "distanceAlong",
+            "onBeam",
+            "applyMaxPassive",
+            "getPassiveDescription"
+          ],
+          "properties": [
+            "BEAM_WIDTH"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "SniperTower",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "getPassiveDescription",
+          "line": 82,
+          "isDefault": false
+        },
+        {
+          "name": "SniperTower",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "attack",
+          "callee": "e.isDead",
+          "lineNumber": 22
+        },
+        {
+          "caller": "attack",
+          "callee": "inRange",
+          "lineNumber": 22
+        },
+        {
+          "caller": "attack",
+          "callee": "e.getHealth",
+          "lineNumber": 22
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getHealth",
+          "lineNumber": 22
+        },
+        {
+          "caller": "attack",
+          "callee": "getType().special",
+          "lineNumber": 29
+        },
+        {
+          "caller": "attack",
+          "callee": "getType",
+          "lineNumber": 29
+        },
+        {
+          "caller": "attack",
+          "callee": "pierce",
+          "lineNumber": 30
+        },
+        {
+          "caller": "attack",
+          "callee": "target.takeDamage",
+          "lineNumber": 32
+        },
+        {
+          "caller": "attack",
+          "callee": "getDamage",
+          "lineNumber": 32
+        },
+        {
+          "caller": "attack",
+          "callee": "effects.add",
+          "lineNumber": 33
+        },
+        {
+          "caller": "attack",
+          "callee": "VisualEffect.line",
+          "lineNumber": 33
+        },
+        {
+          "caller": "attack",
+          "callee": "getX",
+          "lineNumber": 33
+        },
+        {
+          "caller": "attack",
+          "callee": "getY",
+          "lineNumber": 33
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getX",
+          "lineNumber": 33
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getY",
+          "lineNumber": 33
+        },
+        {
+          "caller": "attack",
+          "callee": "new Color",
+          "lineNumber": 33
+        },
+        {
+          "caller": "pierce",
+          "callee": "target.getX",
+          "lineNumber": 40
+        },
+        {
+          "caller": "pierce",
+          "callee": "getX",
+          "lineNumber": 40
+        },
+        {
+          "caller": "pierce",
+          "callee": "target.getY",
+          "lineNumber": 41
+        },
+        {
+          "caller": "pierce",
+          "callee": "getY",
+          "lineNumber": 41
+        },
+        {
+          "caller": "pierce",
+          "callee": "Math.hypot",
+          "lineNumber": 42
+        },
+        {
+          "caller": "pierce",
+          "callee": "getX",
+          "lineNumber": 45
+        },
+        {
+          "caller": "pierce",
+          "callee": "getRange",
+          "lineNumber": 45
+        },
+        {
+          "caller": "pierce",
+          "callee": "getY",
+          "lineNumber": 46
+        },
+        {
+          "caller": "pierce",
+          "callee": "getRange",
+          "lineNumber": 46
+        },
+        {
+          "caller": "pierce",
+          "callee": "Math.round",
+          "lineNumber": 48
+        },
+        {
+          "caller": "pierce",
+          "callee": "getType().effectValue",
+          "lineNumber": 48
+        },
+        {
+          "caller": "pierce",
+          "callee": "getType",
+          "lineNumber": 48
+        },
+        {
+          "caller": "pierce",
+          "callee": "enemies.stream()\n                .filter(e -> !e.isDead() && onBeam(e, ux, uy))\n                .sorted((a, b) -> Double.compare(distanceAlong(a, ux, uy), distanceAlong(b, ux, uy)))\n                .limit(maxHits).toList",
+          "lineNumber": 49
+        },
+        {
+          "caller": "pierce",
+          "callee": "enemies.stream()\n                .filter(e -> !e.isDead() && onBeam(e, ux, uy))\n                .sorted((a, b) -> Double.compare(distanceAlong(a, ux, uy), distanceAlong(b, ux, uy))).limit",
+          "lineNumber": 49
+        },
+        {
+          "caller": "pierce",
+          "callee": "enemies.stream()\n                .filter(e -> !e.isDead() && onBeam(e, ux, uy)).sorted",
+          "lineNumber": 49
+        },
+        {
+          "caller": "pierce",
+          "callee": "enemies.stream().filter",
+          "lineNumber": 49
+        },
+        {
+          "caller": "pierce",
+          "callee": "enemies.stream",
+          "lineNumber": 49
+        },
+        {
+          "caller": "pierce",
+          "callee": "e.isDead",
+          "lineNumber": 50
+        },
+        {
+          "caller": "pierce",
+          "callee": "onBeam",
+          "lineNumber": 50
+        },
+        {
+          "caller": "pierce",
+          "callee": "Double.compare",
+          "lineNumber": 51
+        },
+        {
+          "caller": "pierce",
+          "callee": "distanceAlong",
+          "lineNumber": 51
+        },
+        {
+          "caller": "pierce",
+          "callee": "distanceAlong",
+          "lineNumber": 51
+        },
+        {
+          "caller": "pierce",
+          "callee": "e.takeDamage",
+          "lineNumber": 55
+        },
+        {
+          "caller": "pierce",
+          "callee": "getDamage",
+          "lineNumber": 55
+        },
+        {
+          "caller": "pierce",
+          "callee": "hit.contains",
+          "lineNumber": 57
+        },
+        {
+          "caller": "pierce",
+          "callee": "target.takeDamage",
+          "lineNumber": 58
+        },
+        {
+          "caller": "pierce",
+          "callee": "getDamage",
+          "lineNumber": 58
+        },
+        {
+          "caller": "pierce",
+          "callee": "effects.add",
+          "lineNumber": 60
+        },
+        {
+          "caller": "pierce",
+          "callee": "VisualEffect.line",
+          "lineNumber": 60
+        },
+        {
+          "caller": "pierce",
+          "callee": "getX",
+          "lineNumber": 60
+        },
+        {
+          "caller": "pierce",
+          "callee": "getY",
+          "lineNumber": 60
+        },
+        {
+          "caller": "pierce",
+          "callee": "new Color",
+          "lineNumber": 60
+        },
+        {
+          "caller": "distanceAlong",
+          "callee": "e.getX",
+          "lineNumber": 64
+        },
+        {
+          "caller": "distanceAlong",
+          "callee": "getX",
+          "lineNumber": 64
+        },
+        {
+          "caller": "distanceAlong",
+          "callee": "e.getY",
+          "lineNumber": 64
+        },
+        {
+          "caller": "distanceAlong",
+          "callee": "getY",
+          "lineNumber": 64
+        },
+        {
+          "caller": "onBeam",
+          "callee": "distanceAlong",
+          "lineNumber": 68
+        },
+        {
+          "caller": "onBeam",
+          "callee": "getRange",
+          "lineNumber": 69
+        },
+        {
+          "caller": "onBeam",
+          "callee": "Math.abs",
+          "lineNumber": 72
+        },
+        {
+          "caller": "onBeam",
+          "callee": "e.getX",
+          "lineNumber": 72
+        },
+        {
+          "caller": "onBeam",
+          "callee": "getX",
+          "lineNumber": 72
+        },
+        {
+          "caller": "onBeam",
+          "callee": "e.getY",
+          "lineNumber": 72
+        },
+        {
+          "caller": "onBeam",
+          "callee": "getY",
+          "lineNumber": 72
+        },
+        {
+          "caller": "onBeam",
+          "callee": "e.getRadius",
+          "lineNumber": 73
+        },
+        {
+          "caller": "getPassiveDescription",
+          "callee": "getType().special",
+          "lineNumber": 84
+        },
+        {
+          "caller": "getPassiveDescription",
+          "callee": "getType",
+          "lineNumber": 84
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 7,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/tower/SplashTower.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 59,
+      "nonEmptyLines": 50,
+      "functions": [
+        {
+          "name": "SplashTower",
+          "startLine": 12,
+          "endLine": 14,
+          "params": [
+            "type",
+            "x",
+            "y"
+          ]
+        },
+        {
+          "name": "attack",
+          "startLine": 16,
+          "endLine": 31,
+          "params": [
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "applyEffect",
+          "startLine": 33,
+          "endLine": 40,
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "blastColor",
+          "startLine": 42,
+          "endLine": 48,
+          "params": []
+        },
+        {
+          "name": "applyMaxPassive",
+          "startLine": 50,
+          "endLine": 53,
+          "params": []
+        },
+        {
+          "name": "getPassiveDescription",
+          "startLine": 55,
+          "endLine": 58,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "SplashTower",
+          "startLine": 10,
+          "endLine": 59,
+          "methods": [
+            "SplashTower",
+            "attack",
+            "applyEffect",
+            "blastColor",
+            "applyMaxPassive",
+            "getPassiveDescription"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "SplashTower",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "getPassiveDescription",
+          "line": 55,
+          "isDefault": false
+        },
+        {
+          "name": "SplashTower",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "attack",
+          "callee": "furthestInRange",
+          "lineNumber": 18
+        },
+        {
+          "caller": "attack",
+          "callee": "getType().splashRadius",
+          "lineNumber": 22
+        },
+        {
+          "caller": "attack",
+          "callee": "getType",
+          "lineNumber": 22
+        },
+        {
+          "caller": "attack",
+          "callee": "e.isDead",
+          "lineNumber": 24
+        },
+        {
+          "caller": "attack",
+          "callee": "Math.hypot",
+          "lineNumber": 24
+        },
+        {
+          "caller": "attack",
+          "callee": "e.getX",
+          "lineNumber": 24
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getX",
+          "lineNumber": 24
+        },
+        {
+          "caller": "attack",
+          "callee": "e.getY",
+          "lineNumber": 24
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getY",
+          "lineNumber": 24
+        },
+        {
+          "caller": "attack",
+          "callee": "e.takeDamage",
+          "lineNumber": 25
+        },
+        {
+          "caller": "attack",
+          "callee": "getDamage",
+          "lineNumber": 25
+        },
+        {
+          "caller": "attack",
+          "callee": "applyEffect",
+          "lineNumber": 26
+        },
+        {
+          "caller": "attack",
+          "callee": "effects.add",
+          "lineNumber": 29
+        },
+        {
+          "caller": "attack",
+          "callee": "VisualEffect.circle",
+          "lineNumber": 29
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getX",
+          "lineNumber": 29
+        },
+        {
+          "caller": "attack",
+          "callee": "target.getY",
+          "lineNumber": 29
+        },
+        {
+          "caller": "attack",
+          "callee": "blastColor",
+          "lineNumber": 29
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "getType().effectDurationMs",
+          "lineNumber": 34
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "getType",
+          "lineNumber": 34
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "getType().special",
+          "lineNumber": 35
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "getType",
+          "lineNumber": 35
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "e.poison",
+          "lineNumber": 36
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "getType().effectValue",
+          "lineNumber": 36
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "getType",
+          "lineNumber": 36
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "levelMultiplier",
+          "lineNumber": 36
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "e.burn",
+          "lineNumber": 37
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "getType().effectValue",
+          "lineNumber": 37
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "getType",
+          "lineNumber": 37
+        },
+        {
+          "caller": "applyEffect",
+          "callee": "levelMultiplier",
+          "lineNumber": 37
+        },
+        {
+          "caller": "blastColor",
+          "callee": "getType().special",
+          "lineNumber": 43
+        },
+        {
+          "caller": "blastColor",
+          "callee": "getType",
+          "lineNumber": 43
+        },
+        {
+          "caller": "blastColor",
+          "callee": "new Color",
+          "lineNumber": 44
+        },
+        {
+          "caller": "blastColor",
+          "callee": "new Color",
+          "lineNumber": 45
+        },
+        {
+          "caller": "blastColor",
+          "callee": "new Color",
+          "lineNumber": 46
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 6,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/tower/SupportTower.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 138,
+      "nonEmptyLines": 122,
+      "functions": [
+        {
+          "name": "SupportTower",
+          "startLine": 26,
+          "endLine": 28,
+          "params": [
+            "type",
+            "x",
+            "y"
+          ]
+        },
+        {
+          "name": "getDamage",
+          "startLine": 31,
+          "endLine": 37,
+          "params": []
+        },
+        {
+          "name": "getFireRate",
+          "startLine": 40,
+          "endLine": 46,
+          "params": []
+        },
+        {
+          "name": "attack",
+          "startLine": 48,
+          "endLine": 55,
+          "params": [
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "stunAll",
+          "startLine": 62,
+          "endLine": 76,
+          "params": [
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "fireTurrets",
+          "startLine": 79,
+          "endLine": 95,
+          "params": [
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "getTurretCount",
+          "startLine": 98,
+          "endLine": 103,
+          "params": []
+        },
+        {
+          "name": "turretPosition",
+          "startLine": 106,
+          "endLine": 109,
+          "params": [
+            "i",
+            "total"
+          ]
+        },
+        {
+          "name": "applyAura",
+          "startLine": 111,
+          "endLine": 123,
+          "params": [
+            "towers"
+          ]
+        },
+        {
+          "name": "applyMaxPassive",
+          "startLine": 125,
+          "endLine": 128,
+          "params": []
+        },
+        {
+          "name": "getPassiveDescription",
+          "startLine": 130,
+          "endLine": 137,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "SupportTower",
+          "startLine": 15,
+          "endLine": 138,
+          "methods": [
+            "SupportTower",
+            "getDamage",
+            "getFireRate",
+            "attack",
+            "stunAll",
+            "fireTurrets",
+            "getTurretCount",
+            "turretPosition",
+            "applyAura",
+            "applyMaxPassive",
+            "getPassiveDescription"
+          ],
+          "properties": [
+            "AURA_LEVEL_BONUS",
+            "STUN_LEVEL_SCALE"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "SupportTower",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "getDamage",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "getFireRate",
+          "line": 40,
+          "isDefault": false
+        },
+        {
+          "name": "getTurretCount",
+          "line": 98,
+          "isDefault": false
+        },
+        {
+          "name": "turretPosition",
+          "line": 106,
+          "isDefault": false
+        },
+        {
+          "name": "applyAura",
+          "line": 111,
+          "isDefault": false
+        },
+        {
+          "name": "getPassiveDescription",
+          "line": 130,
+          "isDefault": false
+        },
+        {
+          "name": "SupportTower",
+          "line": 15,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getDamage",
+          "callee": "getType().special",
+          "lineNumber": 33
+        },
+        {
+          "caller": "getDamage",
+          "callee": "getType",
+          "lineNumber": 33
+        },
+        {
+          "caller": "getDamage",
+          "callee": "getType().baseDamage",
+          "lineNumber": 34
+        },
+        {
+          "caller": "getDamage",
+          "callee": "getType",
+          "lineNumber": 34
+        },
+        {
+          "caller": "getDamage",
+          "callee": "super.getDamage",
+          "lineNumber": 36
+        },
+        {
+          "caller": "getFireRate",
+          "callee": "getType().special",
+          "lineNumber": 42
+        },
+        {
+          "caller": "getFireRate",
+          "callee": "getType",
+          "lineNumber": 42
+        },
+        {
+          "caller": "getFireRate",
+          "callee": "getType().fireRate",
+          "lineNumber": 43
+        },
+        {
+          "caller": "getFireRate",
+          "callee": "getType",
+          "lineNumber": 43
+        },
+        {
+          "caller": "getFireRate",
+          "callee": "getFireRateBuff",
+          "lineNumber": 43
+        },
+        {
+          "caller": "getFireRate",
+          "callee": "super.getFireRate",
+          "lineNumber": 45
+        },
+        {
+          "caller": "attack",
+          "callee": "getType().special",
+          "lineNumber": 50
+        },
+        {
+          "caller": "attack",
+          "callee": "getType",
+          "lineNumber": 50
+        },
+        {
+          "caller": "attack",
+          "callee": "stunAll",
+          "lineNumber": 51
+        },
+        {
+          "caller": "attack",
+          "callee": "fireTurrets",
+          "lineNumber": 52
+        },
+        {
+          "caller": "stunAll",
+          "callee": "getType().effectDurationMs",
+          "lineNumber": 63
+        },
+        {
+          "caller": "stunAll",
+          "callee": "getType",
+          "lineNumber": 63
+        },
+        {
+          "caller": "stunAll",
+          "callee": "getLevel",
+          "lineNumber": 63
+        },
+        {
+          "caller": "stunAll",
+          "callee": "inRange",
+          "lineNumber": 66
+        },
+        {
+          "caller": "stunAll",
+          "callee": "e.canBeStunned",
+          "lineNumber": 66
+        },
+        {
+          "caller": "stunAll",
+          "callee": "e.stun",
+          "lineNumber": 67
+        },
+        {
+          "caller": "stunAll",
+          "callee": "e.takeDamage",
+          "lineNumber": 68
+        },
+        {
+          "caller": "stunAll",
+          "callee": "getDamage",
+          "lineNumber": 68
+        },
+        {
+          "caller": "stunAll",
+          "callee": "effects.add",
+          "lineNumber": 73
+        },
+        {
+          "caller": "stunAll",
+          "callee": "VisualEffect.circle",
+          "lineNumber": 73
+        },
+        {
+          "caller": "stunAll",
+          "callee": "getX",
+          "lineNumber": 73
+        },
+        {
+          "caller": "stunAll",
+          "callee": "getY",
+          "lineNumber": 73
+        },
+        {
+          "caller": "stunAll",
+          "callee": "getRange",
+          "lineNumber": 73
+        },
+        {
+          "caller": "stunAll",
+          "callee": "new Color",
+          "lineNumber": 73
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "new ArrayList<>",
+          "lineNumber": 80
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "e.isDead",
+          "lineNumber": 82
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "inRange",
+          "lineNumber": 82
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "targets.add",
+          "lineNumber": 83
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "targets.sort",
+          "lineNumber": 86
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "Comparator.comparingDouble(Enemy::getDistance).reversed",
+          "lineNumber": 86
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "Comparator.comparingDouble",
+          "lineNumber": 86
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "getTurretCount",
+          "lineNumber": 87
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "targets.size",
+          "lineNumber": 88
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "targets.get",
+          "lineNumber": 89
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "e.takeDamage",
+          "lineNumber": 90
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "getDamage",
+          "lineNumber": 90
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "turretPosition",
+          "lineNumber": 91
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "effects.add",
+          "lineNumber": 92
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "VisualEffect.line",
+          "lineNumber": 92
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "e.getX",
+          "lineNumber": 92
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "e.getY",
+          "lineNumber": 92
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "new Color",
+          "lineNumber": 92
+        },
+        {
+          "caller": "fireTurrets",
+          "callee": "targets.isEmpty",
+          "lineNumber": 94
+        },
+        {
+          "caller": "getTurretCount",
+          "callee": "getType().special",
+          "lineNumber": 99
+        },
+        {
+          "caller": "getTurretCount",
+          "callee": "getType",
+          "lineNumber": 99
+        },
+        {
+          "caller": "getTurretCount",
+          "callee": "Math.round",
+          "lineNumber": 102
+        },
+        {
+          "caller": "getTurretCount",
+          "callee": "getType().effectValue",
+          "lineNumber": 102
+        },
+        {
+          "caller": "getTurretCount",
+          "callee": "getType",
+          "lineNumber": 102
+        },
+        {
+          "caller": "turretPosition",
+          "callee": "Math.max",
+          "lineNumber": 107
+        },
+        {
+          "caller": "turretPosition",
+          "callee": "getX",
+          "lineNumber": 108
+        },
+        {
+          "caller": "turretPosition",
+          "callee": "Math.cos",
+          "lineNumber": 108
+        },
+        {
+          "caller": "turretPosition",
+          "callee": "getY",
+          "lineNumber": 108
+        },
+        {
+          "caller": "turretPosition",
+          "callee": "Math.sin",
+          "lineNumber": 108
+        },
+        {
+          "caller": "applyAura",
+          "callee": "getType().special",
+          "lineNumber": 113
+        },
+        {
+          "caller": "applyAura",
+          "callee": "getType",
+          "lineNumber": 113
+        },
+        {
+          "caller": "applyAura",
+          "callee": "getLevel",
+          "lineNumber": 116
+        },
+        {
+          "caller": "applyAura",
+          "callee": "getType().effectValue",
+          "lineNumber": 117
+        },
+        {
+          "caller": "applyAura",
+          "callee": "getType",
+          "lineNumber": 117
+        },
+        {
+          "caller": "applyAura",
+          "callee": "Math.hypot",
+          "lineNumber": 119
+        },
+        {
+          "caller": "applyAura",
+          "callee": "t.getX",
+          "lineNumber": 119
+        },
+        {
+          "caller": "applyAura",
+          "callee": "getX",
+          "lineNumber": 119
+        },
+        {
+          "caller": "applyAura",
+          "callee": "t.getY",
+          "lineNumber": 119
+        },
+        {
+          "caller": "applyAura",
+          "callee": "getY",
+          "lineNumber": 119
+        },
+        {
+          "caller": "applyAura",
+          "callee": "getRange",
+          "lineNumber": 119
+        },
+        {
+          "caller": "applyAura",
+          "callee": "t.addBuff",
+          "lineNumber": 120
+        },
+        {
+          "caller": "getPassiveDescription",
+          "callee": "getType().special",
+          "lineNumber": 132
+        },
+        {
+          "caller": "getPassiveDescription",
+          "callee": "getType",
+          "lineNumber": 132
+        },
+        {
+          "caller": "getPassiveDescription",
+          "callee": "getType().effectDurationMs",
+          "lineNumber": 133
+        },
+        {
+          "caller": "getPassiveDescription",
+          "callee": "getType",
+          "lineNumber": 133
+        },
+        {
+          "caller": "getPassiveDescription",
+          "callee": "String.format",
+          "lineNumber": 134
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 8,
+        "functionCount": 11,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/tower/Tower.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 134,
+      "nonEmptyLines": 106,
+      "functions": [
+        {
+          "name": "Tower",
+          "startLine": 37,
+          "endLine": 41,
+          "params": [
+            "type",
+            "x",
+            "y"
+          ]
+        },
+        {
+          "name": "update",
+          "startLine": 44,
+          "endLine": 54,
+          "params": [
+            "dt",
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "attack",
+          "startLine": 57,
+          "endLine": 57,
+          "params": [
+            "enemies",
+            "effects"
+          ]
+        },
+        {
+          "name": "applyMaxPassive",
+          "startLine": 60,
+          "endLine": 60,
+          "params": []
+        },
+        {
+          "name": "getPassiveDescription",
+          "startLine": 63,
+          "endLine": 63,
+          "params": []
+        },
+        {
+          "name": "applyAura",
+          "startLine": 66,
+          "endLine": 67,
+          "params": [
+            "towers"
+          ]
+        },
+        {
+          "name": "getLevel",
+          "startLine": 69,
+          "endLine": 72,
+          "params": []
+        },
+        {
+          "name": "applyLevel",
+          "startLine": 74,
+          "endLine": 80,
+          "params": [
+            "newLevel"
+          ]
+        },
+        {
+          "name": "levelMultiplier",
+          "startLine": 84,
+          "endLine": 86,
+          "params": []
+        },
+        {
+          "name": "getDamage",
+          "startLine": 88,
+          "endLine": 90,
+          "params": []
+        },
+        {
+          "name": "getFireRate",
+          "startLine": 92,
+          "endLine": 94,
+          "params": []
+        },
+        {
+          "name": "getRange",
+          "startLine": 96,
+          "endLine": 98,
+          "params": []
+        },
+        {
+          "name": "getFireRateBuff",
+          "startLine": 101,
+          "endLine": 103,
+          "params": []
+        },
+        {
+          "name": "resetBuff",
+          "startLine": 105,
+          "endLine": 107,
+          "params": []
+        },
+        {
+          "name": "addBuff",
+          "startLine": 109,
+          "endLine": 111,
+          "params": [
+            "multiplier"
+          ]
+        },
+        {
+          "name": "inRange",
+          "startLine": 115,
+          "endLine": 117,
+          "params": [
+            "e"
+          ]
+        },
+        {
+          "name": "furthestInRange",
+          "startLine": 120,
+          "endLine": 128,
+          "params": [
+            "enemies"
+          ]
+        },
+        {
+          "name": "getType",
+          "startLine": 130,
+          "endLine": 130,
+          "params": []
+        },
+        {
+          "name": "getX",
+          "startLine": 131,
+          "endLine": 131,
+          "params": []
+        },
+        {
+          "name": "getY",
+          "startLine": 132,
+          "endLine": 132,
+          "params": []
+        },
+        {
+          "name": "getPassiveFireRate",
+          "startLine": 133,
+          "endLine": 133,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "Tower",
+          "startLine": 12,
+          "endLine": 134,
+          "methods": [
+            "Tower",
+            "update",
+            "attack",
+            "applyMaxPassive",
+            "getPassiveDescription",
+            "applyAura",
+            "getLevel",
+            "applyLevel",
+            "levelMultiplier",
+            "getDamage",
+            "getFireRate",
+            "getRange",
+            "getFireRateBuff",
+            "resetBuff",
+            "addBuff",
+            "inRange",
+            "furthestInRange",
+            "getType",
+            "getX",
+            "getY",
+            "getPassiveFireRate"
+          ],
+          "properties": [
+            "MAX_NORMAL_LEVEL",
+            "MAX_LEVEL",
+            "LEVEL_MULTIPLIERS",
+            "type",
+            "x",
+            "y",
+            "level",
+            "cooldown",
+            "fireRateBuff",
+            "passiveDamage",
+            "passiveRate",
+            "passiveSplash",
+            "passiveEffect"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "MAX_NORMAL_LEVEL",
+          "line": 14,
+          "isDefault": false
+        },
+        {
+          "name": "MAX_LEVEL",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "update",
+          "line": 44,
+          "isDefault": false
+        },
+        {
+          "name": "getPassiveDescription",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "applyAura",
+          "line": 66,
+          "isDefault": false
+        },
+        {
+          "name": "getLevel",
+          "line": 69,
+          "isDefault": false
+        },
+        {
+          "name": "applyLevel",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "getDamage",
+          "line": 88,
+          "isDefault": false
+        },
+        {
+          "name": "getFireRate",
+          "line": 92,
+          "isDefault": false
+        },
+        {
+          "name": "getRange",
+          "line": 96,
+          "isDefault": false
+        },
+        {
+          "name": "resetBuff",
+          "line": 105,
+          "isDefault": false
+        },
+        {
+          "name": "addBuff",
+          "line": 109,
+          "isDefault": false
+        },
+        {
+          "name": "getType",
+          "line": 130,
+          "isDefault": false
+        },
+        {
+          "name": "getX",
+          "line": 131,
+          "isDefault": false
+        },
+        {
+          "name": "getY",
+          "line": 132,
+          "isDefault": false
+        },
+        {
+          "name": "getPassiveFireRate",
+          "line": 133,
+          "isDefault": false
+        },
+        {
+          "name": "Tower",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "update",
+          "callee": "attack",
+          "lineNumber": 49
+        },
+        {
+          "caller": "update",
+          "callee": "getFireRate",
+          "lineNumber": 50
+        },
+        {
+          "caller": "applyLevel",
+          "callee": "applyMaxPassive",
+          "lineNumber": 78
+        },
+        {
+          "caller": "getDamage",
+          "callee": "type.baseDamage",
+          "lineNumber": 89
+        },
+        {
+          "caller": "getDamage",
+          "callee": "levelMultiplier",
+          "lineNumber": 89
+        },
+        {
+          "caller": "getFireRate",
+          "callee": "type.fireRate",
+          "lineNumber": 93
+        },
+        {
+          "caller": "getFireRate",
+          "callee": "levelMultiplier",
+          "lineNumber": 93
+        },
+        {
+          "caller": "getRange",
+          "callee": "type.range",
+          "lineNumber": 97
+        },
+        {
+          "caller": "addBuff",
+          "callee": "Math.max",
+          "lineNumber": 110
+        },
+        {
+          "caller": "inRange",
+          "callee": "Math.hypot",
+          "lineNumber": 116
+        },
+        {
+          "caller": "inRange",
+          "callee": "e.getX",
+          "lineNumber": 116
+        },
+        {
+          "caller": "inRange",
+          "callee": "e.getY",
+          "lineNumber": 116
+        },
+        {
+          "caller": "inRange",
+          "callee": "getRange",
+          "lineNumber": 116
+        },
+        {
+          "caller": "furthestInRange",
+          "callee": "e.isDead",
+          "lineNumber": 123
+        },
+        {
+          "caller": "furthestInRange",
+          "callee": "inRange",
+          "lineNumber": 123
+        },
+        {
+          "caller": "furthestInRange",
+          "callee": "e.getDistance",
+          "lineNumber": 123
+        },
+        {
+          "caller": "furthestInRange",
+          "callee": "best.getDistance",
+          "lineNumber": 123
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 17,
+        "functionCount": 21,
+        "classCount": 1
+      }
+    }
+  ]
+}

@@ -33,7 +33,7 @@ public final class SpriteLoader {
             return null;
         }
         if (CACHE.containsKey(path)) {
-            return CACHE.get(path);
+            return CACHE.get(path); // Checks if sprite is loaded
         }
         Image image = null;
         File file = new File(path);
@@ -44,7 +44,7 @@ public final class SpriteLoader {
                 System.err.println("Could not read sprite " + path + ": " + e.getMessage());
             }
         }
-        CACHE.put(path, image);
+        CACHE.put(path, image); 
         return image;
     }
 }

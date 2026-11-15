@@ -1,0 +1,949 @@
+{
+ "scriptCompleted": true,
+ "entryPointCandidates": [
+  {
+   "id": "document:README.md",
+   "score": 5,
+   "name": "README.md",
+   "type": "document",
+   "summary": "Project overview covering requirements (JDK 21, Maven, MySQL 8), step-by-step database and config setup, how to play, project structure, and team rules for the CasesTD tower defense game."
+  },
+  {
+   "id": "file:src/main/java/btd/Main.java",
+   "score": 3,
+   "name": "Main.java",
+   "type": "file",
+   "summary": "Application entry point that, on the Swing event thread, creates the MainFrame window, wires up the AppController screen router, and shows the window."
+  },
+  {
+   "id": "file:docs/.gitkeep",
+   "score": 2,
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the docs/ directory (for project documentation) tracked in git."
+  },
+  {
+   "id": "config:pom.xml",
+   "score": 2,
+   "name": "pom.xml",
+   "type": "config",
+   "summary": "Maven build file for the casestd artifact targeting Java 21 with MySQL Connector/J and Gson dependencies."
+  },
+  {
+   "id": "table:database/schema.sql",
+   "score": 2,
+   "name": "schema.sql",
+   "type": "table",
+   "summary": "MySQL schema creating btd_case_db with the rebuildable catalog tables towers, cases, and case_towers plus a persistent players table for highest scores."
+  }
+ ],
+ "fanInRanking": [
+  {
+   "id": "file:src/main/java/btd/model/tower/TowerType.java",
+   "fanIn": 16,
+   "name": "TowerType.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/enemy/Enemy.java",
+   "fanIn": 13,
+   "name": "Enemy.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/Tower.java",
+   "fanIn": 9,
+   "name": "Tower.java"
+  },
+  {
+   "id": "file:src/main/java/btd/core/GameConfig.java",
+   "fanIn": 8,
+   "name": "GameConfig.java"
+  },
+  {
+   "id": "file:src/main/java/btd/core/GameMap.java",
+   "fanIn": 7,
+   "name": "GameMap.java"
+  },
+  {
+   "id": "file:src/main/java/btd/core/VisualEffect.java",
+   "fanIn": 7,
+   "name": "VisualEffect.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "fanIn": 6,
+   "name": "Rarity.java"
+  },
+  {
+   "id": "file:src/main/java/btd/core/GameSession.java",
+   "fanIn": 5,
+   "name": "GameSession.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "fanIn": 5,
+   "name": "CaseDef.java"
+  },
+  {
+   "id": "file:src/main/java/btd/dao/PlayerDAO.java",
+   "fanIn": 5,
+   "name": "PlayerDAO.java"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/components/Gfx.java",
+   "fanIn": 5,
+   "name": "Gfx.java"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/theme/Palette.java",
+   "fanIn": 5,
+   "name": "Palette.java"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/theme/Theme.java",
+   "fanIn": 5,
+   "name": "Theme.java"
+  },
+  {
+   "id": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "fanIn": 4,
+   "name": "DatabaseConnection.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/Special.java",
+   "fanIn": 4,
+   "name": "Special.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/player/Player.java",
+   "fanIn": 4,
+   "name": "Player.java"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/components/TextButton.java",
+   "fanIn": 4,
+   "name": "TextButton.java"
+  },
+  {
+   "id": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "fanIn": 3,
+   "name": "CaseRNGManager.java"
+  },
+  {
+   "id": "file:src/main/java/btd/core/Catalog.java",
+   "fanIn": 3,
+   "name": "Catalog.java"
+  },
+  {
+   "id": "file:src/main/java/btd/core/RunResult.java",
+   "fanIn": 3,
+   "name": "RunResult.java"
+  }
+ ],
+ "fanOutRanking": [
+  {
+   "id": "file:src/main/java/btd/ui/screens/GamePanel.java",
+   "fanOut": 22,
+   "name": "GamePanel.java"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "fanOut": 9,
+   "name": "ShopOverlay.java"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/AppController.java",
+   "fanOut": 9,
+   "name": "AppController.java"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/screens/SidePanel.java",
+   "fanOut": 9,
+   "name": "SidePanel.java"
+  },
+  {
+   "id": "document:docs/GAME_GUIDE.md",
+   "fanOut": 9,
+   "name": "GAME_GUIDE.md"
+  },
+  {
+   "id": "file:src/main/java/btd/core/GameSession.java",
+   "fanOut": 8,
+   "name": "GameSession.java"
+  },
+  {
+   "id": "file:src/main/java/btd/core/GameEngine.java",
+   "fanOut": 7,
+   "name": "GameEngine.java"
+  },
+  {
+   "id": "table:database/schema.sql",
+   "fanOut": 7,
+   "name": "schema.sql"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/screens/LandingPanel.java",
+   "fanOut": 6,
+   "name": "LandingPanel.java"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "fanOut": 6,
+   "name": "ResultsPanel.java"
+  },
+  {
+   "id": "file:src/main/java/btd/factory/TowerFactory.java",
+   "fanOut": 6,
+   "name": "TowerFactory.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/SniperTower.java",
+   "fanOut": 5,
+   "name": "SniperTower.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/SupportTower.java",
+   "fanOut": 5,
+   "name": "SupportTower.java"
+  },
+  {
+   "id": "file:src/main/java/btd/factory/EnemyFactory.java",
+   "fanOut": 5,
+   "name": "EnemyFactory.java"
+  },
+  {
+   "id": "document:README.md",
+   "fanOut": 5,
+   "name": "README.md"
+  },
+  {
+   "id": "file:src/main/java/btd/core/Catalog.java",
+   "fanOut": 4,
+   "name": "Catalog.java"
+  },
+  {
+   "id": "file:src/main/java/btd/dao/TowerDAO.java",
+   "fanOut": 4,
+   "name": "TowerDAO.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/SingleTargetTower.java",
+   "fanOut": 4,
+   "name": "SingleTargetTower.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/SplashTower.java",
+   "fanOut": 4,
+   "name": "SplashTower.java"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/Tower.java",
+   "fanOut": 4,
+   "name": "Tower.java"
+  }
+ ],
+ "bfsTraversal": {
+  "startNode": "file:src/main/java/btd/Main.java",
+  "order": [
+   "file:src/main/java/btd/Main.java",
+   "file:src/main/java/btd/ui/AppController.java",
+   "file:src/main/java/btd/ui/MainFrame.java",
+   "file:src/main/java/btd/core/Catalog.java",
+   "file:src/main/java/btd/core/GameConfig.java",
+   "file:src/main/java/btd/core/GameMap.java",
+   "file:src/main/java/btd/core/RunResult.java",
+   "file:src/main/java/btd/model/player/Player.java",
+   "file:src/main/java/btd/ui/screens/GamePanel.java",
+   "file:src/main/java/btd/ui/screens/LandingPanel.java",
+   "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+   "file:src/main/java/btd/ui/theme/Theme.java",
+   "file:src/main/java/btd/dao/CaseDAO.java",
+   "file:src/main/java/btd/dao/TowerDAO.java",
+   "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "file:src/main/java/btd/model/tower/TowerType.java",
+   "file:src/main/java/btd/core/CaseRNGManager.java",
+   "file:src/main/java/btd/core/GameEngine.java",
+   "file:src/main/java/btd/core/GameSession.java",
+   "file:src/main/java/btd/core/VisualEffect.java",
+   "file:src/main/java/btd/dao/PlayerDAO.java",
+   "file:src/main/java/btd/model/enemy/Enemy.java",
+   "file:src/main/java/btd/model/tower/SupportTower.java",
+   "file:src/main/java/btd/model/tower/Tower.java",
+   "file:src/main/java/btd/ui/components/Gfx.java",
+   "file:src/main/java/btd/ui/components/TextButton.java",
+   "file:src/main/java/btd/ui/components/TowerArt.java",
+   "file:src/main/java/btd/ui/theme/Palette.java",
+   "file:src/main/java/btd/util/SpriteLoader.java",
+   "file:src/main/java/btd/ui/components/GameButton.java",
+   "file:src/main/java/btd/util/ImageLoader.java",
+   "file:src/main/java/btd/util/FontLoader.java",
+   "file:src/main/java/btd/config/DatabaseConnection.java",
+   "file:src/main/java/btd/model/gacha/Rarity.java",
+   "file:src/main/java/btd/model/tower/Special.java",
+   "file:src/main/java/btd/factory/TowerFactory.java",
+   "file:src/main/java/btd/model/tower/SingleTargetTower.java",
+   "file:src/main/java/btd/model/tower/SniperTower.java",
+   "file:src/main/java/btd/model/tower/SplashTower.java"
+  ],
+  "depthMap": {
+   "file:src/main/java/btd/Main.java": 0,
+   "file:src/main/java/btd/ui/AppController.java": 1,
+   "file:src/main/java/btd/ui/MainFrame.java": 1,
+   "file:src/main/java/btd/core/Catalog.java": 2,
+   "file:src/main/java/btd/core/GameConfig.java": 2,
+   "file:src/main/java/btd/core/GameMap.java": 2,
+   "file:src/main/java/btd/core/RunResult.java": 2,
+   "file:src/main/java/btd/model/player/Player.java": 2,
+   "file:src/main/java/btd/ui/screens/GamePanel.java": 2,
+   "file:src/main/java/btd/ui/screens/LandingPanel.java": 2,
+   "file:src/main/java/btd/ui/screens/ResultsPanel.java": 2,
+   "file:src/main/java/btd/ui/theme/Theme.java": 2,
+   "file:src/main/java/btd/dao/CaseDAO.java": 3,
+   "file:src/main/java/btd/dao/TowerDAO.java": 3,
+   "file:src/main/java/btd/model/gacha/CaseDef.java": 3,
+   "file:src/main/java/btd/model/tower/TowerType.java": 3,
+   "file:src/main/java/btd/core/CaseRNGManager.java": 3,
+   "file:src/main/java/btd/core/GameEngine.java": 3,
+   "file:src/main/java/btd/core/GameSession.java": 3,
+   "file:src/main/java/btd/core/VisualEffect.java": 3,
+   "file:src/main/java/btd/dao/PlayerDAO.java": 3,
+   "file:src/main/java/btd/model/enemy/Enemy.java": 3,
+   "file:src/main/java/btd/model/tower/SupportTower.java": 3,
+   "file:src/main/java/btd/model/tower/Tower.java": 3,
+   "file:src/main/java/btd/ui/components/Gfx.java": 3,
+   "file:src/main/java/btd/ui/components/TextButton.java": 3,
+   "file:src/main/java/btd/ui/components/TowerArt.java": 3,
+   "file:src/main/java/btd/ui/theme/Palette.java": 3,
+   "file:src/main/java/btd/util/SpriteLoader.java": 3,
+   "file:src/main/java/btd/ui/components/GameButton.java": 3,
+   "file:src/main/java/btd/util/ImageLoader.java": 3,
+   "file:src/main/java/btd/util/FontLoader.java": 3,
+   "file:src/main/java/btd/config/DatabaseConnection.java": 4,
+   "file:src/main/java/btd/model/gacha/Rarity.java": 4,
+   "file:src/main/java/btd/model/tower/Special.java": 4,
+   "file:src/main/java/btd/factory/TowerFactory.java": 4,
+   "file:src/main/java/btd/model/tower/SingleTargetTower.java": 5,
+   "file:src/main/java/btd/model/tower/SniperTower.java": 5,
+   "file:src/main/java/btd/model/tower/SplashTower.java": 5
+  },
+  "byDepth": {
+   "0": [
+    "file:src/main/java/btd/Main.java"
+   ],
+   "1": [
+    "file:src/main/java/btd/ui/AppController.java",
+    "file:src/main/java/btd/ui/MainFrame.java"
+   ],
+   "2": [
+    "file:src/main/java/btd/core/Catalog.java",
+    "file:src/main/java/btd/core/GameConfig.java",
+    "file:src/main/java/btd/core/GameMap.java",
+    "file:src/main/java/btd/core/RunResult.java",
+    "file:src/main/java/btd/model/player/Player.java",
+    "file:src/main/java/btd/ui/screens/GamePanel.java",
+    "file:src/main/java/btd/ui/screens/LandingPanel.java",
+    "file:src/main/java/btd/ui/screens/ResultsPanel.java",
+    "file:src/main/java/btd/ui/theme/Theme.java"
+   ],
+   "3": [
+    "file:src/main/java/btd/dao/CaseDAO.java",
+    "file:src/main/java/btd/dao/TowerDAO.java",
+    "file:src/main/java/btd/model/gacha/CaseDef.java",
+    "file:src/main/java/btd/model/tower/TowerType.java",
+    "file:src/main/java/btd/core/CaseRNGManager.java",
+    "file:src/main/java/btd/core/GameEngine.java",
+    "file:src/main/java/btd/core/GameSession.java",
+    "file:src/main/java/btd/core/VisualEffect.java",
+    "file:src/main/java/btd/dao/PlayerDAO.java",
+    "file:src/main/java/btd/model/enemy/Enemy.java",
+    "file:src/main/java/btd/model/tower/SupportTower.java",
+    "file:src/main/java/btd/model/tower/Tower.java",
+    "file:src/main/java/btd/ui/components/Gfx.java",
+    "file:src/main/java/btd/ui/components/TextButton.java",
+    "file:src/main/java/btd/ui/components/TowerArt.java",
+    "file:src/main/java/btd/ui/theme/Palette.java",
+    "file:src/main/java/btd/util/SpriteLoader.java",
+    "file:src/main/java/btd/ui/components/GameButton.java",
+    "file:src/main/java/btd/util/ImageLoader.java",
+    "file:src/main/java/btd/util/FontLoader.java"
+   ],
+   "4": [
+    "file:src/main/java/btd/config/DatabaseConnection.java",
+    "file:src/main/java/btd/model/gacha/Rarity.java",
+    "file:src/main/java/btd/model/tower/Special.java",
+    "file:src/main/java/btd/factory/TowerFactory.java"
+   ],
+   "5": [
+    "file:src/main/java/btd/model/tower/SingleTargetTower.java",
+    "file:src/main/java/btd/model/tower/SniperTower.java",
+    "file:src/main/java/btd/model/tower/SplashTower.java"
+   ]
+  }
+ },
+ "nonCodeFiles": {
+  "documentation": [
+   {
+    "id": "document:README.md",
+    "name": "README.md",
+    "type": "document",
+    "summary": "Project overview covering requirements (JDK 21, Maven, MySQL 8), step-by-step database and config setup, how to play, project structure, and team rules for the CasesTD tower defense game."
+   },
+   {
+    "id": "document:assets/fonts/LuckiestGuy-LICENSE.txt",
+    "name": "LuckiestGuy-LICENSE.txt",
+    "type": "document",
+    "summary": "Apache License 2.0 text bundled with the Luckiest Guy display font used by the game UI."
+   },
+   {
+    "id": "document:docs/GAME_GUIDE.md",
+    "name": "GAME_GUIDE.md",
+    "type": "document",
+    "summary": "Defense guide explaining the layered architecture, class map, where each OOP concept lives, the per-tick game loop, rule enforcement, likely professor questions, and known limits."
+   },
+   {
+    "id": "document:docs/PROJECT_CONTEXT.md",
+    "name": "PROJECT_CONTEXT.md",
+    "type": "document",
+    "summary": "Handoff document for future AI conversations describing the team, git state, setup steps, what has been built, how the game works, and remaining work."
+   }
+  ],
+  "infrastructure": [],
+  "data": [
+   {
+    "id": "table:database/schema.sql",
+    "name": "schema.sql",
+    "type": "table",
+    "summary": "MySQL schema creating btd_case_db with the rebuildable catalog tables towers, cases, and case_towers plus a persistent players table for highest scores."
+   },
+   {
+    "id": "table:database/schema.sql:towers",
+    "name": "towers",
+    "type": "table",
+    "summary": "Master tower catalog storing class, rarity, damage, range, fire rate, splash radius, special effect, and sprite path for each tower."
+   },
+   {
+    "id": "table:database/schema.sql:cases",
+    "name": "cases",
+    "type": "table",
+    "summary": "Shop case definitions with cost and per-rarity drop weights constrained to sum to 100."
+   },
+   {
+    "id": "table:database/schema.sql:case_towers",
+    "name": "case_towers",
+    "type": "table",
+    "summary": "Join table mapping each case to the towers in its drop pool, with cascading foreign keys."
+   },
+   {
+    "id": "table:database/schema.sql:players",
+    "name": "players",
+    "type": "table",
+    "summary": "Player profiles keyed by unique name storing the highest score (waves cleared)."
+   },
+   {
+    "id": "table:database/seed_data.sql",
+    "name": "seed_data.sql",
+    "type": "table",
+    "summary": "Seed script inserting the placeholder tower catalog, the Standard/Premium/Legendary cases, and their case_towers pools, with comments documenting how effect values map to each special."
+   }
+  ],
+  "config": [
+   {
+    "id": "config:data/db_config.example.properties",
+    "name": "db_config.example.properties",
+    "type": "config",
+    "summary": "Template for the git-ignored data/db_config.properties holding the MySQL JDBC URL, user, and password read by DatabaseConnection."
+   },
+   {
+    "id": "config:data/maps/waves_config.json",
+    "name": "waves_config.json",
+    "type": "config",
+    "summary": "Tuning config with economy values (starting coins/lives, rewards, kill coins, sell refunds, upgrade copy costs), enemy scaling rules, and the hand-authored first three waves, parsed by GameConfig via Gson."
+   },
+   {
+    "id": "config:pom.xml",
+    "name": "pom.xml",
+    "type": "config",
+    "summary": "Maven build file for the casestd artifact targeting Java 21 with MySQL Connector/J and Gson dependencies."
+   }
+  ]
+ },
+ "clusters": [],
+ "layers": {
+  "count": 7,
+  "list": [
+   {
+    "id": "layer:ui",
+    "name": "Swing UI Layer",
+    "description": "Main entry point, AppController/MainFrame screen navigation, and the Swing screens, custom-painted components, and theme palette that render the tower defense game and case shop."
+   },
+   {
+    "id": "layer:game-core",
+    "name": "Game Core Engine",
+    "description": "Game loop, session state, wave spawning, map pathing, case RNG rolls, upgrade costs, and the tower/case catalog that drive each run."
+   },
+   {
+    "id": "layer:domain-model",
+    "name": "Domain Model and Factories",
+    "description": "OOP hierarchy of towers, enemies, gacha cases/rarities, and the player, plus the factories that instantiate tower and enemy subtypes."
+   },
+   {
+    "id": "layer:data-access",
+    "name": "Data Access and Database",
+    "description": "JDBC connection setup, DAOs for towers, cases, and players, and the MySQL schema and seed scripts they read and write."
+   },
+   {
+    "id": "layer:utility",
+    "name": "Utilities",
+    "description": "Sprite, image, and font loaders plus the database connectivity check helper shared across the UI and data layers."
+   },
+   {
+    "id": "layer:assets-config",
+    "name": "Assets, Game Data and Build Config",
+    "description": "Maven pom.xml, the example DB properties, map path CSV and wave JSON config, and the asset folders (sprites, fonts, audio) with the bundled font license."
+   },
+   {
+    "id": "layer:documentation",
+    "name": "Documentation",
+    "description": "Project README, player-facing game guide, and project context notes describing the game design and class structure."
+   }
+  ]
+ },
+ "nodeSummaryIndex": {
+  "file:src/main/java/btd/config/DatabaseConnection.java": {
+   "name": "DatabaseConnection.java",
+   "type": "file",
+   "summary": "Lazy-initialized Singleton that loads MySQL credentials from data/db_config.properties and hands out the single shared JDBC connection, reconnecting if it was closed."
+  },
+  "file:src/main/java/btd/core/CaseRNGManager.java": {
+   "name": "CaseRNGManager.java",
+   "type": "file",
+   "summary": "Gacha random number logic: rolls a rarity from a case's weighted odds and then picks a tower of that rarity from the case's pool."
+  },
+  "file:src/main/java/btd/core/Catalog.java": {
+   "name": "Catalog.java",
+   "type": "file",
+   "summary": "Immutable in-memory catalog of every tower type and case, loaded once at startup through TowerDAO and CaseDAO and indexed by tower id."
+  },
+  "file:src/main/java/btd/core/GameSession.java": {
+   "name": "GameSession.java",
+   "type": "file",
+   "summary": "Central run state holding coins, lives, free cases, inventory copies and placed towers; enforces buying/opening cases, placement spacing, upgrade copy costs, the one-Level-5-per-type rule, and selling/refunds."
+  },
+  "file:src/main/java/btd/core/UpgradeCostTable.java": {
+   "name": "UpgradeCostTable.java",
+   "type": "file",
+   "summary": "Static helper that looks up how many duplicate tower copies an upgrade to a given level costs for a rarity, based on GameConfig."
+  },
+  "file:src/main/java/btd/dao/CaseDAO.java": {
+   "name": "CaseDAO.java",
+   "type": "file",
+   "summary": "Data Access Object that reads the cases table and the case_towers join table, building CaseDef records with their rarity weights and tower pools."
+  },
+  "file:src/main/java/btd/dao/TowerDAO.java": {
+   "name": "TowerDAO.java",
+   "type": "file",
+   "summary": "Data Access Object that reads all rows of the towers table and maps them to TowerType records including rarity and special effect enums."
+  },
+  "file:src/main/java/btd/model/gacha/CaseDef.java": {
+   "name": "CaseDef.java",
+   "type": "file",
+   "summary": "Immutable record describing a purchasable case: id, name, coin cost, per-rarity drop weights and the pool of towers it can drop."
+  },
+  "file:src/main/java/btd/model/gacha/Rarity.java": {
+   "name": "Rarity.java",
+   "type": "file",
+   "summary": "Enum of tower rarities (Common to Legendary) carrying display name, UI color and gem count."
+  },
+  "file:src/main/java/btd/model/tower/Special.java": {
+   "name": "Special.java",
+   "type": "file",
+   "summary": "Enum of tower special effects (none, stun, poison, burn, buff, turrets, pierce) as stored in the towers table."
+  },
+  "file:src/main/java/btd/model/tower/TowerType.java": {
+   "name": "TowerType.java",
+   "type": "file",
+   "summary": "Immutable record for one tower blueprint row: name, class, rarity, base stats, special effect parameters, description and sprite path (Type Object pattern)."
+  },
+  "file:src/main/java/btd/ui/screens/ShopOverlay.java": {
+   "name": "ShopOverlay.java",
+   "type": "file",
+   "summary": "Swing overlay that renders the case shop over the map with three views: case cards with drop odds, an animated spinning reveal strip, and the result card; delegates the actual purchase and roll to GameSession."
+  },
+  "file:src/main/java/btd/core/GameConfig.java": {
+   "name": "GameConfig.java",
+   "type": "file",
+   "summary": "Gson-deserialized game balance configuration (economy, wave scaling, explicit wave spawn lists) loaded from waves_config.json, with helpers for kill rewards, wave-clear rewards and per-wave enemy health/speed multipliers."
+  },
+  "file:src/main/java/btd/core/GameMap.java": {
+   "name": "GameMap.java",
+   "type": "file",
+   "summary": "Loads the enemy path polyline from a CSV file and parameterizes positions by distance along the path; also decides where towers may be built by checking clearance from the track, decorative roads and obstacles."
+  },
+  "file:src/main/java/btd/core/RunResult.java": {
+   "name": "RunResult.java",
+   "type": "file",
+   "summary": "Immutable record summarizing a finished run (waves cleared, kills, cases opened, previous best, new-record flag) passed to the results screen."
+  },
+  "file:src/main/java/btd/dao/PlayerDAO.java": {
+   "name": "PlayerDAO.java",
+   "type": "file",
+   "summary": "Data access object for the MySQL players table: looks up profiles by name, creates profiles on first login, and conditionally updates the highest score."
+  },
+  "file:src/main/java/btd/model/player/Player.java": {
+   "name": "Player.java",
+   "type": "file",
+   "summary": "Simple player profile model holding id, name and highest score (waves cleared)."
+  },
+  "file:src/main/java/btd/ui/AppController.java": {
+   "name": "AppController.java",
+   "type": "file",
+   "summary": "Top-level screen controller that wires the landing, game and results panels into the main frame, lazily loads catalog/config/map data, and handles navigation between screens."
+  },
+  "file:src/main/java/btd/ui/components/GameButton.java": {
+   "name": "GameButton.java",
+   "type": "file",
+   "summary": "Image-based clickable button component with a builder for size, position and icon, plus hover tracking and drawing."
+  },
+  "file:src/main/java/btd/ui/components/TowerArt.java": {
+   "name": "TowerArt.java",
+   "type": "file",
+   "summary": "Static helper that draws a tower icon from its sprite when available, otherwise a placeholder shape colored by tower class."
+  },
+  "file:src/main/java/btd/ui/screens/GamePanel.java": {
+   "name": "GamePanel.java",
+   "type": "file",
+   "summary": "Main gameplay screen: runs a fixed-timestep game loop (1/60 s accumulator with x1/x2/x3 speed, paused while the shop is open), handles mouse/keyboard input for placing, selecting, upgrading and selling towers, renders the map, towers, enemies, effects and HUD, and saves new high scores when the run ends."
+  },
+  "file:src/main/java/btd/ui/screens/LandingPanel.java": {
+   "name": "LandingPanel.java",
+   "type": "file",
+   "summary": "Landing/menu screen where the player types a name, opens a crate to load or create their profile, and can view help or start a run; drawn from image assets with absolute-positioned buttons."
+  },
+  "file:src/main/java/btd/util/DbCheck.java": {
+   "name": "DbCheck.java",
+   "type": "file",
+   "summary": "Read-only command-line diagnostic that verifies the database connection and PlayerDAO lookups work."
+  },
+  "file:src/main/java/btd/util/SpriteLoader.java": {
+   "name": "SpriteLoader.java",
+   "type": "file",
+   "summary": "Cached loader for tower sprite images by path, returning null for missing files so placeholder art is drawn instead."
+  },
+  "file:src/main/java/btd/Main.java": {
+   "name": "Main.java",
+   "type": "file",
+   "summary": "Application entry point that, on the Swing event thread, creates the MainFrame window, wires up the AppController screen router, and shows the window."
+  },
+  "file:src/main/java/btd/ui/MainFrame.java": {
+   "name": "MainFrame.java",
+   "type": "file",
+   "summary": "Fixed-size JFrame window that hosts all game screens in a CardLayout panel sized by Theme and exposes methods to register and switch screens by name."
+  },
+  "file:src/main/java/btd/ui/components/Gfx.java": {
+   "name": "Gfx.java",
+   "type": "file",
+   "summary": "Static Graphics2D text-drawing helpers for centered text, outlined (stroked) text, and word-wrapping strings to a maximum width, shared by the game UI screens."
+  },
+  "file:src/main/java/btd/ui/components/TextButton.java": {
+   "name": "TextButton.java",
+   "type": "file",
+   "summary": "Lightweight custom-painted button (not a Swing component) with bounds, hover and enabled state, drawn as a rounded colored box with outlined label text using Palette styling."
+  },
+  "file:src/main/java/btd/ui/screens/HelpPanel.java": {
+   "name": "HelpPanel.java",
+   "type": "file",
+   "summary": "How-to-Play overlay panel that displays help book image spreads with previous/next arrow buttons and an invisible close hit area, manually laid out relative to the book and swallowing clicks to the game beneath."
+  },
+  "file:src/main/java/btd/ui/screens/ResultsPanel.java": {
+   "name": "ResultsPanel.java",
+   "type": "file",
+   "summary": "End-of-run results screen that paints the menu background, the player's RunResult statistics, and PLAY AGAIN / MENU TextButtons that invoke callbacks supplied by the controller."
+  },
+  "file:src/main/java/btd/ui/screens/SidePanel.java": {
+   "name": "SidePanel.java",
+   "type": "file",
+   "summary": "In-game right-hand sidebar that paints the tower inventory cards, selected-tower or placement info, and shop/start-wave/speed/upgrade/sell buttons, routing clicks through an Actions callback interface implemented by GamePanel."
+  },
+  "file:src/main/java/btd/ui/theme/Palette.java": {
+   "name": "Palette.java",
+   "type": "file",
+   "summary": "Shared color constants for the game visuals (grass, path, panels, cream, good/bad, gold) plus heading and body font helpers backed by FontLoader."
+  },
+  "file:src/main/java/btd/ui/theme/Theme.java": {
+   "name": "Theme.java",
+   "type": "file",
+   "summary": "Global UI constants defining the content window dimensions, core colors, and title/button fonts loaded via FontLoader."
+  },
+  "file:src/main/java/btd/util/FontLoader.java": {
+   "name": "FontLoader.java",
+   "type": "file",
+   "summary": "Loads the Luckiest Guy TrueType font from assets/fonts once at class init, falling back to SansSerif, and derives sized copies on request."
+  },
+  "file:src/main/java/btd/util/ImageLoader.java": {
+   "name": "ImageLoader.java",
+   "type": "file",
+   "summary": "Loads UI images from assets/ui via ImageIO, returning null and logging to stderr when a file cannot be read."
+  },
+  "file:src/main/java/btd/core/GameEngine.java": {
+   "name": "GameEngine.java",
+   "type": "file",
+   "summary": "Core game-loop logic that runs waves, recomputes tower buffs, fires towers, moves enemies, pays kill and wave-clear rewards, and detects game over."
+  },
+  "file:src/main/java/btd/core/VisualEffect.java": {
+   "name": "VisualEffect.java",
+   "type": "file",
+   "summary": "Immutable-shape, time-limited visual effect (shot line or blast circle) with fade-out, produced by towers and drawn by the game panel."
+  },
+  "file:src/main/java/btd/factory/TowerFactory.java": {
+   "name": "TowerFactory.java",
+   "type": "file",
+   "summary": "Factory that maps a TowerType's database tower_class string to the matching concrete Tower subclass."
+  },
+  "file:src/main/java/btd/model/enemy/Enemy.java": {
+   "name": "Enemy.java",
+   "type": "file",
+   "summary": "Abstract zombie base class handling path movement, health, rewards, and status effects (stun with immunity window, poison, stacking burn)."
+  },
+  "file:src/main/java/btd/model/tower/SingleTargetTower.java": {
+   "name": "SingleTargetTower.java",
+   "type": "file",
+   "summary": "Basic tower that shoots the enemy furthest along the track; its Level 5 passive makes it fire 50% faster."
+  },
+  "file:src/main/java/btd/model/tower/SniperTower.java": {
+   "name": "SniperTower.java",
+   "type": "file",
+   "summary": "Sniper tower that targets the highest-health enemy in range, optionally firing a piercing beam that hits multiple enemies along a line."
+  },
+  "file:src/main/java/btd/model/tower/SplashTower.java": {
+   "name": "SplashTower.java",
+   "type": "file",
+   "summary": "Area-damage tower that blasts the furthest enemy and everything within its splash radius, applying poison or burn depending on its special."
+  },
+  "file:src/main/java/btd/model/tower/SupportTower.java": {
+   "name": "SupportTower.java",
+   "type": "file",
+   "summary": "Multi-role support tower whose special selects behavior: STUN (Policeman stuns everything in range), TURRETS (mini-turrets each hit a different enemy), or BUFF (fire-rate aura for nearby towers)."
+  },
+  "file:src/main/java/btd/model/tower/Tower.java": {
+   "name": "Tower.java",
+   "type": "file",
+   "summary": "Abstract tower base class implementing the Template Method pattern: a final update() handles cooldown and calls the subclass attack(), plus level multipliers, Level 5 passives, fire-rate buffs and targeting helpers."
+  },
+  "file:src/main/java/btd/core/WaveSpawner.java": {
+   "name": "WaveSpawner.java",
+   "type": "file",
+   "summary": "Builds a time-stamped spawn queue per wave from JSON config (or a formula for later waves), adds a boss every Nth wave, and releases enemies as time elapses."
+  },
+  "file:src/main/java/btd/factory/EnemyFactory.java": {
+   "name": "EnemyFactory.java",
+   "type": "file",
+   "summary": "Factory that maps an enemy type name to the concrete Enemy subclass, applying wave health/speed scales and kill reward."
+  },
+  "file:src/main/java/btd/model/enemy/ArmoredEnemy.java": {
+   "name": "ArmoredEnemy.java",
+   "type": "file",
+   "summary": "Slow, tough zombie that takes 30% less damage from every hit by overriding the reduceDamage hook."
+  },
+  "file:src/main/java/btd/model/enemy/BasicEnemy.java": {
+   "name": "BasicEnemy.java",
+   "type": "file",
+   "summary": "Standard baseline zombie with default stats and radius."
+  },
+  "file:src/main/java/btd/model/enemy/BossEnemy.java": {
+   "name": "BossEnemy.java",
+   "type": "file",
+   "summary": "High-health boss zombie spawned every 10th wave that halves the duration of any stun applied to it."
+  },
+  "file:src/main/java/btd/model/enemy/FastEnemy.java": {
+   "name": "FastEnemy.java",
+   "type": "file",
+   "summary": "Fast, fragile zombie variant with higher speed and a smaller radius."
+  },
+  "file:assets/audio/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the assets/audio/ directory (for audio assets) tracked in git."
+  },
+  "file:assets/fonts/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the assets/fonts/ directory (for font assets) tracked in git."
+  },
+  "file:assets/sprites/cases/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the assets/sprites/cases/ directory (for case sprite images) tracked in git."
+  },
+  "file:assets/sprites/enemies/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the assets/sprites/enemies/ directory (for enemy sprite images) tracked in git."
+  },
+  "file:assets/sprites/towers/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the assets/sprites/towers/ directory (for tower sprite images) tracked in git."
+  },
+  "file:assets/ui/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the assets/ui/ directory (for UI artwork) tracked in git."
+  },
+  "file:data/maps/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the data/maps/ directory (for map data files) tracked in git."
+  },
+  "file:database/backups/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the database/backups/ directory (for database backup dumps) tracked in git."
+  },
+  "file:docs/.gitkeep": {
+   "name": ".gitkeep",
+   "type": "file",
+   "summary": "Empty placeholder file that keeps the docs/ directory (for project documentation) tracked in git."
+  },
+  "document:README.md": {
+   "name": "README.md",
+   "type": "document",
+   "summary": "Project overview covering requirements (JDK 21, Maven, MySQL 8), step-by-step database and config setup, how to play, project structure, and team rules for the CasesTD tower defense game."
+  },
+  "document:assets/fonts/LuckiestGuy-LICENSE.txt": {
+   "name": "LuckiestGuy-LICENSE.txt",
+   "type": "document",
+   "summary": "Apache License 2.0 text bundled with the Luckiest Guy display font used by the game UI."
+  },
+  "config:data/db_config.example.properties": {
+   "name": "db_config.example.properties",
+   "type": "config",
+   "summary": "Template for the git-ignored data/db_config.properties holding the MySQL JDBC URL, user, and password read by DatabaseConnection."
+  },
+  "file:data/maps/map1_path.csv": {
+   "name": "map1_path.csv",
+   "type": "file",
+   "summary": "CSV list of x,y corner points defining the zombie walking path on map 1, loaded by GameMap."
+  },
+  "config:data/maps/waves_config.json": {
+   "name": "waves_config.json",
+   "type": "config",
+   "summary": "Tuning config with economy values (starting coins/lives, rewards, kill coins, sell refunds, upgrade copy costs), enemy scaling rules, and the hand-authored first three waves, parsed by GameConfig via Gson."
+  },
+  "config:pom.xml": {
+   "name": "pom.xml",
+   "type": "config",
+   "summary": "Maven build file for the casestd artifact targeting Java 21 with MySQL Connector/J and Gson dependencies."
+  },
+  "table:database/schema.sql": {
+   "name": "schema.sql",
+   "type": "table",
+   "summary": "MySQL schema creating btd_case_db with the rebuildable catalog tables towers, cases, and case_towers plus a persistent players table for highest scores."
+  },
+  "table:database/schema.sql:towers": {
+   "name": "towers",
+   "type": "table",
+   "summary": "Master tower catalog storing class, rarity, damage, range, fire rate, splash radius, special effect, and sprite path for each tower."
+  },
+  "table:database/schema.sql:cases": {
+   "name": "cases",
+   "type": "table",
+   "summary": "Shop case definitions with cost and per-rarity drop weights constrained to sum to 100."
+  },
+  "table:database/schema.sql:case_towers": {
+   "name": "case_towers",
+   "type": "table",
+   "summary": "Join table mapping each case to the towers in its drop pool, with cascading foreign keys."
+  },
+  "table:database/schema.sql:players": {
+   "name": "players",
+   "type": "table",
+   "summary": "Player profiles keyed by unique name storing the highest score (waves cleared)."
+  },
+  "table:database/seed_data.sql": {
+   "name": "seed_data.sql",
+   "type": "table",
+   "summary": "Seed script inserting the placeholder tower catalog, the Standard/Premium/Legendary cases, and their case_towers pools, with comments documenting how effect values map to each special."
+  },
+  "document:docs/GAME_GUIDE.md": {
+   "name": "GAME_GUIDE.md",
+   "type": "document",
+   "summary": "Defense guide explaining the layered architecture, class map, where each OOP concept lives, the per-tick game loop, rule enforcement, likely professor questions, and known limits."
+  },
+  "document:docs/PROJECT_CONTEXT.md": {
+   "name": "PROJECT_CONTEXT.md",
+   "type": "document",
+   "summary": "Handoff document for future AI conversations describing the team, git state, setup steps, what has been built, how the game works, and remaining work."
+  },
+  "file:src/main/java/btd/config/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.config with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/core/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.core with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/dao/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.dao with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/factory/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.factory with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/model/enemy/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.model.enemy with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/model/enemy/Damageable.java": {
+   "name": "Damageable.java",
+   "type": "file",
+   "summary": "Declares the Damageable interface for things that can take damage and be destroyed, implemented by Enemy."
+  },
+  "file:src/main/java/btd/model/gacha/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.model.gacha with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/model/player/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.model.player with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/model/tower/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.model.tower with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/ui/components/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.ui.components with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/ui/screens/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.ui.screens with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/ui/theme/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.ui.theme with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/util/package-info.java": {
+   "name": "package-info.java",
+   "type": "file",
+   "summary": "Package placeholder declaration for btd.util with a one-line Javadoc."
+  },
+  "file:src/main/java/btd/model/tower/Upgradable.java": {
+   "name": "Upgradable.java",
+   "type": "file",
+   "summary": "Declares the Upgradable interface for leveled entities, implemented by Tower to expose level reads and level application."
+  }
+ },
+ "totalNodes": 87,
+ "totalEdges": 628
+}

@@ -1,0 +1,655 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 6,
+  "filesSkipped": [],
+  "filesUnreadable": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 6,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 6,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "src/main/java/btd/core/WaveSpawner.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 92,
+      "nonEmptyLines": 78,
+      "functions": [
+        {
+          "name": "WaveSpawner",
+          "startLine": 24,
+          "endLine": 26,
+          "params": [
+            "config"
+          ]
+        },
+        {
+          "name": "begin",
+          "startLine": 28,
+          "endLine": 48,
+          "params": [
+            "waveNumber"
+          ]
+        },
+        {
+          "name": "generate",
+          "startLine": 51,
+          "endLine": 61,
+          "params": [
+            "n"
+          ]
+        },
+        {
+          "name": "group",
+          "startLine": 63,
+          "endLine": 69,
+          "params": [
+            "type",
+            "count",
+            "intervalMs"
+          ]
+        },
+        {
+          "name": "update",
+          "startLine": 72,
+          "endLine": 83,
+          "params": [
+            "dt"
+          ]
+        },
+        {
+          "name": "isFinished",
+          "startLine": 85,
+          "endLine": 87,
+          "params": []
+        },
+        {
+          "name": "remaining",
+          "startLine": 89,
+          "endLine": 91,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "WaveSpawner",
+          "startLine": 13,
+          "endLine": 92,
+          "methods": [
+            "WaveSpawner",
+            "begin",
+            "generate",
+            "group",
+            "update",
+            "isFinished",
+            "remaining"
+          ],
+          "properties": [
+            "config",
+            "queue",
+            "elapsed",
+            "next",
+            "wave"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "WaveSpawner",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "begin",
+          "line": 28,
+          "isDefault": false
+        },
+        {
+          "name": "update",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "isFinished",
+          "line": 85,
+          "isDefault": false
+        },
+        {
+          "name": "remaining",
+          "line": 89,
+          "isDefault": false
+        },
+        {
+          "name": "WaveSpawner",
+          "line": 13,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "begin",
+          "callee": "queue.clear",
+          "lineNumber": 30
+        },
+        {
+          "caller": "begin",
+          "callee": "config.explicitWave",
+          "lineNumber": 34
+        },
+        {
+          "caller": "begin",
+          "callee": "generate",
+          "lineNumber": 35
+        },
+        {
+          "caller": "begin",
+          "callee": "queue.add",
+          "lineNumber": 40
+        },
+        {
+          "caller": "begin",
+          "callee": "new Spawn",
+          "lineNumber": 40
+        },
+        {
+          "caller": "begin",
+          "callee": "queue.add",
+          "lineNumber": 46
+        },
+        {
+          "caller": "begin",
+          "callee": "new Spawn",
+          "lineNumber": 46
+        },
+        {
+          "caller": "generate",
+          "callee": "new ArrayList<>",
+          "lineNumber": 52
+        },
+        {
+          "caller": "generate",
+          "callee": "groups.add",
+          "lineNumber": 53
+        },
+        {
+          "caller": "generate",
+          "callee": "group",
+          "lineNumber": 53
+        },
+        {
+          "caller": "generate",
+          "callee": "Math.max",
+          "lineNumber": 53
+        },
+        {
+          "caller": "generate",
+          "callee": "groups.add",
+          "lineNumber": 55
+        },
+        {
+          "caller": "generate",
+          "callee": "group",
+          "lineNumber": 55
+        },
+        {
+          "caller": "generate",
+          "callee": "Math.max",
+          "lineNumber": 55
+        },
+        {
+          "caller": "generate",
+          "callee": "groups.add",
+          "lineNumber": 58
+        },
+        {
+          "caller": "generate",
+          "callee": "group",
+          "lineNumber": 58
+        },
+        {
+          "caller": "generate",
+          "callee": "Math.max",
+          "lineNumber": 58
+        },
+        {
+          "caller": "group",
+          "callee": "new GameConfig.SpawnDef",
+          "lineNumber": 64
+        },
+        {
+          "caller": "update",
+          "callee": "new ArrayList<>",
+          "lineNumber": 74
+        },
+        {
+          "caller": "update",
+          "callee": "config.healthScale",
+          "lineNumber": 75
+        },
+        {
+          "caller": "update",
+          "callee": "config.speedScale",
+          "lineNumber": 76
+        },
+        {
+          "caller": "update",
+          "callee": "queue.size",
+          "lineNumber": 77
+        },
+        {
+          "caller": "update",
+          "callee": "queue.get(next).time",
+          "lineNumber": 77
+        },
+        {
+          "caller": "update",
+          "callee": "queue.get",
+          "lineNumber": 77
+        },
+        {
+          "caller": "update",
+          "callee": "queue.get(next).type",
+          "lineNumber": 78
+        },
+        {
+          "caller": "update",
+          "callee": "queue.get",
+          "lineNumber": 78
+        },
+        {
+          "caller": "update",
+          "callee": "spawned.add",
+          "lineNumber": 79
+        },
+        {
+          "caller": "update",
+          "callee": "EnemyFactory.create",
+          "lineNumber": 79
+        },
+        {
+          "caller": "update",
+          "callee": "config.killReward",
+          "lineNumber": 79
+        },
+        {
+          "caller": "isFinished",
+          "callee": "queue.size",
+          "lineNumber": 86
+        },
+        {
+          "caller": "remaining",
+          "callee": "queue.size",
+          "lineNumber": 90
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 6,
+        "functionCount": 7,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/factory/EnemyFactory.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 24,
+      "nonEmptyLines": 20,
+      "functions": [
+        {
+          "name": "EnemyFactory",
+          "startLine": 12,
+          "endLine": 13,
+          "params": []
+        },
+        {
+          "name": "create",
+          "startLine": 15,
+          "endLine": 23,
+          "params": [
+            "typeName",
+            "healthScale",
+            "speedScale",
+            "reward"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "EnemyFactory",
+          "startLine": 10,
+          "endLine": 24,
+          "methods": [
+            "EnemyFactory",
+            "create"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "create",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "EnemyFactory",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "create",
+          "callee": "new BasicEnemy",
+          "lineNumber": 17
+        },
+        {
+          "caller": "create",
+          "callee": "new FastEnemy",
+          "lineNumber": 18
+        },
+        {
+          "caller": "create",
+          "callee": "new ArmoredEnemy",
+          "lineNumber": 19
+        },
+        {
+          "caller": "create",
+          "callee": "new BossEnemy",
+          "lineNumber": 20
+        },
+        {
+          "caller": "create",
+          "callee": "new IllegalArgumentException",
+          "lineNumber": 21
+        }
+      ],
+      "metrics": {
+        "importCount": 5,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/enemy/ArmoredEnemy.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 21,
+      "nonEmptyLines": 16,
+      "functions": [
+        {
+          "name": "ArmoredEnemy",
+          "startLine": 8,
+          "endLine": 10,
+          "params": [
+            "healthScale",
+            "speedScale",
+            "reward"
+          ]
+        },
+        {
+          "name": "reduceDamage",
+          "startLine": 12,
+          "endLine": 15,
+          "params": [
+            "amount"
+          ]
+        },
+        {
+          "name": "getRadius",
+          "startLine": 17,
+          "endLine": 20,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "ArmoredEnemy",
+          "startLine": 4,
+          "endLine": 21,
+          "methods": [
+            "ArmoredEnemy",
+            "reduceDamage",
+            "getRadius"
+          ],
+          "properties": [
+            "DAMAGE_TAKEN"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ArmoredEnemy",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "getRadius",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "ArmoredEnemy",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/enemy/BasicEnemy.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 14,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "BasicEnemy",
+          "startLine": 6,
+          "endLine": 8,
+          "params": [
+            "healthScale",
+            "speedScale",
+            "reward"
+          ]
+        },
+        {
+          "name": "getRadius",
+          "startLine": 10,
+          "endLine": 13,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "BasicEnemy",
+          "startLine": 4,
+          "endLine": 14,
+          "methods": [
+            "BasicEnemy",
+            "getRadius"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "BasicEnemy",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "getRadius",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "BasicEnemy",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/enemy/BossEnemy.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 19,
+      "nonEmptyLines": 15,
+      "functions": [
+        {
+          "name": "BossEnemy",
+          "startLine": 6,
+          "endLine": 8,
+          "params": [
+            "healthScale",
+            "speedScale",
+            "reward"
+          ]
+        },
+        {
+          "name": "stun",
+          "startLine": 10,
+          "endLine": 13,
+          "params": [
+            "seconds"
+          ]
+        },
+        {
+          "name": "getRadius",
+          "startLine": 15,
+          "endLine": 18,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "BossEnemy",
+          "startLine": 4,
+          "endLine": 19,
+          "methods": [
+            "BossEnemy",
+            "stun",
+            "getRadius"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "BossEnemy",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "stun",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "getRadius",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "BossEnemy",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "stun",
+          "callee": "super.stun",
+          "lineNumber": 12
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 3,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "src/main/java/btd/model/enemy/FastEnemy.java",
+      "language": "java",
+      "fileCategory": "code",
+      "totalLines": 14,
+      "nonEmptyLines": 11,
+      "functions": [
+        {
+          "name": "FastEnemy",
+          "startLine": 6,
+          "endLine": 8,
+          "params": [
+            "healthScale",
+            "speedScale",
+            "reward"
+          ]
+        },
+        {
+          "name": "getRadius",
+          "startLine": 10,
+          "endLine": 13,
+          "params": []
+        }
+      ],
+      "classes": [
+        {
+          "name": "FastEnemy",
+          "startLine": 4,
+          "endLine": 14,
+          "methods": [
+            "FastEnemy",
+            "getRadius"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "FastEnemy",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "getRadius",
+          "line": 10,
+          "isDefault": false
+        },
+        {
+          "name": "FastEnemy",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 3,
+        "functionCount": 2,
+        "classCount": 1
+      }
+    }
+  ]
+}

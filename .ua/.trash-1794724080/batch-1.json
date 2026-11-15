@@ -1,0 +1,1697 @@
+{
+ "nodes": [
+  {
+   "id": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "type": "file",
+   "name": "DatabaseConnection.java",
+   "filePath": "src/main/java/btd/config/DatabaseConnection.java",
+   "summary": "Lazy-initialized Singleton that loads MySQL credentials from data/db_config.properties and hands out the single shared JDBC connection, reconnecting if it was closed.",
+   "tags": [
+    "singleton",
+    "database",
+    "config",
+    "jdbc"
+   ],
+   "complexity": "simple",
+   "languageNotes": "Classic lazy Singleton with a private constructor and static getInstance()."
+  },
+  {
+   "id": "class:src/main/java/btd/config/DatabaseConnection.java:DatabaseConnection",
+   "type": "class",
+   "name": "DatabaseConnection",
+   "filePath": "src/main/java/btd/config/DatabaseConnection.java",
+   "lineRange": [
+    14,
+    50
+   ],
+   "summary": "Singleton wrapper around the shared JDBC Connection configured from a properties file.",
+   "tags": [
+    "singleton",
+    "database",
+    "config"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/config/DatabaseConnection.java:getInstance",
+   "type": "function",
+   "name": "getInstance",
+   "filePath": "src/main/java/btd/config/DatabaseConnection.java",
+   "lineRange": [
+    36,
+    41
+   ],
+   "summary": "Returns the lazily created singleton instance.",
+   "tags": [
+    "singleton",
+    "method",
+    "database"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/config/DatabaseConnection.java:getConnection",
+   "type": "function",
+   "name": "getConnection",
+   "filePath": "src/main/java/btd/config/DatabaseConnection.java",
+   "lineRange": [
+    44,
+    49
+   ],
+   "summary": "Returns the open JDBC connection, reopening it via DriverManager when null or closed.",
+   "tags": [
+    "singleton",
+    "method",
+    "database"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "type": "file",
+   "name": "CaseRNGManager.java",
+   "filePath": "src/main/java/btd/core/CaseRNGManager.java",
+   "summary": "Gacha random number logic: rolls a rarity from a case's weighted odds and then picks a tower of that rarity from the case's pool.",
+   "tags": [
+    "service",
+    "gacha",
+    "random",
+    "game-logic"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "class:src/main/java/btd/core/CaseRNGManager.java:CaseRNGManager",
+   "type": "class",
+   "name": "CaseRNGManager",
+   "filePath": "src/main/java/btd/core/CaseRNGManager.java",
+   "lineRange": [
+    12,
+    66
+   ],
+   "summary": "Weighted random roller for case openings, injectable with a Random for testing.",
+   "tags": [
+    "service",
+    "gacha",
+    "random"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/core/CaseRNGManager.java:roll",
+   "type": "function",
+   "name": "roll",
+   "filePath": "src/main/java/btd/core/CaseRNGManager.java",
+   "lineRange": [
+    24,
+    33
+   ],
+   "summary": "Rolls a rarity for the case and picks a random tower of that rarity from its pool.",
+   "tags": [
+    "service",
+    "method",
+    "gacha"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/CaseRNGManager.java:rollRarity",
+   "type": "function",
+   "name": "rollRarity",
+   "filePath": "src/main/java/btd/core/CaseRNGManager.java",
+   "lineRange": [
+    36,
+    56
+   ],
+   "summary": "Selects a rarity by weighted random draw using the case's per-rarity weights.",
+   "tags": [
+    "service",
+    "method",
+    "gacha"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:src/main/java/btd/core/Catalog.java",
+   "type": "file",
+   "name": "Catalog.java",
+   "filePath": "src/main/java/btd/core/Catalog.java",
+   "summary": "Immutable in-memory catalog of every tower type and case, loaded once at startup through TowerDAO and CaseDAO and indexed by tower id.",
+   "tags": [
+    "data-model",
+    "repository",
+    "startup",
+    "service"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/core/Catalog.java:Catalog",
+   "type": "class",
+   "name": "Catalog",
+   "filePath": "src/main/java/btd/core/Catalog.java",
+   "lineRange": [
+    14,
+    45
+   ],
+   "summary": "Holds all TowerType and CaseDef definitions loaded from the database.",
+   "tags": [
+    "data-model",
+    "repository",
+    "startup"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/Catalog.java:load",
+   "type": "function",
+   "name": "load",
+   "filePath": "src/main/java/btd/core/Catalog.java",
+   "lineRange": [
+    29,
+    40
+   ],
+   "summary": "Factory method loading towers and cases from the database and failing if either table is empty.",
+   "tags": [
+    "data-model",
+    "method",
+    "repository"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/core/GameSession.java",
+   "type": "file",
+   "name": "GameSession.java",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "summary": "Central run state holding coins, lives, free cases, inventory copies and placed towers; enforces buying/opening cases, placement spacing, upgrade copy costs, the one-Level-5-per-type rule, and selling/refunds.",
+   "tags": [
+    "service",
+    "game-logic",
+    "state-management",
+    "economy"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "class:src/main/java/btd/core/GameSession.java:GameSession",
+   "type": "class",
+   "name": "GameSession",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    19,
+    201
+   ],
+   "summary": "Owns and mutates all per-run player state and enforces the game economy rules.",
+   "tags": [
+    "service",
+    "game-logic",
+    "state-management"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:buyCase",
+   "type": "function",
+   "name": "buyCase",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    56,
+    62
+   ],
+   "summary": "Spends coins on a case and adds the rolled tower to the inventory.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:openFreeCase",
+   "type": "function",
+   "name": "openFreeCase",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    65,
+    71
+   ],
+   "summary": "Consumes a free starter case and adds the rolled tower to the inventory.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:copiesOf",
+   "type": "function",
+   "name": "copiesOf",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    82,
+    90
+   ],
+   "summary": "Counts how many inventory copies of a tower type the player owns.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:sellInventory",
+   "type": "function",
+   "name": "sellInventory",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    93,
+    100
+   ],
+   "summary": "Sells one inventory copy of a tower type for its refund value.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:canPlaceAt",
+   "type": "function",
+   "name": "canPlaceAt",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    108,
+    118
+   ],
+   "summary": "Checks that a position keeps the minimum gap from every placed tower.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:place",
+   "type": "function",
+   "name": "place",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    121,
+    129
+   ],
+   "summary": "Places a tower from inventory on the map using TowerFactory, consuming one copy.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:upgradeBlockReason",
+   "type": "function",
+   "name": "upgradeBlockReason",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    132,
+    147
+   ],
+   "summary": "Returns a human-readable reason why a tower cannot be upgraded, or null if it can.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:upgradeCost",
+   "type": "function",
+   "name": "upgradeCost",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    150,
+    155
+   ],
+   "summary": "Returns the number of copies needed for a tower's next level.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:upgrade",
+   "type": "function",
+   "name": "upgrade",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    157,
+    170
+   ],
+   "summary": "Upgrades a placed tower by consuming copies, tracking the one-Level-5-per-type rule.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/GameSession.java:sell",
+   "type": "function",
+   "name": "sell",
+   "filePath": "src/main/java/btd/core/GameSession.java",
+   "lineRange": [
+    182,
+    189
+   ],
+   "summary": "Removes a placed tower from the map and refunds coins.",
+   "tags": [
+    "service",
+    "method",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/core/UpgradeCostTable.java",
+   "type": "file",
+   "name": "UpgradeCostTable.java",
+   "filePath": "src/main/java/btd/core/UpgradeCostTable.java",
+   "summary": "Static helper that looks up how many duplicate tower copies an upgrade to a given level costs for a rarity, based on GameConfig.",
+   "tags": [
+    "utility",
+    "economy",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/core/UpgradeCostTable.java:UpgradeCostTable",
+   "type": "class",
+   "name": "UpgradeCostTable",
+   "filePath": "src/main/java/btd/core/UpgradeCostTable.java",
+   "lineRange": [
+    6,
+    16
+   ],
+   "summary": "Non-instantiable utility class computing upgrade copy costs.",
+   "tags": [
+    "utility",
+    "economy",
+    "game-logic"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/core/UpgradeCostTable.java:copiesNeeded",
+   "type": "function",
+   "name": "copiesNeeded",
+   "filePath": "src/main/java/btd/core/UpgradeCostTable.java",
+   "lineRange": [
+    12,
+    15
+   ],
+   "summary": "Returns the duplicate copies required to reach a level for a given rarity.",
+   "tags": [
+    "utility",
+    "method",
+    "economy"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/dao/CaseDAO.java",
+   "type": "file",
+   "name": "CaseDAO.java",
+   "filePath": "src/main/java/btd/dao/CaseDAO.java",
+   "summary": "Data Access Object that reads the cases table and the case_towers join table, building CaseDef records with their rarity weights and tower pools.",
+   "tags": [
+    "dao",
+    "database",
+    "data-access",
+    "gacha"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "class:src/main/java/btd/dao/CaseDAO.java:CaseDAO",
+   "type": "class",
+   "name": "CaseDAO",
+   "filePath": "src/main/java/btd/dao/CaseDAO.java",
+   "lineRange": [
+    16,
+    58
+   ],
+   "summary": "DAO for cases and their tower pools.",
+   "tags": [
+    "dao",
+    "database",
+    "data-access"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/dao/CaseDAO.java:findAll",
+   "type": "function",
+   "name": "findAll",
+   "filePath": "src/main/java/btd/dao/CaseDAO.java",
+   "lineRange": [
+    19,
+    40
+   ],
+   "summary": "Queries all cases with their rarity weights and attaches each case's tower pool.",
+   "tags": [
+    "dao",
+    "method",
+    "database"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/dao/CaseDAO.java:findPool",
+   "type": "function",
+   "name": "findPool",
+   "filePath": "src/main/java/btd/dao/CaseDAO.java",
+   "lineRange": [
+    42,
+    57
+   ],
+   "summary": "Queries the case_towers table for the tower ids in a case and resolves them to TowerTypes.",
+   "tags": [
+    "dao",
+    "method",
+    "database"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/dao/TowerDAO.java",
+   "type": "file",
+   "name": "TowerDAO.java",
+   "filePath": "src/main/java/btd/dao/TowerDAO.java",
+   "summary": "Data Access Object that reads all rows of the towers table and maps them to TowerType records including rarity and special effect enums.",
+   "tags": [
+    "dao",
+    "database",
+    "data-access",
+    "tower"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/dao/TowerDAO.java:TowerDAO",
+   "type": "class",
+   "name": "TowerDAO",
+   "filePath": "src/main/java/btd/dao/TowerDAO.java",
+   "lineRange": [
+    16,
+    45
+   ],
+   "summary": "DAO for tower type definitions.",
+   "tags": [
+    "dao",
+    "database",
+    "data-access"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/dao/TowerDAO.java:findAll",
+   "type": "function",
+   "name": "findAll",
+   "filePath": "src/main/java/btd/dao/TowerDAO.java",
+   "lineRange": [
+    18,
+    44
+   ],
+   "summary": "Queries the towers table and maps every row to a TowerType record.",
+   "tags": [
+    "dao",
+    "method",
+    "database"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "type": "file",
+   "name": "CaseDef.java",
+   "filePath": "src/main/java/btd/model/gacha/CaseDef.java",
+   "summary": "Immutable record describing a purchasable case: id, name, coin cost, per-rarity drop weights and the pool of towers it can drop.",
+   "tags": [
+    "data-model",
+    "gacha",
+    "record",
+    "type-definition"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/model/gacha/CaseDef.java:CaseDef",
+   "type": "class",
+   "name": "CaseDef",
+   "filePath": "src/main/java/btd/model/gacha/CaseDef.java",
+   "lineRange": [
+    8,
+    26
+   ],
+   "summary": "Record for a case definition with weights and a tower pool.",
+   "tags": [
+    "data-model",
+    "gacha",
+    "record"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/model/gacha/CaseDef.java:weightOf",
+   "type": "function",
+   "name": "weightOf",
+   "filePath": "src/main/java/btd/model/gacha/CaseDef.java",
+   "lineRange": [
+    18,
+    25
+   ],
+   "summary": "Returns the case's drop weight for a given rarity.",
+   "tags": [
+    "data-model",
+    "method",
+    "gacha"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "type": "file",
+   "name": "Rarity.java",
+   "filePath": "src/main/java/btd/model/gacha/Rarity.java",
+   "summary": "Enum of tower rarities (Common to Legendary) carrying display name, UI color and gem count.",
+   "tags": [
+    "data-model",
+    "enum",
+    "gacha",
+    "type-definition"
+   ],
+   "complexity": "simple",
+   "languageNotes": "Java enum with a constructor and fields, so each constant carries its own data."
+  },
+  {
+   "id": "class:src/main/java/btd/model/gacha/Rarity.java:Rarity",
+   "type": "class",
+   "name": "Rarity",
+   "filePath": "src/main/java/btd/model/gacha/Rarity.java",
+   "lineRange": [
+    6,
+    33
+   ],
+   "summary": "Rarity enum with display metadata.",
+   "tags": [
+    "data-model",
+    "enum",
+    "gacha"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/Special.java",
+   "type": "file",
+   "name": "Special.java",
+   "filePath": "src/main/java/btd/model/tower/Special.java",
+   "summary": "Enum of tower special effects (none, stun, poison, burn, buff, turrets, pierce) as stored in the towers table.",
+   "tags": [
+    "enum",
+    "type-definition",
+    "tower",
+    "data-model"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "class:src/main/java/btd/model/tower/Special.java:Special",
+   "type": "class",
+   "name": "Special",
+   "filePath": "src/main/java/btd/model/tower/Special.java",
+   "lineRange": [
+    4,
+    6
+   ],
+   "summary": "Enum of tower special effect kinds.",
+   "tags": [
+    "enum",
+    "type-definition",
+    "tower"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "file",
+   "name": "TowerType.java",
+   "filePath": "src/main/java/btd/model/tower/TowerType.java",
+   "summary": "Immutable record for one tower blueprint row: name, class, rarity, base stats, special effect parameters, description and sprite path (Type Object pattern).",
+   "tags": [
+    "data-model",
+    "record",
+    "type-definition",
+    "tower"
+   ],
+   "complexity": "simple",
+   "languageNotes": "Uses a Java record, giving a compact immutable data carrier with auto-generated accessors, equals and hashCode."
+  },
+  {
+   "id": "class:src/main/java/btd/model/tower/TowerType.java:TowerType",
+   "type": "class",
+   "name": "TowerType",
+   "filePath": "src/main/java/btd/model/tower/TowerType.java",
+   "lineRange": [
+    6,
+    20
+   ],
+   "summary": "Record holding a tower blueprint's fixed stats.",
+   "tags": [
+    "data-model",
+    "record",
+    "type-definition"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "type": "file",
+   "name": "ShopOverlay.java",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "summary": "Swing overlay that renders the case shop over the map with three views: case cards with drop odds, an animated spinning reveal strip, and the result card; delegates the actual purchase and roll to GameSession.",
+   "tags": [
+    "component",
+    "ui",
+    "gacha",
+    "animation",
+    "rendering"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "class:src/main/java/btd/ui/screens/ShopOverlay.java:ShopOverlay",
+   "type": "class",
+   "name": "ShopOverlay",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    30,
+    319
+   ],
+   "summary": "Overlay UI controller and renderer for the case shop and its opening animation.",
+   "tags": [
+    "component",
+    "ui",
+    "gacha"
+   ],
+   "complexity": "complex"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ShopOverlay.java:update",
+   "type": "function",
+   "name": "update",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    97,
+    108
+   ],
+   "summary": "Advances the spin animation and switches to the result view when it ends.",
+   "tags": [
+    "component",
+    "method",
+    "ui"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ShopOverlay.java:click",
+   "type": "function",
+   "name": "click",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    111,
+    129
+   ],
+   "summary": "Routes mouse clicks to close, collect, skip or case buttons depending on the current view.",
+   "tags": [
+    "component",
+    "method",
+    "ui"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ShopOverlay.java:clickCases",
+   "type": "function",
+   "name": "clickCases",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    139,
+    151
+   ],
+   "summary": "Handles clicks on case cards and starts opening the chosen case.",
+   "tags": [
+    "component",
+    "method",
+    "ui"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ShopOverlay.java:openCase",
+   "type": "function",
+   "name": "openCase",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    153,
+    171
+   ],
+   "summary": "Pays for (or uses a free) case through GameSession and builds the randomized reveal strip ending on the won tower.",
+   "tags": [
+    "component",
+    "method",
+    "ui"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paint",
+   "type": "function",
+   "name": "paint",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    175,
+    197
+   ],
+   "summary": "Draws the overlay backdrop, header and the active view.",
+   "tags": [
+    "component",
+    "method",
+    "ui"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintCases",
+   "type": "function",
+   "name": "paintCases",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    199,
+    247
+   ],
+   "summary": "Draws case cards with tower previews, drop chances and buy buttons.",
+   "tags": [
+    "component",
+    "method",
+    "ui"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintStrip",
+   "type": "function",
+   "name": "paintStrip",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    255,
+    293
+   ],
+   "summary": "Draws the eased scrolling strip of tower cards during the spin.",
+   "tags": [
+    "component",
+    "method",
+    "ui"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintResult",
+   "type": "function",
+   "name": "paintResult",
+   "filePath": "src/main/java/btd/ui/screens/ShopOverlay.java",
+   "lineRange": [
+    295,
+    318
+   ],
+   "summary": "Draws the won tower card with rarity, description and inventory count.",
+   "tags": [
+    "component",
+    "method",
+    "ui"
+   ],
+   "complexity": "moderate"
+  }
+ ],
+ "edges": [
+  {
+   "source": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "target": "class:src/main/java/btd/config/DatabaseConnection.java:DatabaseConnection",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "target": "class:src/main/java/btd/config/DatabaseConnection.java:DatabaseConnection",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "target": "function:src/main/java/btd/config/DatabaseConnection.java:getInstance",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "target": "function:src/main/java/btd/config/DatabaseConnection.java:getInstance",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "target": "function:src/main/java/btd/config/DatabaseConnection.java:getConnection",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "target": "function:src/main/java/btd/config/DatabaseConnection.java:getConnection",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "class:src/main/java/btd/core/CaseRNGManager.java:CaseRNGManager",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "class:src/main/java/btd/core/CaseRNGManager.java:CaseRNGManager",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "function:src/main/java/btd/core/CaseRNGManager.java:roll",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "function:src/main/java/btd/core/CaseRNGManager.java:roll",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "function:src/main/java/btd/core/CaseRNGManager.java:rollRarity",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "function:src/main/java/btd/core/CaseRNGManager.java:rollRarity",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "target": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/Catalog.java",
+   "target": "class:src/main/java/btd/core/Catalog.java:Catalog",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/Catalog.java",
+   "target": "class:src/main/java/btd/core/Catalog.java:Catalog",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/Catalog.java",
+   "target": "function:src/main/java/btd/core/Catalog.java:load",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/Catalog.java",
+   "target": "function:src/main/java/btd/core/Catalog.java:load",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/Catalog.java",
+   "target": "file:src/main/java/btd/dao/CaseDAO.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/Catalog.java",
+   "target": "file:src/main/java/btd/dao/TowerDAO.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/Catalog.java",
+   "target": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/Catalog.java",
+   "target": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "class:src/main/java/btd/core/GameSession.java:GameSession",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "class:src/main/java/btd/core/GameSession.java:GameSession",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:buyCase",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:buyCase",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:openFreeCase",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:openFreeCase",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:copiesOf",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:copiesOf",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:sellInventory",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:sellInventory",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:canPlaceAt",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:canPlaceAt",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:place",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:place",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:upgradeBlockReason",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:upgradeBlockReason",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:upgradeCost",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:upgradeCost",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:upgrade",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:upgrade",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:sell",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "function:src/main/java/btd/core/GameSession.java:sell",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "file:src/main/java/btd/factory/TowerFactory.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "file:src/main/java/btd/model/tower/Tower.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/core/UpgradeCostTable.java",
+   "target": "class:src/main/java/btd/core/UpgradeCostTable.java:UpgradeCostTable",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/UpgradeCostTable.java",
+   "target": "class:src/main/java/btd/core/UpgradeCostTable.java:UpgradeCostTable",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/UpgradeCostTable.java",
+   "target": "function:src/main/java/btd/core/UpgradeCostTable.java:copiesNeeded",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/core/UpgradeCostTable.java",
+   "target": "function:src/main/java/btd/core/UpgradeCostTable.java:copiesNeeded",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/UpgradeCostTable.java",
+   "target": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/dao/CaseDAO.java",
+   "target": "class:src/main/java/btd/dao/CaseDAO.java:CaseDAO",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/dao/CaseDAO.java",
+   "target": "class:src/main/java/btd/dao/CaseDAO.java:CaseDAO",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/dao/CaseDAO.java",
+   "target": "function:src/main/java/btd/dao/CaseDAO.java:findAll",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/dao/CaseDAO.java",
+   "target": "function:src/main/java/btd/dao/CaseDAO.java:findAll",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/dao/CaseDAO.java",
+   "target": "function:src/main/java/btd/dao/CaseDAO.java:findPool",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/dao/CaseDAO.java",
+   "target": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/dao/CaseDAO.java",
+   "target": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/dao/CaseDAO.java",
+   "target": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/dao/TowerDAO.java",
+   "target": "class:src/main/java/btd/dao/TowerDAO.java:TowerDAO",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/dao/TowerDAO.java",
+   "target": "class:src/main/java/btd/dao/TowerDAO.java:TowerDAO",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/dao/TowerDAO.java",
+   "target": "function:src/main/java/btd/dao/TowerDAO.java:findAll",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/dao/TowerDAO.java",
+   "target": "function:src/main/java/btd/dao/TowerDAO.java:findAll",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/dao/TowerDAO.java",
+   "target": "file:src/main/java/btd/config/DatabaseConnection.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/dao/TowerDAO.java",
+   "target": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/dao/TowerDAO.java",
+   "target": "file:src/main/java/btd/model/tower/Special.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/dao/TowerDAO.java",
+   "target": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "target": "class:src/main/java/btd/model/gacha/CaseDef.java:CaseDef",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "target": "class:src/main/java/btd/model/gacha/CaseDef.java:CaseDef",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "target": "function:src/main/java/btd/model/gacha/CaseDef.java:weightOf",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "target": "function:src/main/java/btd/model/gacha/CaseDef.java:weightOf",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "target": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "target": "class:src/main/java/btd/model/gacha/Rarity.java:Rarity",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "target": "class:src/main/java/btd/model/gacha/Rarity.java:Rarity",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/model/tower/Special.java",
+   "target": "class:src/main/java/btd/model/tower/Special.java:Special",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/model/tower/Special.java",
+   "target": "class:src/main/java/btd/model/tower/Special.java:Special",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/model/tower/TowerType.java",
+   "target": "class:src/main/java/btd/model/tower/TowerType.java:TowerType",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/model/tower/TowerType.java",
+   "target": "class:src/main/java/btd/model/tower/TowerType.java:TowerType",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/model/tower/TowerType.java",
+   "target": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "class:src/main/java/btd/ui/screens/ShopOverlay.java:ShopOverlay",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "class:src/main/java/btd/ui/screens/ShopOverlay.java:ShopOverlay",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:update",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:update",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:click",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:click",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:clickCases",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:openCase",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paint",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paint",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintCases",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintStrip",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintResult",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/core/Catalog.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/core/GameSession.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/model/gacha/CaseDef.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/model/gacha/Rarity.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/model/tower/TowerType.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/ui/components/Gfx.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/ui/components/TextButton.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/ui/components/TowerArt.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:src/main/java/btd/ui/screens/ShopOverlay.java",
+   "target": "file:src/main/java/btd/ui/theme/Palette.java",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "function:src/main/java/btd/dao/CaseDAO.java:findAll",
+   "target": "function:src/main/java/btd/config/DatabaseConnection.java:getConnection",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/dao/TowerDAO.java:findAll",
+   "target": "function:src/main/java/btd/config/DatabaseConnection.java:getConnection",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/core/Catalog.java:load",
+   "target": "function:src/main/java/btd/dao/TowerDAO.java:findAll",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/core/Catalog.java:load",
+   "target": "function:src/main/java/btd/dao/CaseDAO.java:findAll",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/core/GameSession.java:buyCase",
+   "target": "function:src/main/java/btd/core/CaseRNGManager.java:roll",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/core/GameSession.java:openFreeCase",
+   "target": "function:src/main/java/btd/core/CaseRNGManager.java:roll",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/core/GameSession.java:place",
+   "target": "function:src/main/java/btd/factory/TowerFactory.java:create",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/core/GameSession.java:upgradeCost",
+   "target": "function:src/main/java/btd/core/UpgradeCostTable.java:copiesNeeded",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/core/CaseRNGManager.java:rollRarity",
+   "target": "function:src/main/java/btd/model/gacha/CaseDef.java:weightOf",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/ShopOverlay.java:openCase",
+   "target": "function:src/main/java/btd/core/GameSession.java:buyCase",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/ShopOverlay.java:openCase",
+   "target": "function:src/main/java/btd/core/GameSession.java:openFreeCase",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintResult",
+   "target": "function:src/main/java/btd/core/GameSession.java:copiesOf",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintCases",
+   "target": "function:src/main/java/btd/ui/components/TowerArt.java:draw",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "function:src/main/java/btd/ui/screens/ShopOverlay.java:paintResult",
+   "target": "function:src/main/java/btd/ui/components/TowerArt.java:draw",
+   "type": "calls",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "file:src/main/java/btd/core/CaseRNGManager.java",
+   "type": "depends_on",
+   "direction": "forward",
+   "weight": 0.6
+  },
+  {
+   "source": "file:src/main/java/btd/core/GameSession.java",
+   "target": "file:src/main/java/btd/core/UpgradeCostTable.java",
+   "type": "depends_on",
+   "direction": "forward",
+   "weight": 0.6
+  }
+ ]
+}
